@@ -29,16 +29,6 @@ html.dark-mode {
     --shadow-color: rgba(255,255,255,0.05);
 }
 
-@media print {
-    body { margin: 0; }
-    .no-print { display: none !important; }
-    .action-column { display: none !important; }
-    input, textarea { border: none !important; background: transparent !important; color: black !important; }
-    tr, td, th { border-color: #999 !important; background: white !important; }
-    h1, h2, label, strong { color: black !important; }
-    .header, .footer { background: white !important; }
-}
-
 body {
     font-family: Arial, sans-serif;
     font-size: 11px;
@@ -63,7 +53,6 @@ body {
 .header-item label { font-size: 10px; color: var(--label-color); font-weight: bold; margin-bottom: 2px; }
 .header-item input { font-size: 11px; padding: 2px 4px; border: none; border-bottom: 1px solid var(--input-border-color); background: transparent; color: var(--text-color); }
 .header-item input[type="date"] { min-width: 100px; }
-
 
 .header-item.name { flex-grow: 2; min-width: 200px; }
 .header-item.pesel, .header-item.history { flex-grow: 1; min-width: 120px; }
@@ -126,4 +115,138 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
 
 @media screen {
     .container { max-width: 1200px; margin: 0 auto; box-shadow: 0 0 20px var(--shadow-color); padding: 20px; background: var(--container-bg); }
+}
+
+/* ================================================= */
+/* ========= NOWE, PROFESJONALNE STYLE WYDRUKU ========= */
+/* ================================================= */
+
+@media print {
+    /* --- Ogólny Reset --- */
+    * {
+        background: transparent !important;
+        color: black !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    body {
+        margin: 20mm;
+        font-size: 10pt;
+        line-height: 1.4;
+    }
+
+    /* --- Ukrywanie niepotrzebnych elementów --- */
+    .no-print, .action-column, #darkModeToggle {
+        display: none !important;
+    }
+
+    /* --- Układ Strony --- */
+    .container {
+        max-width: 100% !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    /* --- Nagłówek --- */
+    .header {
+        border: 1px solid #666 !important;
+        padding: 8px !important;
+    }
+    
+    .main-header {
+        display: block !important;
+    }
+
+    .patient-id-bar, .patient-context-bar {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 5px 20px;
+        border: none !important;
+        padding: 0 !important;
+        align-items: flex-start;
+    }
+    
+    .patient-id-bar {
+        margin-bottom: 8px !important;
+    }
+
+    .header-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: baseline !important;
+        page-break-inside: avoid;
+    }
+
+    .header-item label {
+        color: black !important;
+        font-weight: bold;
+        margin-right: 5px;
+        white-space: nowrap;
+    }
+    
+    h1 {
+        font-size: 14pt;
+    }
+
+    h2 {
+        background: none !important;
+        color: black !important;
+        border-bottom: 2px solid #333 !important;
+        padding: 5px 0 2px 0 !important;
+        margin-top: 20px !important;
+        font-size: 12pt !important;
+        border-radius: 0 !important;
+    }
+    
+    /* --- Poprawki dla inputów --- */
+    input {
+        border: none !important;
+        border-bottom: 1px dotted #666 !important;
+        padding: 1px !important;
+        font-size: 10pt !important;
+        border-radius: 0 !important;
+    }
+
+    /* Wyłącz strzałki w polach numerycznych */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /* --- Tabele --- */
+    table, tr, td, th {
+        border: 1px solid #999 !important;
+        page-break-inside: avoid;
+    }
+    
+    thead {
+        display: table-header-group; /* Powtarzaj nagłówek tabeli na każdej stronie */
+    }
+
+    th {
+        font-weight: bold !important;
+        background: #eee !important;
+    }
+
+    /* --- Pola podpisów --- */
+    .signature-box {
+        border: 1px solid #999 !important;
+        min-height: 40px !important;
+        border-radius: 0 !important;
+    }
+
+    .signature-line {
+        border-bottom: 1px solid black !important;
+        color: #333 !important;
+    }
+
+    .footer {
+        border-top: 2px solid black !important;
+    }
 }
