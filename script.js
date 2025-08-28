@@ -1,14 +1,119 @@
 // --- BAZY DANYCH I KONFIGURACJA ---
-const continuousDrugsData = { 'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-0.5 μg/kg/min' }, 'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 μg/kg/min' }, 'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 μg/kg/min' }, 'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 μg/kg/min' }, 'WAZOPRESYNA': { concentration: '20j/20ml', dose: '0.01-0.04 j/min' }, 'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 μg/kg/min' }, 'PROPOFOL 1%': { concentration: '10mg/ml', dose: '1-3 mg/kg/h' }, 'PROPOFOL 2%': { concentration: '20mg/ml', dose: '1-3 mg/kg/h' }, 'MIDAZOLAM': { concentration: '50mg/50ml', dose: '0.5-5 mg/h' }, 'DEKSMEDETOMIDYNA': { concentration: '200μg/50ml', dose: '0.2-0.7 μg/kg/h' }, 'FENTANYL': { concentration: '500μg/10ml', dose: '1-2 μg/kg/h' }, 'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 μg/kg/min' }, 'MORFINA': { concentration: '10mg/10ml', dose: '1-10 mg/h' }, 'KETAMINA': { concentration: '500mg/10ml', dose: '0.5-2 mg/kg/h' }, 'ROKURONIOM': { concentration: '50mg/5ml', dose: '0.3-0.6 mg/kg/h' }, 'CISATRAKURIUM': { concentration: '20mg/10ml', dose: '0.06-0.18 mg/kg/h' }, 'INSULINA': { concentration: '50j/50ml', dose: '0.5-10 j/h' }, 'HEPARYNA': { concentration: '25000j/50ml', dose: '500-2000 j/h' }, 'FUROSEMID': { concentration: '100mg/10ml', dose: '5-20 mg/h' }, 'AMIODARON': { concentration: '450mg/50ml', dose: '0.5-1 mg/min' }, 'NITROGLICERYNA': { concentration: '10mg/50ml', dose: '5-200 μg/min' }, 'NITROPRUSYDEK SODU': { concentration: '50mg/50ml', dose: '0.3-10 μg/kg/min' }, 'LABETALOL': { concentration: '100mg/20ml', dose: '0.5-2 mg/min' }, 'URAPIDIL': { concentration: '250mg/50ml', dose: '5-40 mg/h' } };
-const periodicDrugsData = { 'MEROPENEM': { dose: '1g', route: 'i.v. (30min)', frequency: 'q8h' }, 'PIPERACYLINA/TAZOBAKTAM': { dose: '4.5g', route: 'i.v. (30min)', frequency: 'q8h' }, 'WANKOMYCYNA': { dose: '1g', route: 'i.v. (2h)', frequency: 'q12h' }, 'LINEZOLID': { dose: '600mg', route: 'i.v. (2h)', frequency: 'q12h' }, 'CEFTRIAKSON': { dose: '2g', route: 'i.v.', frequency: 'q24h' }, 'CEFTAZYDYM': { dose: '2g', route: 'i.v.', frequency: 'q8h' }, 'CIPROFLOKSACYNA': { dose: '400mg', route: 'i.v. (1h)', frequency: 'q12h' }, 'METRONIDAZOL': { dose: '500mg', route: 'i.v.', frequency: 'q8h' }, 'FLUKONAZOL': { dose: '400mg', route: 'i.v.', frequency: 'q24h' }, 'KASPOFUNGINA': { dose: '50mg', route: 'i.v.', frequency: 'q24h' }, 'PANTOPRAZOL': { dose: '40mg', route: 'i.v.', frequency: 'q24h' }, 'OMEPRAZOL': { dose: '40mg', route: 'i.v.', frequency: 'q24h' }, 'RANITYDYNA': { dose: '50mg', route: 'i.v.', frequency: 'q8h' }, 'ENOKSAPARYNA': { dose: '40mg', route: 's.c.', frequency: 'q24h' }, 'DALTEPARYNA': { dose: '5000j', route: 's.c.', frequency: 'q24h' }, 'NADROPARYNA': { dose: '0.3ml', route: 's.c.', frequency: 'q24h' }, 'FUROSEMID': { dose: '20mg', route: 'i.v.', frequency: 'PRN' }, 'TORASEMID': { dose: '10mg', route: 'i.v.', frequency: 'q24h' }, 'MANNITOL': { dose: '0.5g/kg', route: 'i.v. (30min)', frequency: 'q6h' }, 'HYDROKORTYZON': { dose: '100mg', route: 'i.v.', frequency: 'q8h' }, 'METYLOPREDNIZOLON': { dose: '40mg', route: 'i.v.', frequency: 'q12h' }, 'DEKSAMETAZON': { dose: '8mg', route: 'i.v.', frequency: 'q24h' }, 'PARACETAMOL': { dose: '1g', route: 'i.v.', frequency: 'q6h' }, 'METAMIZOL': { dose: '1g', route: 'i.v.', frequency: 'q6h' }, 'HALOPERIDOL': { dose: '5mg', route: 'i.v.', frequency: 'PRN' }, 'METOKLOPRAMID': { dose: '10mg', route: 'i.v.', frequency: 'q8h' }, 'ONDANSETRON': { dose: '4mg', route: 'i.v.', frequency: 'q8h' }, 'N-ACETYLOCYSTEINA': { dose: '600mg', route: 'i.v.', frequency: 'q12h' }, 'WITAMINA K': { dose: '10mg', route: 'i.v.', frequency: 'q24h' }, 'WITAMINA C': { dose: '1g', route: 'i.v.', frequency: 'q24h' }, 'TIAMINA': { dose: '100mg', route: 'i.v.', frequency: 'q24h' }, 'MAGNEZ': { dose: '2g', route: 'i.v. (30min)', frequency: 'q24h' }, 'POTAS': { dose: '20mmol', route: 'i.v. (2h)', frequency: 'q12h' }, 'WAPŃ': { dose: '10ml', route: 'i.v.', frequency: 'q24h' }, 'FOSFORANY': { dose: '10mmol', route: 'i.v. (4h)', frequency: 'q24h' } };
-const fluidsData = { 'NaCl 0.9%': { volume: '500ml', rate: '50' }, 'Plasmalyte': { volume: '500ml', rate: '30' }, 'Ringer': { volume: '500ml', rate: '50' }, 'Glukoza 5%': { volume: '500ml', rate: '40' }, 'Glukoza 10%': { volume: '500ml', rate: '30' }, 'Gelafundin 4%': { volume: '500ml', rate: '100' }, 'Voluven 6%': { volume: '500ml', rate: '100' }, 'Albuminy 20%': { volume: '100ml', rate: '50' }, 'Albuminy 5%': { volume: '250ml', rate: '50' }, 'Mannitol 15%': { volume: '250ml', rate: '125' }, 'NaHCO3 8.4%': { volume: '100ml', rate: '50' } };
-const glucoseKcalData = { "Glukoza 5%": 0.17, "Glukoza 10%": 0.34 };
+const continuousDrugsData = {
+    'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-1.0 μg/kg/min' },
+    'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 μg/kg/min' },
+    'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 μg/kg/min' },
+    'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 μg/kg/min' },
+    'WAZOPRESYNA': { concentration: '20j/20ml', dose: '0.01-0.04 j/min' },
+    'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 μg/kg/min' },
+    'PROPOFOL 1%': { concentration: '10mg/ml', dose: '1-4 mg/kg/h' },
+    'PROPOFOL 2%': { concentration: '20mg/ml', dose: '1-4 mg/kg/h' },
+    'MIDAZOLAM': { concentration: '50mg/50ml', dose: '1-15 mg/h' },
+    'DEKSMEDETOMIDYNA': { concentration: '200μg/50ml', dose: '0.2-1.4 μg/kg/h' },
+    'FENTANYL': { concentration: '500μg/50ml', dose: '25-100 μg/h' },
+    'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 μg/kg/min' },
+    'MORFINA': { concentration: '20mg/20ml', dose: '1-5 mg/h' },
+    'OKSYKODON (OXYNORM)': { concentration: '20mg/20ml', dose: '1-2 mg/h' },
+    'KETAMINA': { concentration: '250mg/50ml', dose: '0.5-2 mg/kg/h' },
+    'ROKURONIOM': { concentration: '50mg/5ml', dose: '0.3-0.6 mg/kg/h' },
+    'CISATRAKURIUM': { concentration: '20mg/10ml', dose: '0.06-0.18 mg/kg/h' },
+    'INSULINA': { concentration: '50j/50ml', dose: '0.5-10 j/h' },
+    'HEPARYNA': { concentration: '25000j/50ml', dose: '500-2000 j/h' },
+    'FUROSEMID': { concentration: '100mg/50ml', dose: '5-20 mg/h' },
+    'AMIODARON (CORDARONE)': { concentration: '300mg/50ml 5% Glc', dose: '20-50 mg/h' },
+    'NITROGLICERYNA': { concentration: '25mg/50ml', dose: '5-200 μg/min' },
+    'PIPERACYLINA/TAZOBAKTAM (CIĄGŁY)': { concentration: '18g/100ml', dose: 'wlew 24h' },
+    'PANTOPRAZOL (CONTROLOC)': { concentration: '80mg/100ml', dose: '4.2 ml/h' },
+    'METOPROLOL (BETALOC)': { concentration: '10mg/50ml', dose: '1-5 mg/h' },
+    'SALBUTAMOL': { concentration: '5mg/50ml', dose: '3-20 μg/min' },
+    'DIAZEPAM (RELANIUM)': { concentration: '50mg/50ml', dose: '2-10 mg/h' }
+};
+const periodicDrugsData = {
+    // Antybiotyki i p-grzybicze
+    'AMOKSYCYLINA/KWAS KLAWULANOWY (AUGMENTIN)': { dose: '1.2g', route: 'i.v.', frequency: 'q8h' },
+    'AMIKACYNA (BIODACIN)': { dose: '15-20mg/kg', route: 'i.v. (1h)', frequency: 'q24h' },
+    'CEFTAZYDYM (FORTUM)': { dose: '2g', route: 'i.v.', frequency: 'q8h' },
+    'CEFUROKSYM (BIOFUROKSYM, ZINACEF)': { dose: '1.5g', route: 'i.v.', frequency: 'q8h' },
+    'CIPROFLOKSACYNA (CIPRONEX, PROXACIN)': { dose: '400mg', route: 'i.v. (1h)', frequency: 'q12h' },
+    'IMIPENEM/CYLASTATYNA (TIENAM)': { dose: '0.5g', route: 'i.v. (30min)', frequency: 'q6h-q8h' },
+    'KOLISTYNA': { dose: 'dawka nasyc. 9mln j, potem 4.5mln j', route: 'i.v.', frequency: 'q12h' },
+    'LEWOFLOKSACYNA (TAVANIC)': { dose: '500mg', route: 'i.v. (1h)', frequency: 'q12h-q24h' },
+    'LINEZOLID (ZYVOXID)': { dose: '600mg', route: 'i.v. (2h)', frequency: 'q12h' },
+    'MEROPENEM': { dose: '1g', route: 'i.v. (30min)', frequency: 'q8h' },
+    'METRONIDAZOL': { dose: '500mg', route: 'i.v.', frequency: 'q8h' },
+    'PIPERACYLINA/TAZOBAKTAM (TAZOCIN)': { dose: '4.5g', route: 'i.v. (30min)', frequency: 'q8h' },
+    'SULBAKTAM/CEFOPERAZON (SULPERAZON)': { dose: '2g', route: 'i.v.', frequency: 'q12h' },
+    'TEIKOPLANINA (TARGOCID)': { dose: 'nasyc. 400mg x3 co 12h, potem 400mg', route: 'i.v.', frequency: 'q24h' },
+    'TYGECYKLINA (TYGACIL)': { dose: 'nasyc. 100mg, potem 50mg', route: 'i.v. (1h)', frequency: 'q12h' },
+    'WANKOMYCYNA (EDICIN)': { dose: '1g', route: 'i.v. (1h)', frequency: 'q12h' },
+    'FLUKONAZOL (MYCOMAX)': { dose: '400mg', route: 'i.v.', frequency: 'q24h' },
+    'WORYKONAZOL (VFEND)': { dose: 'nasyc. 6mg/kg x2, potem 4mg/kg', route: 'i.v. (2h)', frequency: 'q12h' },
+    'GENTAMYCYNA': { dose: '3-5mg/kg', route: 'i.v. (1h)', frequency: 'q24h' },
+    'KETOKONAZOL': { dose: '200mg', route: 'p.o. (sonda)', frequency: 'q12h' },
+    // Leki sercowo-naczyniowe i diuretyki
+    'FUROSEMID': { dose: '20-40mg', route: 'i.v.', frequency: 'wg zlecenia' },
+    'MANNITOL 15%': { dose: '100ml', route: 'i.v. (30min)', frequency: 'wg zlecenia' },
+    'SPIRONOLAKTON (ALDACTONE)': { dose: '25-100mg', route: 'i.v.', frequency: 'q24h' },
+    'ENOKSAPARYNA (CLEXANE)': { dose: '40mg', route: 's.c.', frequency: 'q24h' },
+    'NADROPARYNA (FRAXIPARINE)': { dose: '0.4-0.6ml', route: 's.c.', frequency: 'q24h' },
+    'KWAS TRANEXAMOWY (EXACYL)': { dose: '1g', route: 'i.v.', frequency: 'q8h' },
+    'ETAMSYLAT (CYCLONAMINE)': { dose: '250-500mg', route: 'i.v.', frequency: 'q6h' },
+    // Sterydy, p-bólowe i inne
+    'DEKSAMETAZON (DEXAVEN)': { dose: '4-8mg', route: 'i.v.', frequency: 'q6h-q12h' },
+    'HYDROKORTYZON': { dose: '50-100mg', route: 'i.v.', frequency: 'q6h-q8h' },
+    'METYLOPREDNIZOLON (SOLU-MEDROL)': { dose: '125mg', route: 'i.v.', frequency: 'wg zlecenia' },
+    'METAMIZOL (PYRALGINA)': { dose: '1g', route: 'i.v.', frequency: 'q6h-q8h' },
+    'PARACETAMOL (PERFALGAN)': { dose: '1g', route: 'i.v.', frequency: 'q6h' },
+    'METOKLOPRAMID': { dose: '10mg', route: 'i.v.', frequency: 'q8h' },
+    'PANTOPRAZOL (CONTROLOC)': { dose: '40mg', route: 'i.v.', frequency: 'q24h' },
+    'OMEPLAZOL (HELICID)': { dose: '40mg', route: 'i.v.', frequency: 'q24h' },
+    'HALOPERIDOL': { dose: '2.5-5mg', route: 'i.v./i.m.', frequency: 'wg zlecenia' },
+    'CHLORPROMAZYNA (FENACTIL)': { dose: '25-50mg', route: 'i.m.', frequency: 'PRN' },
+    'DESMOPRESYNA (MINIRIN)': { dose: '1-4μg', route: 'i.v./s.c.', frequency: 'q12h-q24h' },
+    'WAPŃ (CALCIUM)': { dose: '10-20ml 10%', route: 'i.v. wlew', frequency: 'q6h' },
+    // Leki nootropowe i neuro
+    'WINPOCETYNA (CAVINTON)': { dose: '10mg', route: 'i.v. wlew', frequency: 'q12h' },
+    'CEREBROLIZYNA': { dose: '10-30ml', route: 'i.v. wlew', frequency: 'q24h' },
+    'PIRACETAM (NOOTROPIL)': { dose: '4.8g', route: 'i.v.', frequency: 'q12h' },
+    'ORNITYNA': { dose: '20g', route: 'i.v. wlew 24h', frequency: 'q24h' },
+    'CYKLOFOSFAMID (ENDOXAN)': { dose: 'wg zlecenia', route: 'i.v. wlew', frequency: 'wg schematu' },
+    // Nebulizacje i leki wziewne
+    'ACETYLOCYSTEINA (ACC)': { dose: '300mg (3ml)', route: 'nebulizacja', frequency: 'q8h' },
+    'ADRENALINA (NEBULIZACJA)': { dose: '0.5mg', route: 'nebulizacja', frequency: 'wg zlecenia' },
+    'AMBROKSOL (MUCOSOLVAN)': { dose: '15mg (2ml)', route: 'nebulizacja', frequency: 'q12h' },
+    'BERODUAL': { dose: '1-2ml (20-40 kropli)', route: 'nebulizacja', frequency: 'q4h-q6h' },
+    'IPRATROPIUM (ATROVENT)': { dose: '0.5mg (2ml)', route: 'nebulizacja', frequency: 'q6h-q8h' },
+    'KOLISTYNA (NEBULIZACJA)': { dose: '1-2mln j', route: 'nebulizacja', frequency: 'q8h-q12h' },
+    'SALBUTAMOL (VENTOLIN)': { dose: '2.5mg', route: 'nebulizacja', frequency: 'q4h-q6h' },
+    'SALBUTAMOL (WZIEW)': { dose: '2 wdechy', route: 'do rurki', frequency: 'q4h' },
+    'NABIC (1.4% NAHCO3)': { dose: '5ml', route: 'nebulizacja', frequency: 'q8h' },
+    // Leki oczne
+    'LEWOFLOKSACYNA (OFTAQUIX)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'q2h -> q6h' },
+    'TOBRAMYCYNA/DEKSAMETAZON (TOBRADEX)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'q6h' },
+    'OFLOKSACYNA (FLOXAL)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'q6h' },
+    // Leki doustne
+    'POLPRAZOL': { dose: '20mg', route: 'p.o. (sonda)', frequency: 'q12h' },
+    'LACTULOSUM': { dose: '15ml', route: 'p.o. (sonda)', frequency: 'q8h' },
+    'KALIUM POLISTYRENOSULFONIAN (RESONIUM)': { dose: '15g (1 miarka)', route: 'p.o. (sonda)', frequency: 'q6h-q8h' },
+    'EUTHYROX': { dose: 'wg zlecenia', route: 'p.o. na czczo', frequency: 'q24h' }
+};
+const fluidsData = {
+    'NaCl 0.9%': { volume: '500ml', rate: '50' },
+    'Plasmalyte': { volume: '500ml', rate: '50' },
+    'Optilyte': { volume: '500ml', rate: '50' },
+    'Płyn Ringera': { volume: '500ml', rate: '50' },
+    'Glukoza 5%': { volume: '500ml', rate: '40' },
+    'Glukoza 10%': { volume: '500ml', rate: '30' },
+    'Gelofusine': { volume: '500ml', rate: '100' },
+    'Albuminy 20%': { volume: '100ml', rate: '50' },
+    'Albuminy 5%': { volume: '250ml', rate: '100' },
+    'Mannitol 15%': { volume: '250ml', rate: '125' },
+    'NaHCO3 8.4%': { volume: '100ml', rate: '50' }
+};
 const nutritionData = { "Nutrison 500ml": { kcal: 515, volume: 500 }, "Nutrison 1000ml": { kcal: 1030, volume: 1000 }, "Nutrison Energy 500ml": { kcal: 765, volume: 500 }, "Nutrison Energy 1000ml": { kcal: 1530, volume: 1000 }, "Nutrison Protein Plus 500ml": { kcal: 630, volume: 500 }, "Nutrison Protein Plus 1000ml": { kcal: 1260, volume: 1000 }, "Fresubin HP Energy 500ml": { kcal: 750, volume: 500 }, "Fresubin HP Energy 1000ml": { kcal: 1500, volume: 1000 }, "Fresubin Original 500ml": { kcal: 500, volume: 500 }, "Peptamen 500ml": { kcal: 500, volume: 500 }, "Diben 500ml": { kcal: 515, volume: 500 }, "SmofKabiven 986ml": { kcal: 1100, volume: 986 }, "SmofKabiven 1477ml": { kcal: 1600, volume: 1477 }, "SmofKabiven 1970ml": { kcal: 2200, volume: 1970 }, "SmofKabiven 2463ml": { kcal: 2700, volume: 2463 }, "Kabiven 1026ml": { kcal: 1100, volume: 1026 }, "Kabiven 1540ml": { kcal: 1700, volume: 1540 }, "Kabiven 2053ml": { kcal: 2200, volume: 2053 }, "Olimel N9E 1000ml": { kcal: 1200, volume: 1000 }, "Olimel N9E 1500ml": { kcal: 1800, volume: 1500 }, "Olimel N9E 2000ml": { kcal: 2400, volume: 2000 }, };
 
 // --- GŁÓWNE FUNKCJE ---
-
 function removeRow(button) { button.closest('tr').remove(); updateSummaries(); }
-
 function updateSummaries() {
     let totalFluids = 0;
     let totalKcal = 0;
@@ -39,7 +144,6 @@ function updateSummaries() {
     document.getElementById('totalFluids').textContent = totalFluids.toFixed(0);
     document.getElementById('totalKcal').textContent = totalKcal.toFixed(0);
 }
-
 function calculateInfusionRate(inputElement) {
     const row = inputElement.closest('tr');
     if (!row) return;
@@ -91,7 +195,6 @@ function calculateInfusionRate(inputElement) {
         rateOutput.value = finalRate1.toFixed(2).replace('.', ',');
     }
 }
-
 function calculateIcuDay() {
     const admissionDateStr = document.getElementById('admissionDateInput').value;
     const mainDateStr = document.getElementById('mainDateInput').value;
@@ -143,7 +246,6 @@ function initializeCard() {
     // Uruchom kalkulator dób
     calculateIcuDay();
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     // KONFIGURACJA PRZYCISKÓW (uruchamiana tylko raz)
     const toggle = document.getElementById('darkModeToggle');
@@ -166,7 +268,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // INICJALIZACJA KARTY
     initializeCard();
 });
-
 function saveCard() { const cardData = { patientData: {}, continuousDrugs: [], periodicDrugs: [], fluids: [], nutrition: [], procedures: [], notes: '' }; document.querySelectorAll('.header-input').forEach(input => { if (input.id) cardData.patientData[input.id] = input.value; }); const safePatientName = (document.getElementById('patientNameInput').value.trim().replace(/\s+/g, '_') || 'pacjent'); const safeHistoryNumber = (document.getElementById('historyNumberInput').value.trim().replace(/\//g, '-') || 'brak_numeru_historii'); const filename = `${safePatientName}_${safeHistoryNumber}.json`; document.querySelectorAll('#continuousDrugsTable tbody tr').forEach(row => { const rowData = []; row.querySelectorAll('input').forEach(input => rowData.push(input.value)); if (rowData.length > 0) cardData.continuousDrugs.push(rowData); }); document.querySelectorAll('#periodicDrugsTable tbody tr').forEach(row => { const rowData = []; row.querySelectorAll('input').forEach(input => rowData.push(input.value)); if (rowData.length > 0) cardData.periodicDrugs.push(rowData); }); document.querySelectorAll('#fluidsTable tbody tr').forEach(row => { const rowData = []; row.querySelectorAll('input').forEach(input => rowData.push(input.value)); if (rowData.length > 0) cardData.fluids.push(rowData); }); document.querySelectorAll('#nutritionTable tbody tr').forEach(row => { const rowData = []; row.querySelectorAll('input').forEach(input => rowData.push(input.value)); if (rowData.length > 0) cardData.nutrition.push(rowData); }); document.querySelectorAll('#proceduresTable tbody tr').forEach(row => { const rowData = []; row.querySelectorAll('input').forEach(input => rowData.push(input.value)); if (rowData.length > 0) cardData.procedures.push(rowData); }); const notesTextarea = document.querySelector('textarea'); if (notesTextarea) cardData.notes = notesTextarea.value; const dataStr = JSON.stringify(cardData, null, 2); const dataBlob = new Blob([dataStr], {type: 'application/json'}); const url = URL.createObjectURL(dataBlob); const link = document.createElement('a'); link.href = url; link.download = filename; link.click(); alert('Karta została zapisana!'); }
-function loadCard() { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = e => { const file = e.target.files[0]; const reader = new FileReader(); reader.onload = event => { try { const cardData = JSON.parse(event.target.result); clearCard(true); Object.keys(cardData.patientData).forEach(key => { const el = document.getElementById(key); if (el) el.value = cardData.patientData[key]; }); calculateIcuDay(); const contDrugsTbody = document.querySelector('#continuousDrugsTable tbody'); cardData.continuousDrugs.forEach(drug => { const row = document.createElement('tr'); const rowId = 'cont_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${drug[0] || ''}" list="continuousDrugsList" onchange="fillContinuousDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" value="${drug[1] || ''}" id="${rowId}_conc" oninput="calculateInfusionRate(this)" /></td><td><input type="text" class="drug-input dose" value="${drug[2] || ''}" id="${rowId}_dose" oninput="calculateInfusionRate(this)" /></td><td><div class="rate-container"><input type="text" class="infusion-rate" value="${drug[3] || ''}" readonly /><span>ml/h</span></div></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; contDrugsTbody.appendChild(row); calculateInfusionRate(row.querySelector('.dose')); }); const perDrugsTbody = document.querySelector('#periodicDrugsTable tbody'); cardData.periodicDrugs.forEach(drug => { const row = document.createElement('tr'); const rowId = 'per_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${drug[0] || ''}" list="periodicDrugsList" onchange="fillPeriodicDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input dose" value="${drug[1] || ''}" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" value="${drug[2] || ''}" id="${rowId}_route" /><input type="text" class="drug-input" value="${drug[3] || ''}" id="${rowId}_freq" style="font-weight: bold;" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; perDrugsTbody.appendChild(row); }); const fluidsTbody = document.querySelector('#fluidsTable tbody'); cardData.fluids.forEach(fluid => { const row = document.createElement('tr'); const rowId = 'fluid_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${fluid[0] || ''}" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" id="${rowId}_name" style="color: #00a2e8;" oninput="updateSummaries()" /></td><td><input type="text" class="drug-input" value="${fluid[1] || ''}" id="${rowId}_vol" /></td><td><input type="text" class="drug-input" value="${fluid[2] || ''}" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; fluidsTbody.appendChild(row); }); const nutritionTbody = document.querySelector('#nutritionTable tbody'); cardData.nutrition.forEach(nutr => { const row = document.createElement('tr'); const typeInputHTML = `<input type="text" class="drug-input drug-name" value="${nutr[0] || ''}" placeholder="Wybierz typ..." list="nutritionTypesList" style="color: #ff7f27;" onchange="updateNutritionProductList(this)" />`; const prepInputHTML = `<input type="text" class="drug-input nutrition-prep" value="${nutr[1] || ''}" placeholder="Wybierz preparat..." oninput="updateSummaries()"/>`; row.innerHTML = `<td>${typeInputHTML}</td><td>${prepInputHTML}</td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; nutritionTbody.appendChild(row); const typeInput = row.querySelector('.drug-name'); updateNutritionProductList(typeInput); prepInput = row.querySelector('.nutrition-prep'); prepInput.value = nutr[1] || ''; }); if (cardData.procedures) { const proceduresTbody = document.querySelector('#proceduresTable tbody'); cardData.procedures.forEach(proc => { const row = document.createElement('tr'); row.innerHTML = `<td><input type="text" class="drug-input" value="${proc[0] || ''}" list="timesList" style="width: 60px;" /></td><td><input type="text" class="drug-input" value="${proc[1] || ''}" list="proceduresList" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; proceduresTbody.appendChild(row); }); } const notesTextarea = document.querySelector('textarea'); if (notesTextarea && cardData.notes) notesTextarea.value = cardData.notes; updateSummaries(); alert('Karta została wczytana!'); } catch (error) { alert('Błąd podczas wczytywania pliku!'); console.error(error); } }; reader.readAsText(file); }; input.click(); }
+function loadCard() { const input = document.createElement('input'); input.type = 'file'; input.accept = '.json'; input.onchange = e => { const file = e.target.files[0]; const reader = new FileReader(); reader.onload = event => { try { const cardData = JSON.parse(event.target.result); clearCard(true); Object.keys(cardData.patientData).forEach(key => { const el = document.getElementById(key); if (el) el.value = cardData.patientData[key]; }); calculateIcuDay(); const contDrugsTbody = document.querySelector('#continuousDrugsTable tbody'); cardData.continuousDrugs.forEach(drug => { const row = document.createElement('tr'); const rowId = 'cont_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${drug[0] || ''}" list="continuousDrugsList" onchange="fillContinuousDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" value="${drug[1] || ''}" id="${rowId}_conc" oninput="calculateInfusionRate(this)" /></td><td><input type="text" class="drug-input dose" value="${drug[2] || ''}" id="${rowId}_dose" oninput="calculateInfusionRate(this)" /></td><td><div class="rate-container"><input type="text" class="infusion-rate" value="${drug[3] || ''}" readonly /><span>ml/h</span></div></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; contDrugsTbody.appendChild(row); calculateInfusionRate(row.querySelector('.dose')); }); const perDrugsTbody = document.querySelector('#periodicDrugsTable tbody'); cardData.periodicDrugs.forEach(drug => { const row = document.createElement('tr'); const rowId = 'per_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${drug[0] || ''}" list="periodicDrugsList" onchange="fillPeriodicDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input dose" value="${drug[1] || ''}" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" value="${drug[2] || ''}" id="${rowId}_route" /><input type="text" class="drug-input" value="${drug[3] || ''}" id="${rowId}_freq" style="font-weight: bold;" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; perDrugsTbody.appendChild(row); }); const fluidsTbody = document.querySelector('#fluidsTable tbody'); cardData.fluids.forEach(fluid => { const row = document.createElement('tr'); const rowId = 'fluid_' + Date.now() + Math.random(); row.innerHTML = `<td><input type="text" class="drug-input drug-name" value="${fluid[0] || ''}" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" id="${rowId}_name" style="color: #00a2e8;" oninput="updateSummaries()" /></td><td><input type="text" class="drug-input" value="${fluid[1] || ''}" id="${rowId}_vol" /></td><td><input type="text" class="drug-input" value="${fluid[2] || ''}" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; fluidsTbody.appendChild(row); }); const nutritionTbody = document.querySelector('#nutritionTable tbody'); cardData.nutrition.forEach(nutr => { const row = document.createElement('tr'); const typeInputHTML = `<input type="text" class="drug-input drug-name" value="${nutr[0] || ''}" placeholder="Wybierz typ..." list="nutritionTypesList" style="color: #ff7f27;" onchange="updateNutritionProductList(this)" />`; const prepInputHTML = `<input type="text" class="drug-input nutrition-prep" value="${nutr[1] || ''}" placeholder="Wybierz preparat..." oninput="updateSummaries()"/>`; row.innerHTML = `<td>${typeInputHTML}</td><td>${prepInputHTML}</td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; nutritionTbody.appendChild(row); const typeInput = row.querySelector('.drug-name'); updateNutritionProductList(typeInput); prepInput = row.querySelector('.nutrition-prep'); prepInput.value = nutr[1] || ''; }); if (cardData.procedures) { const proceduresTbody = document.querySelector('#proceduresTable tbody'); cardData.procedures.forEach(proc => { const row = document.createElement('tr'); row.innerHTML = `<td><input type="text" class="drug-input" value="${proc[0] || ''}" list="timesList" style="width: 60px;" /></td><td><input type="text" class="drug-input" value="${proc[1] || ''}" list="proceduresList" /></td><td><div class="signature-box"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button">Usuń</button></td>`; proceduresTbody.appendChild(row); }); } const notesTextarea = document.querySelector('textarea'); if (notesTextarea && cardData.notes) notesTextarea.value = notesTextarea.value; updateSummaries(); alert('Karta została wczytana!'); } catch (error) { alert('Błąd podczas wczytywania pliku!'); console.error(error); } }; reader.readAsText(file); }; input.click(); }
 function clearCard(force = false) { if (force || confirm('Czy na pewno chcesz wyczyścić całą kartę?')) { document.querySelectorAll('.header-input').forEach(input => { input.value = ''; }); document.querySelectorAll('textarea').forEach(textarea => { textarea.value = ''; }); document.querySelectorAll('tbody').forEach(tbody => { tbody.innerHTML = ''; }); updateSummaries(); initializeCard(); if (!force) alert('Karta została wyczyszczona!'); } }
