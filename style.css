@@ -122,7 +122,11 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
 /* ================================================= */
 
 @media print {
-    /* --- Ogólny Reset --- */
+    @page {
+        size: A4;
+        margin: 15mm;
+    }
+
     * {
         background: transparent !important;
         color: black !important;
@@ -131,45 +135,47 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
     }
 
     body {
-        margin: 20mm;
-        font-size: 10pt;
-        line-height: 1.4;
+        margin: 0;
+        font-size: 9pt;
+        line-height: 1.3;
     }
 
-    /* --- Ukrywanie niepotrzebnych elementów --- */
-    .no-print, .action-column, #darkModeToggle {
+    .no-print, .action-column, #darkModeToggle, .summary-container {
         display: none !important;
     }
 
-    /* --- Układ Strony --- */
     .container {
+        width: 100% !important;
         max-width: 100% !important;
         box-shadow: none !important;
         padding: 0 !important;
         border: none !important;
     }
 
-    /* --- Nagłówek --- */
     .header {
-        border: 1px solid #666 !important;
-        padding: 8px !important;
+        border: 1px solid #000 !important;
+        padding: 5px !important;
+        margin-bottom: 5px !important;
     }
     
+    h1 {
+        font-size: 13pt;
+        margin-bottom: 5px !important;
+    }
+
     .main-header {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
     }
 
     .patient-id-bar, .patient-context-bar {
         display: grid !important;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 5px 20px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2px 15px;
         border: none !important;
         padding: 0 !important;
-        align-items: flex-start;
-    }
-    
-    .patient-id-bar {
-        margin-bottom: 8px !important;
+        align-items: baseline;
     }
 
     .header-item {
@@ -182,34 +188,29 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
     .header-item label {
         color: black !important;
         font-weight: bold;
-        margin-right: 5px;
+        margin-right: 4px;
         white-space: nowrap;
+        font-size: 8pt;
     }
     
-    h1 {
-        font-size: 14pt;
-    }
-
     h2 {
         background: none !important;
         color: black !important;
-        border-bottom: 2px solid #333 !important;
-        padding: 5px 0 2px 0 !important;
-        margin-top: 20px !important;
-        font-size: 12pt !important;
+        border-bottom: 1px solid #333 !important;
+        padding: 2px 0 !important;
+        margin: 10px 0 2px 0 !important;
+        font-size: 11pt !important;
         border-radius: 0 !important;
     }
     
-    /* --- Poprawki dla inputów --- */
     input {
         border: none !important;
         border-bottom: 1px dotted #666 !important;
-        padding: 1px !important;
-        font-size: 10pt !important;
+        padding: 0 !important;
+        font-size: 9pt !important;
         border-radius: 0 !important;
     }
 
-    /* Wyłącz strzałki w polach numerycznych */
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -219,34 +220,50 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
       -moz-appearance: textfield;
     }
 
-    /* --- Tabele --- */
     table, tr, td, th {
         border: 1px solid #999 !important;
         page-break-inside: avoid;
     }
     
     thead {
-        display: table-header-group; /* Powtarzaj nagłówek tabeli na każdej stronie */
+        display: table-header-group;
     }
 
     th {
         font-weight: bold !important;
         background: #eee !important;
+        padding: 2px 4px !important;
+        font-size: 8pt;
+    }
+    
+    td {
+        padding: 1px 4px !important;
+        height: 20px; /* Zmniejszona wysokość wiersza */
     }
 
-    /* --- Pola podpisów --- */
     .signature-box {
         border: 1px solid #999 !important;
-        min-height: 40px !important;
+        min-height: 20px !important; /* Zmniejszona wysokość pola podpisu */
         border-radius: 0 !important;
+    }
+
+    .footer {
+        border-top: 2px solid black !important;
+        margin-top: 15px !important;
+    }
+    
+    .footer h2.notes {
+        margin-top: 5px !important;
+    }
+
+    textarea {
+        min-height: 25px !important;
     }
 
     .signature-line {
         border-bottom: 1px solid black !important;
         color: #333 !important;
-    }
-
-    .footer {
-        border-top: 2px solid black !important;
+        margin-top: 20px !important; /* Zmniejszony margines */
+        width: 60% !important;
     }
 }
