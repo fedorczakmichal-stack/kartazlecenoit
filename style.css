@@ -198,9 +198,9 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
         border-radius: 0 !important;
     }
     
-    input {
+    /* ZMIANA TUTAJ: Usunięto kropkowaną ramkę */
+    input, textarea {
         border: none !important;
-        border-bottom: 1px dotted #666 !important;
         padding: 0 !important;
         font-size: 9pt !important;
         border-radius: 0 !important;
@@ -215,7 +215,6 @@ html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
       -moz-appearance: textfield;
     }
 
-    /* NOWA REGUŁA: Ukryj placeholder'y na wydruku */
     input::placeholder,
     textarea::placeholder {
         color: transparent !important;
