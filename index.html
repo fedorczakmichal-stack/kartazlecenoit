@@ -1,273 +1,211 @@
-:root {
-    --bg-color: #f4f4f4;
-    --container-bg: white;
-    --text-color: #1a1a1a;
-    --border-color: #999;
-    --header-gradient-start: #f8f8f8;
-    --header-gradient-end: #e8e8e8;
-    --table-header-start: #f0f0f0;
-    --table-header-end: #e0e0e0;
-    --table-row-even-bg: #fafafa;
-    --table-border-color: #ccc;
-    --input-border-color: #999;
-    --shadow-color: rgba(0,0,0,0.1);
-    --label-color: #2c5aa0;
-}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edytowalna Karta Zleceń OIT</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" id="card-container">
+        <div class="top-controls no-print">
+            <button onclick="window.print()" class="print-button">🖨️ Drukuj kartę</button>
+            <button onclick="generatePDF()" class="print-button pdf">📄 Eksportuj PDF</button>
+            <button onclick="saveCard()" class="print-button" style="background: #4CAF50;">💾 Zapisz kartę</button>
+            <button onclick="loadCard()" class="print-button" style="background: #FF9800;">📂 Wczytaj kartę</button>
+            <button onclick="clearCard()" class="print-button" style="background: #f44336;">🗑️ Wyczyść kartę</button>
+            <button id="darkModeToggle">🌙</button>
+        </div>
+        
+        <div class="no-print" style="background: #e8f5e9; padding: 8px; border-radius: 4px; margin: 10px; font-size: 11px; text-align: center;">
+            <span><strong>💡 Wskazówka:</strong> Kliknij `+ Dodaj` w sekcji płynów, aby otworzyć okno zarządzania dodatkami.</span>
+        </div>
+        
+        <div id="additivesModal" class="modal no-print" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Zarządzaj dodatkami</h3>
+                    <span class="close" onclick="closeModal('additivesModal')">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="additives-list"></div>
+                    <button onclick="addAdditiveRowToModal()" class="add-button fluids">+ Dodaj kolejny</button>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="saveAdditives()" class="print-button" style="background: #4CAF50;">Zapisz</button>
+                </div>
+            </div>
+        </div>
 
-html.dark-mode {
-    --bg-color: #121212;
-    --container-bg: #1e1e1e;
-    --text-color: #e0e0e0;
-    --border-color: #555;
-    --header-gradient-start: #2a2a2a;
-    --header-gradient-end: #202020;
-    --table-header-start: #333;
-    --table-header-end: #282828;
-    --table-row-even-bg: #2c2c2c;
-    --table-border-color: #444;
-    --input-border-color: #666;
-    --shadow-color: rgba(255,255,255,0.05);
-}
+        <div class="header">
+            <h1>KARTA ZLECEŃ LEKARSKICH - ODDZIAŁ INTENSYWNEJ TERAPII</h1>
+            <div class="main-header">
+                <div class="header-item name">
+                    <label>Imię i Nazwisko</label>
+                    <input type="text" placeholder="..." id="patientNameInput" class="header-input"/>
+                </div>
+                <div class="header-item pesel">
+                    <label>PESEL</label>
+                    <input type="text" placeholder="..." pattern="\d{11}" title="PESEL musi składać się z 11 cyfr" id="peselInput" class="header-input"/>
+                </div>
+                <div class="header-item history">
+                    <label>Nr historii</label>
+                    <input type="text" placeholder="..." id="historyNumberInput" class="header-input"/>
+                </div>
+                <div class="header-item diagnosis">
+                    <label>Rozpoznanie</label>
+                    <input type="text" placeholder="..." id="diagnosisInput" class="header-input"/>
+                </div>
+                <div class="header-item allergy">
+                    <label>Alergie</label>
+                    <input type="text" placeholder="..." id="allergiesInput" class="header-input"/>
+                </div>
+            </div>
+            <div class="patient-context-bar">
+                <div class="header-item admission-date">
+                    <label>Data przyjęcia</label>
+                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="header-input" onchange="calculateIcuDay()"/>
+                </div>
+                 <div class="header-item room">
+                    <label>Sala/Łóżko</label>
+                    <input type="text" placeholder="..." id="roomInput" class="header-input"/>
+                </div>
+                <div class="header-item weight">
+                    <label>Waga (kg)</label>
+                    <input type="number" min="0" placeholder="..." id="patientWeight" oninput="handleWeightHeightChange()" class="header-input"/>
+                </div>
+                <div class="header-item height">
+                    <label>Wzrost (cm)</label>
+                    <input type="number" min="0" placeholder="..." id="heightInput" oninput="handleWeightHeightChange()" class="header-input"/>
+                </div>
+                 <div class="header-item bmi">
+                    <label>BMI</label>
+                    <input type="text" id="bmiOutput" class="header-input" readonly />
+                </div>
+                <div class="header-item date">
+                    <label>Data</label>
+                    <input type="text" id="mainDateInput" class="header-input" onchange="calculateIcuDay()"/>
+                </div>
+                <div class="header-item icu-day">
+                    <label>Doba w OIT</label>
+                    <input type="number" min="0" placeholder="0" id="icuDayInput" class="header-input"/>
+                </div>
+            </div>
+        </div>
 
-body {
-    font-family: Arial, sans-serif;
-    font-size: 11px;
-    line-height: 1.3;
-    margin: 10px;
-    background: var(--bg-color);
-    color: var(--text-color);
-}
+        <h2 class="drugs-continuous">LEKI CIĄGŁE - POMPY INFUZYJNE</h2>
+        <table id="continuousDrugsTable">
+            <thead>
+                <tr>
+                    <th width="30%">Lek / Stężenie</th>
+                    <th width="20%">Dawka</th>
+                    <th width="15%">Prędkość [ml/h]</th>
+                    <th width="25%">Podpis pielęgniarki</th>
+                    <th width="10%" class="action-column no-print">Akcje</th>
+                </tr>
+            </thead>
+            <tbody id="continuousDrugsTbody">
+            </tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addContinuousDrug()" class="add-button continuous">+ Dodaj lek ciągły</button>
+        </div>
+        <h2 class="drugs-periodic">LEKI OKRESOWE</h2>
+        <table id="periodicDrugsTable">
+            <thead>
+                <tr>
+                    <th width="25%">Lek / Dawka</th>
+                    <th width="15%">Droga / Częstość</th>
+                    <th width="50%">Podpis pielęgniarki</th>
+                    <th width="10%" class="action-column no-print">Akcje</th>
+                </tr>
+            </thead>
+            <tbody id="periodicDrugsTbody"></tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addPeriodicDrug()" class="add-button periodic">+ Dodaj lek okresowy</button>
+             <button onclick="addSeparator()" class="add-button separator">+ Dodaj separator</button>
+        </div>
+        <h2 class="fluids">PŁYNOTERAPIA</h2>
+        <table id="fluidsTable">
+            <thead>
+                <tr>
+                    <th width="25%">Płyn</th>
+                    <th width="30%">Dodatki</th>
+                    <th width="10%">Objętość [ml]</th>
+                    <th width="10%">Prędkość [ml/h]</th>
+                    <th width="15%">Podpis pielęgniarki</th>
+                    <th width="10%" class="action-column no-print">Akcje</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <h2 class="nutrition">ŻYWIENIE</h2>
+        <table id="nutritionTable">
+            <thead>
+                <tr>
+                    <th width="30%">Typ</th>
+                    <th width="40%">Preparat / Dawka</th>
+                    <th width="20%">Podpis pielęgniarki</th>
+                    <th width="10%" class="action-column no-print">Akcje</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
 
-.header {
-    border: 2px solid var(--border-color);
-    padding: 12px;
-    margin-bottom: 8px;
-    background: linear-gradient(to bottom, var(--header-gradient-start), var(--header-gradient-end));
-}
+        <div class="controls-summary-container no-print">
+            <div class="button-container">
+                <button onclick="addFluid()" class="add-button fluids">+ Dodaj płyn</button>
+                <button onclick="addNutrition()" class="add-button nutrition">+ Dodaj żywienie</button>
+            </div>
+            <div class="summary-container">
+                <div id="fluidBalanceSummary"><strong>Suma płynów / 24h:</strong> <span id="totalFluids">0</span> ml</div>
+                <div id="kcalSummary"><strong>Suma kcal / 24h:</strong> <span id="totalKcal">0</span> kcal</div>
+            </div>
+        </div>
 
-.main-header { display: flex; flex-direction: column; gap: 10px; }
-.patient-id-bar, .patient-context-bar { display: flex; align-items: flex-end; gap: 15px; flex-wrap: wrap; }
-.patient-id-bar { padding-bottom: 10px; border-bottom: 1px solid var(--border-color); }
-
-.header-item { display: flex; flex-direction: column; }
-.header-item label { font-size: 10px; color: var(--label-color); font-weight: bold; margin-bottom: 2px; }
-.header-item input { font-size: 11px; padding: 2px 4px; border: none; border-bottom: 1px solid var(--input-border-color); background: transparent; color: var(--text-color); }
-.header-item input[type="date"] { min-width: 100px; }
-
-.header-item.name { flex-grow: 2; min-width: 200px; }
-.header-item.pesel, .header-item.history { flex-grow: 1; min-width: 120px; }
-.header-item.diagnosis { flex-grow: 2; min-width: 180px; }
-.header-item.admission-date, .header-item.room { flex-grow: 1; min-width: 120px; }
-.header-item.weight, .header-item.height { width: 70px; }
-.header-item.date, .header-item.icu-day { width: 90px; }
-
-.header-item.allergy { flex-grow: 2; min-width: 180px; }
-.header-item.allergy input { background: #ffe6e6; color: #d00; font-weight: bold; }
-html.dark-mode .header-item.allergy input { background: #5a1c1c; color: #ff8a8a; border-color: #8f3d3d; }
-
-h1 { text-align: center; margin-bottom: 10px; font-size: 16px; text-transform: uppercase; color: var(--text-color); }
-h2 { background: #333; color: white; padding: 4px 8px; margin: 8px 0 3px 0; font-size: 12px; border-radius: 3px; }
-
-h2.drugs-continuous { background: linear-gradient(to right, #2c5aa0, #3a6bb3); }
-h2.drugs-periodic { background: linear-gradient(to right, #5a8c2c, #6ba033); }
-h2.fluids { background: linear-gradient(to right, #00a2e8, #22b5f5); }
-h2.nutrition { background: linear-gradient(to right, #ff7f27, #ff9547); }
-h2.procedures { background: linear-gradient(to right, #6b6b6b, #808080); }
-h2.notes { background: linear-gradient(to right, #666, #7a7a7a); }
-
-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; box-shadow: 0 1px 2px var(--shadow-color); }
-th { background: linear-gradient(to bottom, var(--table-header-start), var(--table-header-end)); border: 1px solid var(--border-color); padding: 3px 5px; text-align: left; font-size: 10px; font-weight: bold; color: var(--text-color); }
-td { border: 1px solid var(--table-border-color); padding: 2px 4px; vertical-align: middle; background: var(--container-bg); }
-tr:nth-child(even) td { background: var(--table-row-even-bg); }
-
-.drug-input { width: 100%; border: none; background: transparent; font-size: 11px; padding: 1px; color: var(--text-color); }
-.drug-name { font-weight: bold; color: #2c5aa0; font-size: 11px; }
-.dose { color: #d00; font-weight: bold; }
-
-.signature-box { border: 1px solid var(--border-color); min-height: 25px; background: linear-gradient(to bottom, var(--container-bg), var(--header-gradient-start)); border-radius: 2px; }
-
-.infusion-rate { color: #008000; font-weight: bold; background: #f0fff0; padding: 1px 2px; border-radius: 2px; border: 1px solid #c0e0c0; width: 90px; font-size: 11px; text-align: center; }
-html.dark-mode .infusion-rate { background: #1a2c1a; color: #32cd32; border-color: #2a4f2a; }
-
-.rate-container { display: flex; align-items: center; gap: 4px; }
-.lock-button { background: none; border: none; cursor: pointer; padding: 2px; font-size: 14px; line-height: 1; }
-
-.footer { margin-top: 10px; border-top: 2px solid #2c5aa0; padding-top: 8px; }
-.signature-line { border-bottom: 1px solid var(--text-color); margin-top: 30px; text-align: center; font-size: 10px; }
-
-.add-button { background: #4CAF50; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 11px; margin: 3px; }
-.add-button:hover { background: #45a049; }
-
-.remove-button { background: #f44336; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer; font-size: 9px; }
-.remove-button:hover { background: #da190b; }
-
-.print-button { background: #2196F3; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 13px; margin: 8px; }
-.print-button:hover { background: #0b7dda; }
-
-.button-container { display: flex; justify-content: center; align-items: center; margin: 5px 0; }
-.top-controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; }
-
-#darkModeToggle { background: #888; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; margin: 8px; }
-html.dark-mode #darkModeToggle { background: #ffc107; color: #1e1e1e;}
-
-.summary-container { text-align: right; font-size: 12px; font-weight: bold; margin: 5px 10px 10px 0; }
-#fluidBalanceSummary { color: #00a2e8; }
-#kcalSummary { color: #ff7f27; margin-top: 4px;}
-
-@media screen {
-    .container { max-width: 1200px; margin: 0 auto; box-shadow: 0 0 20px var(--shadow-color); padding: 20px; background: var(--container-bg); }
-}
-
-@media print {
-    @page {
-        size: A4;
-        margin: 10mm;
-    }
-    * {
-        background: transparent !important;
-        color: black !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-    }
-
-    body {
-        margin: 0;
-        font-size: 9pt;
-        line-height: 1.2;
-    }
-
-    .no-print, .action-column, #darkModeToggle, .summary-container {
-        display: none !important;
-    }
-
-    .container {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        border: none !important;
-    }
-
-    .header {
-        border: 1px solid #000 !important;
-        padding: 5px !important;
-        margin-bottom: 10px !important;
-    }
+        <h2 class="procedures">PROCEDURY / ZABIEGI</h2>
+        <table id="proceduresTable">
+            <thead>
+                <tr>
+                    <th width="15%">Godzina</th>
+                    <th width="40%">Procedura</th>
+                    <th width="35%">Wykonano (podpis)</th>
+                    <th width="10%" class="action-column no-print">Akcje</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addProcedure()" class="add-button procedures">+ Dodaj procedurę</button>
+        </div>
+        <div class="footer">
+            <h2 class="notes">UWAGI DODATKOWE</h2>
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+                <div style="flex: 2; border: 1px solid var(--border-color); padding: 5px; min-height: 80px; background: linear-gradient(to bottom, var(--table-row-even-bg), var(--header-gradient-start)); border-radius: 3px;">
+                    <textarea style="width: 100%; min-height: 75px; border: none; background: transparent; font-family: Arial, sans-serif; font-size: 12px; color: var(--text-color); resize: vertical;" placeholder="Miejsce na dodatkowe zalecenia, uwagi, konsultacje..."></textarea>
+                </div>
+                <div style="flex: 1; text-align: center; padding: 10px;">
+                    <strong style="font-size: 13px; color: #2c5aa0;">LEKARZ DYŻURNY:</strong>
+                    <div class="signature-box" style="margin: 15px 0; min-height: 50px;"></div>
+                    <div style="font-size: 10px; color: #666;">(pieczątka i podpis)</div>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    h1 {
-        font-size: 13pt;
-        margin-bottom: 5px !important;
-    }
-
-    .main-header {
-        display: block !important;
-    }
-    .patient-id-bar, .patient-context-bar {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 2px 15px;
-        border: none !important;
-        padding: 0 !important;
-        align-items: baseline;
-    }
-    .patient-id-bar {
-         margin-bottom: 4px !important;
-    }
-
-    .header-item {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: baseline !important;
-        page-break-inside: avoid;
-    }
-    .header-item label {
-        color: black !important;
-        font-weight: bold;
-        margin-right: 4px;
-        white-space: nowrap;
-        font-size: 8pt;
-    }
+    <datalist id="continuousDrugsList"></datalist>
+    <datalist id="periodicDrugsList"></datalist>
+    <datalist id="fluidsList"></datalist>
+    <datalist id="additivesList"></datalist>
+    <datalist id="enteralProductsList"></datalist>
+    <datalist id="parenteralProductsList"></datalist>
     
-    h2 {
-        background: none !important;
-        color: black !important;
-        border-bottom: 1px solid #333 !important;
-        padding: 2px 0 !important;
-        margin: 8px 0 2px 0 !important;
-        font-size: 11pt !important;
-        border-radius: 0 !important;
-    }
+    <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie parenteralne"><option value="Dieta doustna"> </datalist>
+    <datalist id="proceduresList"> <option value="Toaleta drzewa oskrzelowego"><option value="RTG klatki piersiowej przyłóżkowe"><option value="Zmiana opatrunku CVC"><option value="Zmiana pozycji ciała"><option value="Profilaktyka odleżyn"><option value="USG płuc"><option value="USG jamy brzusznej"><option value="Bronchoskopia"><option value="Wymiana rurki intubacyjnej"><option value="Wymiana rurki tracheostomijnej"><option value="Założenie CVC"><option value="Założenie cewnika tętniczego"><option value="Założenie cewnika Foleya"><option value="Punkcja lędźwiowa"><option value="Nakłucie jamy opłucnej"><option value="Drenaż jamy opłucnej"><option value="CRRT - rozpoczęcie"><option value="CRRT - wymiana zestawu"><option value="Hemodializa"><option value="Plazmafereza"><option value="Fizjoterapia"><option value="Rehabilitacja oddechowa"><option value="Pionizacja"><option value="EKG"><option value="ECHO serca"><option value="Gastroskopia"><option value="Kolonoskopia"><option value="CT głowy"><option value="CT klatki piersiowej"><option value="CT jamy brzusznej"> </datalist>
+    <datalist id="timesList"> <option value="06:00"><option value="07:00"><option value="08:00"><option value="09:00"><option value="10:00"><option value="11:00"><option value="12:00"><option value="13:00"><option value="14:00"><option value="15:00"><option value="16:00"><option value="17:00"><option value="18:00"><option value="19:00"><option value="20:00"><option value="21:00"><option value="22:00"><option value="23:00"><option value="00:00"><option value="01:00"><option value="02:00"><option value="03:00"><option value="04:00"><option value="05:00"><option value="q1h"><option value="q2h"><option value="q4h"><option value="q6h"><option value="PRN"> </datalist>
     
-    /* ZMIANA TUTAJ: Usunięto kropkowaną ramkę */
-    input, textarea {
-        border: none !important;
-        padding: 0 !important;
-        font-size: 9pt !important;
-        border-radius: 0 !important;
-    }
-
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-        color: transparent !important;
-    }
-    input::-moz-placeholder,
-    textarea::-moz-placeholder {
-        opacity: 0 !important;
-    }
-
-
-    table {
-        border-collapse: collapse;
-        width: 100%;
-        margin-bottom: 5px !important;
-    }
-    table, tr, td, th {
-        border: 1px solid #999 !important;
-        page-break-inside: avoid;
-    }
-    thead {
-        display: table-header-group; 
-    }
-    th {
-        font-weight: bold !important;
-        background: #eee !important;
-        padding: 2px 4px !important;
-        font-size: 8pt;
-    }
-    td {
-        padding: 1px 4px !important;
-        height: 18px;
-    }
-
-    .signature-box {
-        border: 1px solid #999 !important;
-        min-height: 20px !important;
-        border-radius: 0 !important;
-    }
-
-    .footer {
-        border-top: 2px solid black !important;
-        margin-top: 15px !important;
-    }
-    .footer h2.notes {
-        margin-top: 5px !important;
-    }
-    textarea {
-        min-height: 25px !important;
-    }
-    .signature-line {
-        border-bottom: 1px solid black !important;
-        color: #333 !important;
-        margin-top: 20px !important; 
-        width: 60% !important;
-    }
-}
+    <script src="script.js"></script>
+</body>
+</html>
