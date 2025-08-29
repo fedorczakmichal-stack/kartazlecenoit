@@ -10,24 +10,15 @@
 </head>
 <body>
     <div class="top-controls no-print">
-        <button onclick="window.print()" class="control-button print">
-            <i class="fas fa-print"></i> Drukuj
-        </button>
-        <button onclick="generatePDF()" class="control-button pdf">
-            <i class="fas fa-file-pdf"></i> Eksportuj PDF
-        </button>
-        <button onclick="saveCard()" class="control-button save">
-            <i class="fas fa-save"></i> Zapisz
-        </button>
-        <button onclick="openLoadModal()" class="control-button load">
-            <i class="fas fa-folder-open"></i> Wczytaj
-        </button>
-        <button onclick="clearCard()" class="control-button clear">
-            <i class="fas fa-trash"></i> Wyczyść
-        </button>
-        <button id="darkModeToggle" class="control-button dark-mode">
-            <i class="fas fa-moon"></i>
-        </button>
+        <button onclick="window.print()" class="control-button print"><i class="fas fa-print"></i> Drukuj</button>
+        <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+        <button onclick="saveCard()" class="control-button save"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
+        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
+        <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
+        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
+        <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
+        <button onclick="clearCard()" class="control-button clear"><i class="fas fa-trash"></i> Wyczyść</button>
+        <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
     </div>
 
     <div class="container" id="card-container">
@@ -44,11 +35,11 @@
                 <div class="header-right-info">
                     <div class="field-group">
                         <span class="field-label">Data</span>
-                        <input type="text" id="mainDateInput" class="field-value small" onchange="calculateIcuDay()"/>
+                        <input type="text" id="mainDateInput" class="field-value small header-input" onchange="calculateIcuDay()"/>
                     </div>
                     <div class="field-group">
                         <span class="field-label">Doba w OIT</span>
-                        <input type="number" min="0" id="icuDayInput" class="field-value small"/>
+                        <input type="number" min="0" id="icuDayInput" class="field-value small header-input"/>
                     </div>
                 </div>
             </div>
