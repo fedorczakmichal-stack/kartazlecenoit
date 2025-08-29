@@ -210,12 +210,17 @@ html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: v
 .modal-header h3 { font-size: 14px; font-weight: 600; }
 .close { font-size: 24px; font-weight: bold; cursor: pointer; color: var(--gray-400); }
 .close:hover { color: var(--text-color); }
-.modal-body { padding: 16px; }
+.modal-body { padding: 16px; max-height: 60vh; overflow-y: auto; }
 .modal-footer { padding: 12px 16px; text-align: right; border-top: 1px solid var(--border-color); }
 .additive-modal-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
 .additive-name { flex: 3; }
 .additive-volume { flex: 1; }
 .additive-unit { font-size: 11px; color: var(--gray-500); }
+
+#savedCardsList { list-style: none; padding: 0; }
+#savedCardsList li { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
+#savedCardsList li:last-child { border-bottom: none; }
+#savedCardsList .patient-name { font-weight: 500; }
 
 @media print {
     body { background: white; }
