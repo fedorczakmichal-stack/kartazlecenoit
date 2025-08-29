@@ -34,10 +34,288 @@ const gfrDoseAdjustments = {
         { gfrMax: 50, dose: 'nasyc. 400mg, potem 200mg', frequency: 'q24h' }
     ],
     'ENOKSAPARYNA': [
-        { gfrMax: 30, dose: '20mg', frequency: 'q24h (profilaktyka)' }
+        { gfrMax: 15, dose: 'Przeciwwskazana', frequency: ''},
+        { gfrMax: 30, dose: '20mg', frequency: 'q24h' }
     ]
 };
 
 // --- GŁÓWNE FUNKCJE ---
 function removeRow(button) { button.closest('tr').remove(); updateSummaries(); }
-function updateSummaries() { let totalFluids = 0; let totalKcal = 0; document.querySelectorAll('#flu
+function updateSummaries() { let totalFluids = 0; let totalKcal = 0; document.querySelectorAll('#fluidsTable tbody tr').forEach(row => { const rateInput = row.querySelector('.fluid-rate'); if (rateInput && rateInput.value) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalFluids += rate * 24; } } const nameInput = row.querySelector('.fluid-name'); if(nameInput && glucoseKcalData[nameInput.value]) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalKcal += (rate * 24) * glucoseKcalData[nameInput.value]; } } }); document.querySelectorAll('#nutritionTable tbody tr').forEach(row => { const prepInput = row.querySelector('.nutrition-prep'); if (prepInput && prepInput.value) { const productInfo = nutritionData[prepInput.value]; if (productInfo) { totalFluids += productInfo.volume; totalKcal += productInfo.kcal; } } }); document.getElementById('totalFluids').textContent = totalFluids.toFixed(0); document.getElementById('totalKcal').textContent = totalKcal.toFixed(0); }
+function calculateInfusionRate(inputElement) { const row = inputElement.closest('tr'); if (!row) return; const weightInput = document.getElementById('patientWeight'); const weight = parseFloat(weightInput.value); const doseInput = row.querySelector('.dose'); const concentrationInput = row.querySelector('input[id$="_conc"]'); const rateOutput = row.querySelector('.infusion-rate'); if (!weight || weight <= 0 || !doseInput.value || !concentrationInput.value) { return; } let doseStr = doseInput.value.replace(',', '.'); let concStr = concentrationInput.value.replace(',', '.'); const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/; const doseMatch = doseStr.match(doseRegex); if (!doseMatch) { rateOutput.value = ''; return; } let doseValue1 = parseFloat(doseMatch[1]); let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; let doseUnit = doseMatch[3]; const perKg = doseMatch[4]; const perTime = doseMatch[5]; const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/; const concMatch = concStr.match(concRegex); let concentrationPerMl; if (concMatch) { let totalMass = parseFloat(concMatch[1]); const massUnit = concMatch[2]; const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; if (massUnit === 'mg') totalMass *= 1000; concentrationPerMl = totalMass / totalVolume; } else { rateOutput.value = ''; return; } if (concentrationPerMl === 0) return; if (doseUnit === 'mg') { doseValue1 *= 1000; if(doseValue2) doseValue2 *= 1000; } const calculateRate = (dose) => { let totalDosePerTime = dose; if (perKg) totalDosePerTime *= weight; const volumePerTime = totalDosePerTime / concentrationPerMl; return (perTime === 'min') ? volumePerTime * 60 : volumePerTime; }; const finalRate1 = calculateRate(doseValue1); if (doseValue2) { const finalRate2 = calculateRate(doseValue2); rateOutput.value = `${finalRate1.toFixed(1).replace('.', ',')} - ${finalRate2.toFixed(1).replace('.', ',')}`; } else { rateOutput.value = finalRate1.toFixed(1).replace('.', ','); } }
+function calculateIcuDay() { const admissionDateStr = document.getElementById('admissionDateInput').value; const mainDateStr = document.getElementById('mainDateInput').value; const icuDayInput = document.getElementById('icuDayInput'); const parseDate = (dateStr) => { const parts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); if (!parts) return null; return new Date(parts[3], parts[2] - 1, parts[1]); }; const admissionDate = parseDate(admissionDateStr); const mainDate = parseDate(mainDateStr); if (admissionDate && mainDate && mainDate >= admissionDate) { const utcMain = Date.UTC(mainDate.getFullYear(), mainDate.getMonth(), mainDate.getDate()); const utcAdmission = Date.UTC(admissionDate.getFullYear(), admissionDate.getMonth(), admissionDate.getDate()); const dayInMillis = 1000 * 60 * 60 * 24; const diffDays = (utcMain - utcAdmission) / dayInMillis; icuDayInput.value = Math.round(diffDays) + 1; } else { icuDayInput.value = ''; } }
+function calculateBMI() { const weightInput = document.getElementById('patientWeight'); const heightInput = document.getElementById('heightInput'); const bmiOutput = document.getElementById('bmiOutput'); const weight = parseFloat(weightInput.value); const height = parseFloat(heightInput.value); if (weight > 0 && height > 0) { const heightInMeters = height / 100; const bmi = weight / (heightInMeters * heightInMeters); bmiOutput.value = bmi.toFixed(1); } else { bmiOutput.value = ''; } }
+function handleWeightHeightChange() { calculateBMI(); document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => { const doseInput = row.querySelector('.dose'); if (doseInput) calculateInfusionRate(doseInput); }); recalculateAllKgDoses(); }
+
+function addContinuousDrug() { const tbody = document.querySelector('#continuousDrugsTbody'); const newRow = document.createElement('tr'); const rowId = 'cont_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="continuousDrugsList" onchange="fillContinuousDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" placeholder="Stężenie" id="${rowId}_conc" oninput="calculateInfusionRate(this.closest('tr').querySelector('.dose'))" /></td><td><input type="text" class="drug-input dose" placeholder="Dawka" id="${rowId}_dose" oninput="calculateInfusionRate(this)" /></td><td><input type="text" class="drug-input infusion-rate" placeholder="0,0" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function fillContinuousDrugData(input, rowId) { const drugName = input.value.toUpperCase(); if (continuousDrugsData[drugName]) { const data = continuousDrugsData[drugName]; const concInput = document.getElementById(rowId + '_conc'); const doseInput = document.getElementById(rowId + '_dose'); const row = input.closest('tr'); const rateOutput = row.querySelector('.infusion-rate'); concInput.value = data.concentration; doseInput.value = data.dose; if (data.fixedRate) { rateOutput.value = data.fixedRate; } else { calculateInfusionRate(doseInput); } } }
+function addPeriodicDrug() { const tbody = document.querySelector('#periodicDrugsTbody'); const newRow = document.createElement('tr'); const rowId = 'per_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="periodicDrugsList" onchange="fillPeriodicDrugData(this)" id="${rowId}_name" /><input type="text" class="drug-input" placeholder="Dawka" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" value="i.v." id="${rowId}_route" /><input type="text" class="drug-input" placeholder="q24h" id="${rowId}_freq" /><span class="dose-reduction-notice" style="display:none;">⚠️ Zredukowano</span></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function fillPeriodicDrugData(input) { const row = input.closest('tr'); const drugName = input.value.toUpperCase(); const doseInput = row.querySelector('input[id$="_dose"]'); const routeInput = row.querySelector('input[id$="_route"]'); const freqInput = row.querySelector('input[id$="_freq"]'); const originalData = periodicDrugsData[drugName]; if (originalData) { doseInput.dataset.originalDose = originalData.dose; routeInput.value = originalData.route; freqInput.value = originalData.frequency; } else { doseInput.dataset.originalDose = ''; } recalculateDose(row); adjustSingleDoseForGfr(row); }
+function addFluid() { const tbody = document.querySelector('#fluidsTable tbody'); const newRow = document.createElement('tr'); const rowId = 'fluid_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" /></td><td class="additives-cell"><span class="additives-display"></span><button type="button" class="add-additive-button-icon no-print" onclick="openAdditivesModal(this)">+</button></td><td><input type="number" class="drug-input" placeholder="ml" id="${rowId}_vol" oninput="updateSummaries()" /></td><td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function fillFluidData(input, rowId) { const fluidName = input.value; if (fluidsData[fluidName]) { document.getElementById(rowId + '_vol').value = fluidsData[fluidName].volume.replace('ml',''); document.getElementById(rowId + '_rate').value = fluidsData[fluidName].rate; updateSummaries(); } }
+function addNutrition() { const tbody = document.querySelector('#nutritionTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Wybierz typ..." list="nutritionTypesList" onchange="updateNutritionProductList(this)" /></td><td><input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." oninput="updateSummaries()"/></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function updateNutritionProductList(typeInput) { const row = typeInput.closest('tr'); const prepInput = row.querySelector('.nutrition-prep'); const typeValue = typeInput.value.toLowerCase(); if (typeValue.includes('dojelitowe')) { prepInput.setAttribute('list', 'enteralProductsList'); } else if (typeValue.includes('parenteralne')) { prepInput.setAttribute('list', 'parenteralProductsList'); } else { prepInput.removeAttribute('list'); } prepInput.value = ''; prepInput.focus(); updateSummaries(); }
+function addProcedure() { const tbody = document.querySelector('#proceduresTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Godz." list="timesList" /></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+
+// --- LOGIKA DAWKOWANIA (GFR, mg/kg) ---
+function recalculateDose(row) { const doseInput = row.querySelector('input[id$="_dose"]'); const originalDose = doseInput.dataset.originalDose; const weight = parseFloat(document.getElementById('patientWeight').value); if (originalDose && originalDose.includes('/kg') && weight > 0) { const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?/; const matches = originalDose.match(doseRegex); if (matches) { const dose1 = parseFloat(matches[1]); const totalDose1 = Math.round(dose1 * weight); if (matches[2]) { const dose2 = parseFloat(matches[2]); const totalDose2 = Math.round(dose2 * weight); doseInput.value = `${totalDose1}-${totalDose2}mg (${originalDose})`; } else { doseInput.value = `${totalDose1}mg (${originalDose})`; } } } else if (originalDose) { doseInput.value = originalDose; } }
+function recalculateAllKgDoses(){ document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => recalculateDose(row)); adjustAllDosesForGfr(); }
+function adjustAllDosesForGfr() { document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => adjustSingleDoseForGfr(row)); }
+function adjustSingleDoseForGfr(row) {
+    const gfrInput = document.getElementById('gfrInput');
+    const gfr = gfrInput.value ? parseFloat(gfrInput.value) : null;
+    const drugNameInput = row.querySelector('.drug-name');
+    if (!drugNameInput || !drugNameInput.value) return;
+
+    const drugName = drugNameInput.value.toUpperCase();
+    const doseInput = row.querySelector('input[id$="_dose"]');
+    const freqInput = row.querySelector('input[id$="_freq"]');
+    const notice = row.querySelector('.dose-reduction-notice');
+    const adjustmentRules = gfrDoseAdjustments[drugName];
+
+    recalculateDose(row);
+    row.classList.remove('gfr-dose-adjusted');
+    if (notice) notice.style.display = 'none';
+
+    if (!gfr || !adjustmentRules) return;
+
+    let appliedRule = null;
+    for (const rule of adjustmentRules) { if (gfr <= rule.gfrMax) { appliedRule = rule; break; } }
+
+    if (appliedRule) {
+        if (appliedRule.dose.includes('/kg')) {
+            const weight = parseFloat(document.getElementById('patientWeight').value);
+            if (weight > 0) {
+                const doseRegex = /([\d\.]+)/; const matches = appliedRule.dose.match(doseRegex);
+                if(matches) { const totalDose = Math.round(parseFloat(matches[1]) * weight); doseInput.value = `${totalDose}mg (${appliedRule.dose})`; }
+            } else { doseInput.value = appliedRule.dose; }
+        } else { doseInput.value = appliedRule.dose; }
+        if (appliedRule.frequency && freqInput) freqInput.value = appliedRule.frequency;
+        row.classList.add('gfr-dose-adjusted');
+        if (notice) notice.style.display = 'inline';
+    }
+}
+
+function populateDatalists() {
+    const createOptions = (dataObject) => Object.keys(dataObject).map(key => `<option value="${key}"></option>`).join('');
+    document.getElementById('continuousDrugsList').innerHTML = createOptions(continuousDrugsData);
+    document.getElementById('periodicDrugsList').innerHTML = createOptions(periodicDrugsData);
+    document.getElementById('fluidsList').innerHTML = createOptions(fluidsData);
+    document.getElementById('additivesList').innerHTML = createOptions(additivesData);
+    const enteral = {};
+    const parenteral = {};
+    Object.keys(nutritionData).forEach(key => {
+        if (key.toLowerCase().includes('kabiven') || key.toLowerCase().includes('olimel')) {
+            parenteral[key] = nutritionData[key];
+        } else {
+            enteral[key] = nutritionData[key];
+        }
+    });
+    document.getElementById('enteralProductsList').innerHTML = createOptions(enteral);
+    document.getElementById('parenteralProductsList').innerHTML = createOptions(parenteral);
+}
+
+function initializeCard() { const today = new Date(); const day = String(today.getDate()).padStart(2, '0'); const month = String(today.getMonth() + 1).padStart(2, '0'); const year = today.getFullYear(); document.getElementById('mainDateInput').value = `${day}.${month}.${year}`; calculateIcuDay(); calculateBMI(); }
+document.addEventListener('DOMContentLoaded', () => { 
+    populateDatalists();
+    const toggle = document.getElementById('darkModeToggle'); const html = document.documentElement; const icon = toggle.querySelector('i'); if (localStorage.getItem('darkMode') === 'enabled') { html.classList.add('dark-mode'); icon.className = 'fas fa-sun'; } toggle.addEventListener('click', () => { html.classList.toggle('dark-mode'); if (html.classList.contains('dark-mode')) { localStorage.setItem('darkMode', 'enabled'); icon.className = 'fas fa-sun'; } else { localStorage.setItem('darkMode', 'disabled'); icon.className = 'fas fa-moon'; } }); initializeCard(); 
+});
+
+function saveCard() {
+    const cardState = {
+        header: {},
+        tables: {
+            continuous: [],
+            periodic: [],
+            fluids: [],
+            nutrition: [],
+            procedures: []
+        },
+        notes: ''
+    };
+    document.querySelectorAll('.patient-card input, .header-right-info input').forEach(input => {
+        if (input.id) cardState.header[input.id] = input.value;
+    });
+    document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => {
+        cardState.tables.continuous.push({
+            name: row.cells[0].querySelectorAll('input')[0].value,
+            conc: row.cells[0].querySelectorAll('input')[1].value,
+            dose: row.cells[1].querySelector('input').value,
+            rate: row.cells[2].querySelector('input').value
+        });
+    });
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => {
+        cardState.tables.periodic.push({
+            name: row.cells[0].querySelectorAll('input')[0].value,
+            dose: row.cells[0].querySelectorAll('input')[1].value,
+            route: row.cells[1].querySelectorAll('input')[0].value,
+            freq: row.cells[1].querySelectorAll('input')[1].value
+        });
+    });
+    document.querySelectorAll('#fluidsTable tbody tr').forEach(row => {
+        const additivesDisplay = row.querySelector('.additives-display');
+        cardState.tables.fluids.push({
+            name: row.cells[0].querySelector('input').value,
+            additives: additivesDisplay ? additivesDisplay.dataset.additives || '[]' : '[]',
+            volume: row.cells[2].querySelector('input').value,
+            rate: row.cells[3].querySelector('input').value
+        });
+    });
+    document.querySelectorAll('#nutritionTable tbody tr').forEach(row => {
+        cardState.tables.nutrition.push({
+            type: row.cells[0].querySelector('input').value,
+            prep: row.cells[1].querySelector('input').value
+        });
+    });
+    document.querySelectorAll('#proceduresTable tbody tr').forEach(row => {
+        cardState.tables.procedures.push({
+            time: row.cells[0].querySelector('input').value,
+            name: row.cells[1].querySelector('input').value
+        });
+    });
+    cardState.notes = document.querySelector('.notes-section textarea').value;
+    try {
+        localStorage.setItem('oitCardData', JSON.stringify(cardState));
+        alert('✅ Karta została pomyślnie zapisana!');
+    } catch (e) {
+        console.error("Błąd zapisu:", e);
+        alert('❌ Wystąpił błąd podczas zapisu karty.');
+    }
+}
+
+function loadCard() {
+    const savedStateJSON = localStorage.getItem('oitCardData');
+    if (!savedStateJSON) {
+        alert('📂 Brak zapisanej karty.');
+        return;
+    }
+    if (!confirm('Czy na pewno chcesz wczytać zapisaną kartę? Obecne dane zostaną nadpisane.')) {
+        return;
+    }
+    clearCard(true);
+    const cardState = JSON.parse(savedStateJSON);
+    Object.keys(cardState.header).forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = cardState.header[id];
+    });
+    cardState.tables.continuous.forEach(data => {
+        addContinuousDrug();
+        const newRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+        newRow.cells[0].querySelectorAll('input')[0].value = data.name;
+        newRow.cells[0].querySelectorAll('input')[1].value = data.conc;
+        newRow.cells[1].querySelector('input').value = data.dose;
+        newRow.cells[2].querySelector('input').value = data.rate;
+    });
+    cardState.tables.periodic.forEach(data => {
+        addPeriodicDrug();
+        const newRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+        const drugInput = newRow.cells[0].querySelectorAll('input')[0];
+        drugInput.value = data.name;
+        fillPeriodicDrugData(drugInput);
+        newRow.cells[0].querySelectorAll('input')[1].value = data.dose;
+        newRow.cells[1].querySelectorAll('input')[0].value = data.route;
+        newRow.cells[1].querySelectorAll('input')[1].value = data.freq;
+    });
+    cardState.tables.fluids.forEach(data => {
+        addFluid();
+        const newRow = document.querySelector('#fluidsTable tbody tr:last-child');
+        newRow.cells[0].querySelector('input').value = data.name;
+        newRow.cells[2].querySelector('input').value = data.volume;
+        newRow.cells[3].querySelector('input').value = data.rate;
+        const additivesDisplay = newRow.querySelector('.additives-display');
+        if (additivesDisplay && data.additives) {
+            additivesDisplay.dataset.additives = data.additives;
+            const additives = JSON.parse(data.additives);
+            const displayText = additives.map(ad => {
+                const unit = (additivesData[ad.name] && additivesData[ad.name].unit) ? additivesData[ad.name].unit : 'ml';
+                return `+ ${ad.name} ${ad.volume}${unit}`;
+            }).join(' ');
+            additivesDisplay.textContent = displayText;
+        }
+    });
+    cardState.tables.nutrition.forEach(data => {
+        addNutrition();
+        const newRow = document.querySelector('#nutritionTable tbody tr:last-child');
+        newRow.cells[0].querySelector('input').value = data.type;
+        updateNutritionProductList(newRow.cells[0].querySelector('input'));
+        newRow.cells[1].querySelector('input').value = data.prep;
+    });
+    cardState.tables.procedures.forEach(data => {
+        addProcedure();
+        const newRow = document.querySelector('#proceduresTable tbody tr:last-child');
+        newRow.cells[0].querySelector('input').value = data.time;
+        newRow.cells[1].querySelector('input').value = data.name;
+    });
+    document.querySelector('.notes-section textarea').value = cardState.notes;
+    handleWeightHeightChange();
+    updateSummaries();
+    adjustAllDosesForGfr();
+    alert('✅ Karta została wczytana!');
+}
+
+function clearCard(force = false) { if (force || confirm('Czy na pewno chcesz wyczyścić całą kartę?')) { document.querySelectorAll('input, textarea').forEach(input => { if(!input.closest('.no-clear')) input.value = ''; }); document.querySelectorAll('tbody').forEach(tbody => { tbody.innerHTML = ''; }); updateSummaries(); initializeCard(); if (!force) alert('Karta została wyczyszczona!'); } }
+
+function generatePDF() {
+    const element = document.getElementById('card-container');
+    const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
+    const date = document.getElementById('mainDateInput').value || 'aktualna_data';
+    const filename = `Karta_OIT_${patientName.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`;
+    const opt = { margin: 10, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+    html2pdf().set(opt).from(element).save();
+}
+
+let currentAdditivesTarget = null;
+function openAdditivesModal(button) { 
+    currentAdditivesTarget = button.previousElementSibling; 
+    const modalList = document.getElementById('additives-list'); 
+    modalList.innerHTML = ''; 
+    const existingAdditives = currentAdditivesTarget.dataset.additives ? JSON.parse(currentAdditivesTarget.dataset.additives) : []; 
+    if (existingAdditives.length > 0) { 
+        existingAdditives.forEach(ad => addAdditiveRowToModal(ad.name, ad.volume)); 
+    } else { 
+        addAdditiveRowToModal(); 
+    } 
+    document.getElementById('additivesModal').style.display = 'flex'; 
+}
+
+function addAdditiveRowToModal(name = '', volume = '') { 
+    const list = document.getElementById('additives-list'); 
+    const newRow = document.createElement('div'); 
+    newRow.className = 'additive-modal-row';
+    const unit = (additivesData[name] && additivesData[name].unit) ? additivesData[name].unit : 'ml';
+    newRow.innerHTML = `<input type="text" class="field-value additive-name" placeholder="Nazwa dodatku" list="additivesList" value="${name}" onchange="updateAdditiveUnit(this)">
+                      <input type="number" class="field-value additive-volume" placeholder="ilość" value="${volume}">
+                      <span class="additive-unit">${unit}</span>
+                      <button type="button" class="remove-button" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>`; 
+    list.appendChild(newRow); 
+}
+
+function updateAdditiveUnit(input) {
+    const row = input.closest('.additive-modal-row');
+    const unitSpan = row.querySelector('.additive-unit');
+    const additiveName = input.value;
+    const unit = (additivesData[additiveName] && additivesData[additiveName].unit) ? additivesData[additiveName].unit : 'ml';
+    unitSpan.textContent = unit;
+}
+
+function saveAdditives() { 
+    const modalList = document.getElementById('additives-list'); 
+    const additives = []; 
+    let displayText = []; 
+    modalList.querySelectorAll('.additive-modal-row').forEach(row => { 
+        const nameInput = row.querySelector('.additive-name'); 
+        const volumeInput = row.querySelector('.additive-volume'); 
+        if (nameInput.value && volumeInput.value) { 
+            const unit = (additivesData[nameInput.value] && additivesData[nameInput.value].unit) ? additivesData[nameInput.value].unit : 'ml';
+            additives.push({ name: nameInput.value, volume: volumeInput.value }); 
+            displayText.push(`+ ${nameInput.value} ${volumeInput.value}${unit}`); 
+        } 
+    }); 
+    currentAdditivesTarget.textContent = displayText.join(' '); 
+    currentAdditivesTarget.dataset.additives = JSON.stringify(additives); 
+    closeModal('additivesModal'); 
+}
+
+function closeModal(modalId) { 
+    document.getElementById(modalId).style.display = 'none'; 
+}
