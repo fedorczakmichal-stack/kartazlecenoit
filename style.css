@@ -234,3 +234,4 @@ html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: v
     table, .footer-grid { page-break-inside: avoid; }
     .section-header { page-break-after: avoid; }
 }
+
