@@ -121,19 +121,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.getElementById('darkModeToggle'); const html = document.documentElement; const icon = toggle.querySelector('i'); if (localStorage.getItem('darkMode') === 'enabled') { html.classList.add('dark-mode'); icon.className = 'fas fa-sun'; } toggle.addEventListener('click', () => { html.classList.toggle('dark-mode'); if (html.classList.contains('dark-mode')) { localStorage.setItem('darkMode', 'enabled'); icon.className = 'fas fa-sun'; } else { localStorage.setItem('darkMode', 'disabled'); icon.className = 'fas fa-moon'; } }); initializeCard(); 
 });
 
+// --- LOGIKA ZAPISU I WCZYTYWANIA ---
 function saveCard() {
-    const cardState = {
-        header: {},
-        tables: {
-            continuous: [],
-            periodic: [],
-            fluids: [],
-            nutrition: [],
-            procedures: []
-        },
-        notes: ''
-    };
-    document.querySelectorAll('.patient-card input, .header-right-info input').forEach(input => {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    const historyNumber = document.getElementById('historyNumberInput').value.trim();
+    if (!patientName || !historyNumber) {
+        alert("Proszę wypełnić Imię i Nazwisko oraz Numer Historii, aby zapisać kartę.");
+        return;
+    }
+    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
+    
+    const cardState = { header: {}, tables: { continuous: [], periodic: [], fluids: [], nutrition: [], procedures: [] }, notes: '' };
+    document.querySelectorAll('.header-input').forEach(input => {
         if (input.id) cardState.header[input.id] = input.value;
     });
     document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => {
@@ -174,8 +173,14 @@ function saveCard() {
         });
     });
     cardState.notes = document.querySelector('.notes-section textarea').value;
+
     try {
-        localStorage.setItem('oitCardData', JSON.stringify(cardState));
+        localStorage.setItem(cardKey, JSON.stringify(cardState));
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
+        if (!savedCardsIndex.includes(cardKey)) {
+            savedCardsIndex.push(cardKey);
+            localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        }
         alert('✅ Karta została pomyślnie zapisana!');
     } catch (e) {
         console.error("Błąd zapisu:", e);
@@ -183,10 +188,41 @@ function saveCard() {
     }
 }
 
-function loadCard() {
-    const savedStateJSON = localStorage.getItem('oitCardData');
+function openLoadModal() {
+    const savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
+    const listElement = document.getElementById('savedCardsList');
+    listElement.innerHTML = '';
+    if (savedCardsIndex.length === 0) {
+        listElement.innerHTML = '<li>Brak zapisanych kart.</li>';
+    } else {
+        savedCardsIndex.forEach(key => {
+            const friendlyName = key.replace('card_', '').replace(/-/g, ' ');
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="patient-name">${friendlyName}</span>
+                            <div>
+                                <button class="control-button load small" onclick="loadCard('${key}')">Wczytaj</button>
+                                <button class="control-button clear small" onclick="deleteCard('${key}', this)">Usuń</button>
+                            </div>`;
+            listElement.appendChild(li);
+        });
+    }
+    document.getElementById('loadCardModal').style.display = 'flex';
+}
+
+function deleteCard(cardKey, button) {
+    if (confirm(`Czy na pewno chcesz usunąć kartę dla: ${cardKey.replace('card_', '').replace(/-/g, ' ')}?`)) {
+        localStorage.removeItem(cardKey);
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
+        savedCardsIndex = savedCardsIndex.filter(key => key !== cardKey);
+        localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        button.closest('li').remove();
+    }
+}
+
+function loadCard(cardKey) {
+    const savedStateJSON = localStorage.getItem(cardKey);
     if (!savedStateJSON) {
-        alert('📂 Brak zapisanej karty.');
+        alert('📂 Nie można wczytać karty. Mogła zostać usunięta.');
         return;
     }
     if (!confirm('Czy na pewno chcesz wczytać zapisaną kartę? Obecne dane zostaną nadpisane.')) {
@@ -250,6 +286,7 @@ function loadCard() {
     handleWeightHeightChange();
     updateSummaries();
     adjustAllDosesForGfr();
+    closeModal('loadCardModal');
     alert('✅ Karta została wczytana!');
 }
 
