@@ -126,7 +126,6 @@ h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; te
 .field-label { font-size: 9px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
 .field-value { padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--container-bg); font-size: 11px; min-height: 28px; width: 100%; color: var(--text-color); }
 .field-value.alert-field { background: #fef2f2; border-color: var(--danger); color: var(--danger); font-weight: 600; }
-.gfr-input { background-color: var(--primary-light) !important; font-weight: 600; }
 html.dark-mode .field-value.alert-field { background: #450a0a; }
 
 /* Section Headers */
