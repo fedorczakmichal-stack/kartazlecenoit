@@ -120,7 +120,7 @@ h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; te
 .field-label { font-size: 9px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
 .field-value { padding: 5px 8px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--container-bg); font-size: 11px; min-height: 28px; width: 100%; color: var(--text-color); }
 .field-value.alert-field { background: #fef2f2; border-color: var(--danger); color: var(--danger); font-weight: 600; }
-.gfr-input { background-color: var(--primary-light) !important; }
+.gfr-input { background-color: var(--primary-light) !important; font-weight: 600; }
 html.dark-mode .field-value.alert-field { background: #450a0a; }
 
 /* Section Headers */
@@ -130,7 +130,6 @@ html.dark-mode .field-value.alert-field { background: #450a0a; }
 .section-header.cyan { background: linear-gradient(90deg, var(--info) 0%, var(--info-dark) 100%); }
 .section-header.purple { background: linear-gradient(90deg, var(--purple) 0%, var(--purple-dark) 100%); }
 .section-header.gray { background: linear-gradient(90deg, var(--gray-600) 0%, var(--gray-700) 100%); }
-.section-icon { font-size: 14px; }
 
 /* Tables */
 table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
@@ -172,7 +171,20 @@ html.dark-mode .infusion-rate { color: #4ade80; }
 .remove-button:hover { color: var(--danger); }
 .action-column { width: 30px; text-align: center; }
 
-.add-additive-button-icon { background: var(--gray-200); border: none; color: var(--gray-600); border-radius: 50%; cursor: pointer; font-size: 14px; font-weight: bold; width: 20px; height: 20px; line-height: 18px; text-align: center; transition: all 0.2s ease; }
+.add-additive-button-icon {
+    background: var(--gray-200);
+    border: none;
+    color: var(--gray-600);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
 .add-additive-button-icon:hover { background: var(--primary); color: white; }
 html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: var(--gray-300); }
 
