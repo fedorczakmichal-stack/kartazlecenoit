@@ -19,7 +19,7 @@
         <button onclick="saveCard()" class="control-button save">
             <i class="fas fa-save"></i> Zapisz
         </button>
-        <button onclick="loadCard()" class="control-button load">
+        <button onclick="openLoadModal()" class="control-button load">
             <i class="fas fa-folder-open"></i> Wczytaj
         </button>
         <button onclick="clearCard()" class="control-button clear">
@@ -60,47 +60,47 @@
             <div class="patient-grid">
                 <div class="field-group" style="grid-column: span 2;">
                     <span class="field-label">Imię i Nazwisko</span>
-                    <input type="text" id="patientNameInput" class="field-value"/>
+                    <input type="text" id="patientNameInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">PESEL</span>
-                    <input type="text" id="peselInput" class="field-value"/>
+                    <input type="text" id="peselInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Nr Historii</span>
-                    <input type="text" id="historyNumberInput" class="field-value"/>
+                    <input type="text" id="historyNumberInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Data przyjęcia</span>
-                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value" onchange="calculateIcuDay()"/>
+                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value header-input" onchange="calculateIcuDay()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Waga (kg)</span>
-                    <input type="number" id="patientWeight" class="field-value" oninput="handleWeightHeightChange()"/>
+                    <input type="number" id="patientWeight" class="field-value header-input" oninput="handleWeightHeightChange()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Wzrost (cm)</span>
-                    <input type="number" id="heightInput" class="field-value" oninput="handleWeightHeightChange()"/>
+                    <input type="number" id="heightInput" class="field-value header-input" oninput="handleWeightHeightChange()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">BMI</span>
-                    <input type="text" id="bmiOutput" class="field-value" readonly/>
+                    <input type="text" id="bmiOutput" class="field-value header-input" readonly/>
                 </div>
                 <div class="field-group" style="grid-column: span 2;">
                     <span class="field-label">Rozpoznanie</span>
-                    <input type="text" id="diagnosisInput" class="field-value"/>
+                    <input type="text" id="diagnosisInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">GFR (ml/min)</span>
-                    <input type="number" id="gfrInput" class="field-value gfr-input" oninput="adjustAllDosesForGfr()"/>
+                    <input type="number" id="gfrInput" class="field-value gfr-input header-input" oninput="adjustAllDosesForGfr()"/>
                 </div>
                  <div class="field-group">
                     <span class="field-label">Sala/Łóżko</span>
-                    <input type="text" id="roomInput" class="field-value"/>
+                    <input type="text" id="roomInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group" style="grid-column: span 4;">
                     <span class="field-label">⚠️ ALERGIE / NIETOLERANCJE</span>
-                    <input type="text" id="allergiesInput" class="field-value alert-field"/>
+                    <input type="text" id="allergiesInput" class="field-value alert-field header-input"/>
                 </div>
             </div>
         </div>
@@ -224,6 +224,20 @@
             </div>
         </div>
     </div>
+    
+    <div id="loadCardModal" class="modal no-print" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Wczytaj zapisaną kartę</h3>
+                <span class="close" onclick="closeModal('loadCardModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Wybierz pacjenta z listy, aby wczytać jego kartę.</p>
+                <ul id="savedCardsList"></ul>
+            </div>
+        </div>
+    </div>
+
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
