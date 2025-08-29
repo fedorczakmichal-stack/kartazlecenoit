@@ -86,9 +86,13 @@
                     <span class="field-label">BMI</span>
                     <input type="text" id="bmiOutput" class="field-value" readonly/>
                 </div>
-                <div class="field-group" style="grid-column: span 3;">
+                <div class="field-group" style="grid-column: span 2;">
                     <span class="field-label">Rozpoznanie</span>
                     <input type="text" id="diagnosisInput" class="field-value"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">GFR (ml/min)</span>
+                    <input type="number" id="gfrInput" class="field-value gfr-input" oninput="adjustAllDosesForGfr()"/>
                 </div>
                  <div class="field-group">
                     <span class="field-label">Sala/Łóżko</span>
