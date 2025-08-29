@@ -122,16 +122,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // --- LOGIKA ZAPISU I WCZYTYWANIA ---
-function saveCard() {
-    const patientName = document.getElementById('patientNameInput').value.trim();
-    const historyNumber = document.getElementById('historyNumberInput').value.trim();
-    if (!patientName || !historyNumber) {
-        alert("Proszę wypełnić Imię i Nazwisko oraz Numer Historii, aby zapisać kartę.");
-        return;
-    }
-    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
-    
-    const cardState = { header: {}, tables: { continuous: [], periodic: [], fluids: [], nutrition: [], procedures: [] }, notes: '' };
+function getCardState() {
+    const cardState = {
+        header: {},
+        tables: {
+            continuous: [],
+            periodic: [],
+            fluids: [],
+            nutrition: [],
+            procedures: []
+        },
+        notes: ''
+    };
     document.querySelectorAll('.header-input').forEach(input => {
         if (input.id) cardState.header[input.id] = input.value;
     });
@@ -173,6 +175,19 @@ function saveCard() {
         });
     });
     cardState.notes = document.querySelector('.notes-section textarea').value;
+    return cardState;
+}
+
+function saveCard() {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    const historyNumber = document.getElementById('historyNumberInput').value.trim();
+    if (!patientName || !historyNumber) {
+        alert("Proszę wypełnić Imię i Nazwisko oraz Numer Historii, aby zapisać kartę.");
+        return;
+    }
+    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
+    
+    const cardState = getCardState();
 
     try {
         localStorage.setItem(cardKey, JSON.stringify(cardState));
@@ -181,7 +196,7 @@ function saveCard() {
             savedCardsIndex.push(cardKey);
             localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
         }
-        alert('✅ Karta została pomyślnie zapisana!');
+        alert('✅ Karta została pomyślnie zapisana w przeglądarce!');
     } catch (e) {
         console.error("Błąd zapisu:", e);
         alert('❌ Wystąpił błąd podczas zapisu karty.');
@@ -196,7 +211,7 @@ function openLoadModal() {
         listElement.innerHTML = '<li>Brak zapisanych kart.</li>';
     } else {
         savedCardsIndex.forEach(key => {
-            const friendlyName = key.replace('card_', '').replace(/-/g, ' ');
+            const friendlyName = key.replace('card_', '').replace(/_/g, ' ');
             const li = document.createElement('li');
             li.innerHTML = `<span class="patient-name">${friendlyName}</span>
                             <div>
@@ -210,7 +225,7 @@ function openLoadModal() {
 }
 
 function deleteCard(cardKey, button) {
-    if (confirm(`Czy na pewno chcesz usunąć kartę dla: ${cardKey.replace('card_', '').replace(/-/g, ' ')}?`)) {
+    if (confirm(`Czy na pewno chcesz usunąć kartę: ${cardKey.replace('card_', '').replace(/_/g, ' ')}?`)) {
         localStorage.removeItem(cardKey);
         let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
         savedCardsIndex = savedCardsIndex.filter(key => key !== cardKey);
@@ -225,11 +240,13 @@ function loadCard(cardKey) {
         alert('📂 Nie można wczytać karty. Mogła zostać usunięta.');
         return;
     }
-    if (!confirm('Czy na pewno chcesz wczytać zapisaną kartę? Obecne dane zostaną nadpisane.')) {
-        return;
-    }
-    clearCard(true);
     const cardState = JSON.parse(savedStateJSON);
+    populateCardFromState(cardState);
+    closeModal('loadCardModal');
+}
+
+function populateCardFromState(cardState) {
+    clearCard(true);
     Object.keys(cardState.header).forEach(id => {
         const input = document.getElementById(id);
         if (input) input.value = cardState.header[id];
@@ -286,7 +303,6 @@ function loadCard(cardKey) {
     handleWeightHeightChange();
     updateSummaries();
     adjustAllDosesForGfr();
-    closeModal('loadCardModal');
     alert('✅ Karta została wczytana!');
 }
 
@@ -355,4 +371,50 @@ function saveAdditives() {
 
 function closeModal(modalId) { 
     document.getElementById(modalId).style.display = 'none'; 
+}
+
+// --- ZAPIS/ODCZYT Z PLIKU ---
+function saveCardToFile() {
+    const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
+    const historyNumber = document.getElementById('historyNumberInput').value.trim() || 'XXXX';
+    const filename = `KartaOIT_${patientName.replace(/\s+/g, '_')}_${historyNumber.replace(/[\/\s]+/g, '-')}.json`;
+
+    const cardState = getCardState();
+    const fileContent = JSON.stringify(cardState, null, 2);
+    const blob = new Blob([fileContent], { type: 'application/json' });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+}
+
+function loadCardFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const cardState = JSON.parse(e.target.result);
+            if (cardState.header && cardState.tables) {
+                if (confirm('Czy na pewno chcesz wczytać dane z pliku? Obecne dane zostaną nadpisane.')) {
+                    populateCardFromState(cardState);
+                }
+            } else {
+                alert('Błąd: Wybrany plik ma nieprawidłową strukturę.');
+            }
+        } catch (error) {
+            alert('Błąd: Nie można odczytać pliku. Upewnij się, że to prawidłowy plik zapisu (.json).');
+            console.error("Błąd parsowania pliku JSON:", error);
+        }
+    };
+    reader.onerror = function() {
+        alert('Wystąpił błąd podczas odczytu pliku.');
+    };
+    reader.readAsText(file);
+    event.target.value = '';
 }
