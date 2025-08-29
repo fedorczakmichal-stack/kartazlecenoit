@@ -121,12 +121,13 @@ h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; te
 html.dark-mode .field-value.alert-field { background: #450a0a; }
 
 /* Section Headers */
-.section-header { background: linear-gradient(90deg, var(--gray-800) 0%, var(--gray-900) 100%); color: white; padding: 6px 12px; border-radius: 6px; margin: 20px 0 8px 0; font-size: 12px; font-weight: 600; }
+.section-header { background: linear-gradient(90deg, var(--gray-800) 0%, var(--gray-900) 100%); color: white; padding: 6px 12px; border-radius: 6px; margin: 20px 0 8px 0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .section-header.green { background: linear-gradient(90deg, var(--success) 0%, var(--success-dark) 100%); }
 .section-header.orange { background: linear-gradient(90deg, var(--warning) 0%, var(--warning-dark) 100%); }
 .section-header.cyan { background: linear-gradient(90deg, var(--info) 0%, var(--info-dark) 100%); }
 .section-header.purple { background: linear-gradient(90deg, var(--purple) 0%, var(--purple-dark) 100%); }
 .section-header.gray { background: linear-gradient(90deg, var(--gray-600) 0%, var(--gray-700) 100%); }
+.section-icon { font-size: 14px; }
 
 /* Tables */
 table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
@@ -134,8 +135,6 @@ th { background: var(--gray-100); padding: 6px 8px; text-align: left; font-weigh
 td { padding: 2px 8px; border-bottom: 1px solid var(--border-color); vertical-align: middle; height: 28px; }
 tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--gray-50); }
-tr.separator-row td { background-color: var(--primary-light) !important; height: 2px !important; padding: 0 !important; }
-html.dark-mode tr.separator-row td { background-color: var(--primary-dark) !important; }
 
 /* Inputs inside tables */
 .drug-input { width: 100%; border: none; background: transparent; font-size: 11px; padding: 2px; color: var(--text-color); font-family: inherit; }
@@ -143,7 +142,9 @@ html.dark-mode tr.separator-row td { background-color: var(--primary-dark) !impo
 .drug-name { font-weight: 500; }
 .infusion-rate { font-weight: 600; color: var(--success-dark); }
 html.dark-mode .infusion-rate { color: #4ade80; }
+
 .signature-box-cell { border: 1px solid var(--border-color); height: 100%; background: linear-gradient(to bottom, var(--container-bg), var(--gray-50)); border-radius: 2px; }
+.additives-cell { display: flex; align-items: center; gap: 5px; }
 
 /* Buttons */
 .button-container { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 15px; }
@@ -163,10 +164,22 @@ html.dark-mode .infusion-rate { color: #4ade80; }
 .remove-button:hover { color: var(--danger); }
 .action-column { width: 30px; text-align: center; }
 
-/* Additive Button */
-.additives-display { display: inline; margin-right: 5px; }
-.add-additive-button { background: none; border: 1px solid var(--gray-300); color: var(--primary); border-radius: 50%; width: 18px; height: 18px; font-size: 14px; font-weight: 600; cursor: pointer; line-height: 16px; padding: 0; text-align: center; transition: all 0.2s; }
-.add-additive-button:hover { background-color: var(--primary-light); border-color: var(--primary); }
+.add-additive-button-icon {
+    background: var(--gray-200);
+    border: none;
+    color: var(--gray-600);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.add-additive-button-icon:hover { background: var(--primary); color: white; }
+html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: var(--gray-300); }
 
 /* Summary */
 .controls-summary-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
