@@ -6,6 +6,34 @@ const additivesData = { 'KCl 15%': { unit: 'ml' }, 'MgSO4 20%': { unit: 'ml' }, 
 const glucoseKcalData = { "Glukoza 5%": 0.17, "Glukoza 10%": 0.34 };
 const nutritionData = { "Nutrison 500ml": { kcal: 515, volume: 500 }, "Nutrison 1000ml": { kcal: 1030, volume: 1000 }, "Nutrison Energy 500ml": { kcal: 765, volume: 500 }, "Nutrison Energy 1000ml": { kcal: 1530, volume: 1000 }, "Nutrison Protein Plus 500ml": { kcal: 630, volume: 500 }, "Nutrison Protein Plus 1000ml": { kcal: 1260, volume: 1000 }, "Fresubin HP Energy 500ml": { kcal: 750, volume: 500 }, "Fresubin HP Energy 1000ml": { kcal: 1500, volume: 1000 }, "Fresubin Original 500ml": { kcal: 500, volume: 500 }, "Peptamen 500ml": { kcal: 500, volume: 500 }, "Diben 500ml": { kcal: 515, volume: 500 }, "SmofKabiven 986ml": { kcal: 1100, volume: 986 }, "SmofKabiven 1477ml": { kcal: 1600, volume: 1477 }, "SmofKabiven 1970ml": { kcal: 2200, volume: 1970 }, "SmofKabiven 2463ml": { kcal: 2700, volume: 2463 }, "Kabiven 1026ml": { kcal: 1100, volume: 1026 }, "Kabiven 1540ml": { kcal: 1700, volume: 1540 }, "Kabiven 2053ml": { kcal: 2200, volume: 2053 }, "Olimel N9E 1000ml": { kcal: 1200, volume: 1000 }, "Olimel N9E 1500ml": { kcal: 1800, volume: 1500 }, "Olimel N9E 2000ml": { kcal: 2400, volume: 2000 }, };
 
+// BAZA DANYCH DOSTOSOWANIA DAWEK DO GFR (PRZYKŁADOWA!)
+const gfrDoseAdjustments = {
+    'WANKOMYCYNA': [
+        { gfrMax: 10, dose: '1g nasyc., potem 0.5g', frequency: 'q48-72h + TDM' },
+        { gfrMax: 50, dose: '1g', frequency: 'q24-48h + TDM' }
+    ],
+    'MEROPENEM': [
+        { gfrMax: 10, dose: '0.5g', frequency: 'q24h' },
+        { gfrMax: 25, dose: '0.5g', frequency: 'q12h' },
+        { gfrMax: 50, dose: '1g', frequency: 'q12h' }
+    ],
+    'PIPERACYLINA/TAZOBAKTAM': [
+        { gfrMax: 20, dose: '2.25g', frequency: 'q8h' },
+        { gfrMax: 40, dose: '3.375g', frequency: 'q8h' }
+    ],
+    'AMIKACYNA': [
+        { gfrMax: 10, dose: '7.5mg/kg', frequency: 'q48-72h + TDM' },
+        { gfrMax: 50, dose: '15mg/kg', frequency: 'q24-36h + TDM' }
+    ],
+    'GENTAMYCYNA': [
+        { gfrMax: 10, dose: '1-2mg/kg', frequency: 'q48-72h + TDM' },
+        { gfrMax: 50, dose: '3-5mg/kg', frequency: 'q24-36h + TDM' }
+    ],
+    'ENOKSAPARYNA': [
+        { gfrMax: 30, dose: '20mg', frequency: 'q24h (profilaktyka)' }
+    ]
+};
+
 // --- GŁÓWNE FUNKCJE ---
 function removeRow(button) { button.closest('tr').remove(); updateSummaries(); }
 function updateSummaries() { let totalFluids = 0; let totalKcal = 0; document.querySelectorAll('#fluidsTable tbody tr').forEach(row => { const rateInput = row.querySelector('.fluid-rate'); if (rateInput && rateInput.value) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalFluids += rate * 24; } } const nameInput = row.querySelector('.fluid-name'); if(nameInput && glucoseKcalData[nameInput.value]) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalKcal += (rate * 24) * glucoseKcalData[nameInput.value]; } } }); document.querySelectorAll('#nutritionTable tbody tr').forEach(row => { const prepInput = row.querySelector('.nutrition-prep'); if (prepInput && prepInput.value) { const productInfo = nutritionData[prepInput.value]; if (productInfo) { totalFluids += productInfo.volume; totalKcal += productInfo.kcal; } } }); document.getElementById('totalFluids').textContent = totalFluids.toFixed(0); document.getElementById('totalKcal').textContent = totalKcal.toFixed(0); }
@@ -16,13 +44,68 @@ function handleWeightHeightChange() { calculateBMI(); document.querySelectorAll(
 
 function addContinuousDrug() { const tbody = document.querySelector('#continuousDrugsTbody'); const newRow = document.createElement('tr'); const rowId = 'cont_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="continuousDrugsList" onchange="fillContinuousDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" placeholder="Stężenie" id="${rowId}_conc" oninput="calculateInfusionRate(this.closest('tr').querySelector('.dose'))" /></td><td><input type="text" class="drug-input dose" placeholder="Dawka" id="${rowId}_dose" oninput="calculateInfusionRate(this)" /></td><td><input type="text" class="drug-input infusion-rate" placeholder="0,0" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 function fillContinuousDrugData(input, rowId) { const drugName = input.value.toUpperCase(); if (continuousDrugsData[drugName]) { const data = continuousDrugsData[drugName]; const concInput = document.getElementById(rowId + '_conc'); const doseInput = document.getElementById(rowId + '_dose'); const row = input.closest('tr'); const rateOutput = row.querySelector('.infusion-rate'); concInput.value = data.concentration; doseInput.value = data.dose; if (data.fixedRate) { rateOutput.value = data.fixedRate; } else { calculateInfusionRate(doseInput); } } }
-function addPeriodicDrug() { const tbody = document.querySelector('#periodicDrugsTbody'); const newRow = document.createElement('tr'); const rowId = 'per_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="periodicDrugsList" onchange="fillPeriodicDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" placeholder="Dawka" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" value="i.v." id="${rowId}_route" /><input type="text" class="drug-input" placeholder="q24h" id="${rowId}_freq" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
-function fillPeriodicDrugData(input, rowId) { const drugName = input.value.toUpperCase(); if (periodicDrugsData[drugName]) { const data = periodicDrugsData[drugName]; document.getElementById(rowId + '_dose').value = data.dose; document.getElementById(rowId + '_route').value = data.route; document.getElementById(rowId + '_freq').value = data.frequency; } }
+function addPeriodicDrug() { const tbody = document.querySelector('#periodicDrugsTbody'); const newRow = document.createElement('tr'); const rowId = 'per_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="periodicDrugsList" onchange="fillPeriodicDrugData(this, '${rowId}')" id="${rowId}_name" /><input type="text" class="drug-input" placeholder="Dawka" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" value="i.v." id="${rowId}_route" /><input type="text" class="drug-input" placeholder="q24h" id="${rowId}_freq" /><span class="dose-reduction-notice" style="display:none;">⚠️ Zredukowano</span></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function fillPeriodicDrugData(input, rowId) { const drugName = input.value.toUpperCase(); const row = input.closest('tr'); if (periodicDrugsData[drugName]) { const data = periodicDrugsData[drugName]; document.getElementById(rowId + '_dose').value = data.dose; document.getElementById(rowId + '_route').value = data.route; document.getElementById(rowId + '_freq').value = data.frequency; } adjustSingleDoseForGfr(row); }
 function addFluid() { const tbody = document.querySelector('#fluidsTable tbody'); const newRow = document.createElement('tr'); const rowId = 'fluid_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" /></td><td class="additives-cell"><span class="additives-display"></span><button type="button" class="add-additive-button-icon no-print" onclick="openAdditivesModal(this)">+</button></td><td><input type="number" class="drug-input" placeholder="ml" id="${rowId}_vol" oninput="updateSummaries()" /></td><td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 function fillFluidData(input, rowId) { const fluidName = input.value; if (fluidsData[fluidName]) { document.getElementById(rowId + '_vol').value = fluidsData[fluidName].volume.replace('ml',''); document.getElementById(rowId + '_rate').value = fluidsData[fluidName].rate; updateSummaries(); } }
 function addNutrition() { const tbody = document.querySelector('#nutritionTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Wybierz typ..." list="nutritionTypesList" onchange="updateNutritionProductList(this)" /></td><td><input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." oninput="updateSummaries()"/></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 function updateNutritionProductList(typeInput) { const row = typeInput.closest('tr'); const prepInput = row.querySelector('.nutrition-prep'); const typeValue = typeInput.value.toLowerCase(); if (typeValue.includes('dojelitowe')) { prepInput.setAttribute('list', 'enteralProductsList'); } else if (typeValue.includes('parenteralne')) { prepInput.setAttribute('list', 'parenteralProductsList'); } else { prepInput.removeAttribute('list'); } prepInput.value = ''; prepInput.focus(); updateSummaries(); }
 function addProcedure() { const tbody = document.querySelector('#proceduresTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Godz." list="timesList" /></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+
+// NOWA LOGIKA DOSTOSOWANIA DAWEK DO GFR
+function adjustAllDosesForGfr() {
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => adjustSingleDoseForGfr(row));
+}
+
+function adjustSingleDoseForGfr(row) {
+    const gfrInput = document.getElementById('gfrInput');
+    const gfr = gfrInput.value ? parseFloat(gfrInput.value) : null;
+    const drugNameInput = row.querySelector('.drug-name');
+    if (!drugNameInput) return;
+    const drugName = drugNameInput.value.toUpperCase();
+    const doseInput = row.querySelector('input[id$="_dose"]');
+    const freqInput = row.querySelector('input[id$="_freq"]');
+    const notice = row.querySelector('.dose-reduction-notice');
+
+    const originalDrugData = periodicDrugsData[drugName];
+    const adjustmentRules = gfrDoseAdjustments[drugName];
+
+    // Reset to default if no GFR or no rules
+    if (!gfr || !adjustmentRules) {
+        if (originalDrugData) {
+            doseInput.value = originalDrugData.dose;
+            if (freqInput) freqInput.value = originalDrugData.frequency;
+        }
+        row.classList.remove('gfr-dose-adjusted');
+        if (notice) notice.style.display = 'none';
+        return;
+    }
+
+    // Find the correct adjustment rule
+    let appliedRule = null;
+    for (const rule of adjustmentRules) {
+        if (gfr <= rule.gfrMax) {
+            appliedRule = rule;
+            break;
+        }
+    }
+
+    // Apply adjustment or reset to default
+    if (appliedRule) {
+        if (appliedRule.dose) doseInput.value = appliedRule.dose;
+        if (appliedRule.frequency && freqInput) freqInput.value = appliedRule.frequency;
+        row.classList.add('gfr-dose-adjusted');
+        if (notice) notice.style.display = 'inline';
+    } else {
+        if (originalDrugData) {
+            doseInput.value = originalDrugData.dose;
+            if (freqInput) freqInput.value = originalDrugData.frequency;
+        }
+        row.classList.remove('gfr-dose-adjusted');
+        if (notice) notice.style.display = 'none';
+    }
+}
+
 
 function populateDatalists() {
     const createOptions = (dataObject) => Object.keys(dataObject).map(key => `<option value="${key}"></option>`).join('');
@@ -175,6 +258,7 @@ function loadCard() {
     document.querySelector('.notes-section textarea').value = cardState.notes;
     handleWeightHeightChange();
     updateSummaries();
+    adjustAllDosesForGfr(); // Dostosuj dawki po wczytaniu
     alert('✅ Karta została wczytana!');
 }
 
