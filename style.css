@@ -4,19 +4,25 @@
     --primary: #2563eb;
     --primary-dark: #1e40af;
     --primary-light: #dbeafe;
+
     --success: #16a34a;
     --success-dark: #15803d;
+
     --warning: #ea580c;
     --warning-dark: #c2410c;
     --warning-light: #fffbeb;
+
     --danger: #dc2626;
     --danger-dark: #b91c1c;
+
     --info: #0891b2;
     --info-dark: #0e7490;
+
     --purple: #7c3aed;
     --purple-dark: #6d28d9;
     --amber: #d97706;
     --teal: #0d9488;
+
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
@@ -27,6 +33,7 @@
     --gray-700: #374151;
     --gray-800: #1f2937;
     --gray-900: #111827;
+
     --bg-color: var(--gray-100);
     --container-bg: white;
     --text-color: var(--gray-800);
@@ -222,16 +229,226 @@ html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: v
 .additive-volume { flex: 1; }
 .additive-unit { font-size: 11px; color: var(--gray-500); }
 
-#savedCardsList { list-style: none; padding: 0; }
-#savedCardsList li { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); }
-#savedCardsList li:last-child { border-bottom: none; }
-#savedCardsList .patient-name { font-weight: 500; }
+/* ======= WYDRUK KOMPAKTOWY A4 ======= */
 
-@media print {
-    body { background: white; }
-    .no-print { display: none !important; }
-    .container { margin: 0; padding: 5mm; max-width: 100%; box-shadow: none; border-radius: 0; }
-    table, .footer-grid { page-break-inside: avoid; }
-    .section-header { page-break-after: avoid; }
+@page {
+    size: A4;
+    margin: 6mm;
 }
 
+@media print {
+    html, body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+    }
+
+    .container, #card-container {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 5mm !important;
+        background: #fff !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+    }
+
+    .top-controls,
+    .no-print,
+    .action-column,
+    .add-button,
+    .button-container,
+    .remove-button {
+        display: none !important;
+    }
+
+    /* 1) UKRYCIE STRZAŁEK W POLACH NUMBER (Chrome/Edge/Opera + Firefox) */
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+    }
+
+    /* Nagłówek prosty */
+    .header-section {
+        background: none !important;
+        color: #000 !important;
+        border-bottom: 1px solid #000 !important;
+        padding: 2mm 0 !important;
+        margin-bottom: 3mm !important;
+        border-radius: 0 !important;
+    }
+    .logo-icon {
+        background: none !important;
+        color: #000 !important;
+        border: 0.6px solid #000 !important;
+    }
+    h1 {
+        font-size: 11px !important;
+        margin: 2mm 0 0 0 !important;
+        text-align: center !important;
+        color: #000 !important;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+    }
+
+    /* Karta pacjenta ciaśniej */
+    .patient-card {
+        border: 0.6px solid #000 !important;
+        background: #fff !important;
+        padding: 3mm !important;
+        margin-bottom: 3mm !important;
+        border-radius: 0 !important;
+    }
+    .patient-grid { gap: 3mm !important; }
+    .field-label {
+        font-size: 7.5px !important;
+        color: #000 !important;
+        margin-bottom: 1px !important;
+        letter-spacing: .2px !important;
+        text-transform: uppercase !important;
+    }
+    .field-value,
+    .header-input,
+    input.field-value,
+    textarea.field-value {
+        border: 0.6px solid #000 !important;
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 9px !important;
+        padding: 1px 3px !important;
+        min-height: auto !important;
+        border-radius: 0 !important;
+    }
+    .alert-field {
+        background: #fff !important;
+        border-color: #000 !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Nagłówki sekcji */
+    .section-header {
+        background: #eee !important;
+        color: #000 !important;
+        border: 0.6px solid #000 !important;
+        padding: 2px 4px !important;
+        border-radius: 0 !important;
+        margin: 4mm 0 2mm 0 !important;
+        font-size: 9px !important;
+        font-weight: 700 !important;
+    }
+
+    /* Tabele */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+        border: 0.6px solid #000 !important;
+        margin: 2mm 0 !important;
+        table-layout: fixed !important;
+    }
+    thead th {
+        background: #f5f5f5 !important;
+        color: #000 !important;
+        font-weight: 700 !important;
+        border: 0.6px solid #000 !important;
+        padding: 1.5mm 2mm !important;
+    }
+    tbody td {
+        border: 0.6px solid #000 !important;
+        padding: 1.2mm 2mm !important;
+        vertical-align: middle !important;
+        height: auto !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Pola wewnątrz tabel — bez dodatkowych ramek */
+    .drug-input,
+    .fluid-rate,
+    .nutrition-prep,
+    .dose,
+    .infusion-rate,
+    .fluid-name {
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        padding: 0 !important;
+        font-size: 9px !important;
+    }
+
+    /* 2) USUNIĘCIE OBRAMOWANIA DLA „DODATKÓW” (TYLKO WYDRUK) */
+    /* – brak ramek/teł wokół listy dodatków */
+    .additives-cell,
+    .additives-cell .additives-display {
+        border: none !important;
+        outline: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    /* Jeśli chcesz również „rozpuścić” linie kratki tylko w tej kolumnie, odkomentuj:
+    #fluidsTable td:nth-child(2),
+    #fluidsTable th:nth-child(2) {
+        border-left: none !important;
+        border-right: none !important;
+    }
+    */
+
+    /* Podpisy */
+    .signature-box-cell,
+    .sig,
+    .signature-line {
+        border: 0.6px solid #000 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+        min-height: 22px !important;
+    }
+
+    /* GFR */
+    tr.gfr-dose-adjusted td { background: #fff !important; }
+    .dose-reduction-notice { color: #000 !important; font-weight: 700 !important; }
+
+    /* Podsumowania / stopka */
+    .controls-summary-container,
+    .summary-container,
+    #fluidBalanceSummary,
+    #kcalSummary {
+        color: #000 !important;
+        font-size: 9px !important;
+    }
+    .footer-grid {
+        grid-template-columns: 2fr 1fr !important;
+        gap: 3mm !important;
+        align-items: stretch !important;
+    }
+    .notes-section textarea,
+    .notes,
+    textarea {
+        border: 0.6px solid #000 !important;
+        min-height: 45px !important;
+        padding: 2mm !important;
+        resize: none !important;
+        background: #fff !important;
+        color: #000 !important;
+    }
+    .signature-label, .signature-sublabel { color: #000 !important; }
+
+    /* Stabilne podziały stron */
+    .header-section,
+    .patient-card,
+    .section-header,
+    table,
+    thead,
+    tbody,
+    tr,
+    .footer-grid {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+}
