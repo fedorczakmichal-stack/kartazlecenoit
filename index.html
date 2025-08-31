@@ -41,6 +41,10 @@
                         <span class="field-label">Doba w OIT</span>
                         <input type="number" min="0" id="icuDayInput" class="field-value small header-input"/>
                     </div>
+                    <div class="field-group print-only-room" style="display:none;">
+                        <span class="field-label">Sala/Łóżko</span>
+                        <input type="text" id="roomInputPrint" class="field-value small header-input" readonly/>
+                    </div>
                 </div>
             </div>
             <h1>Oddział Anestezjologii i Intensywnej Terapii - Karta Zleceń Lekarskich</h1>
@@ -200,22 +204,6 @@
     </div>
 
     <!-- Modals and Datalists -->
-    <div id="additivesModal" class="modal no-print" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Zarządzaj dodatkami</h3>
-                <span class="close" onclick="closeModal('additivesModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="additives-list"></div>
-                <button onclick="addAdditiveRowToModal()" class="add-button cyan small"><i class="fas fa-plus"></i> Dodaj kolejny</button>
-            </div>
-            <div class="modal-footer">
-                <button onclick="saveAdditives()" class="control-button save">Zapisz</button>
-            </div>
-        </div>
-    </div>
-    
     <div id="loadCardModal" class="modal no-print" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -232,7 +220,6 @@
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
-    <datalist id="additivesList"></datalist>
     <datalist id="enteralProductsList"></datalist>
     <datalist id="parenteralProductsList"></datalist>
     <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie parenteralne"><option value="Dieta doustna"> </datalist>
