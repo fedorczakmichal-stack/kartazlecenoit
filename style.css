@@ -63,9 +63,9 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1200px;
     margin: 20px auto;
-    padding: 15mm;
+    padding: 20mm;
     background: var(--container-bg);
     box-shadow: 0 4px 12px var(--shadow-color);
     border-radius: 8px;
@@ -74,15 +74,27 @@ body {
 /* Na większych ekranach zwiększ szerokość */
 @media screen and (min-width: 1400px) {
     .container {
-        max-width: 1100px;
-        padding: 20mm;
+        max-width: 1400px;
+        padding: 25mm;
     }
 }
 
 @media screen and (min-width: 1600px) {
     .container {
-        max-width: 1200px;
+        max-width: 1600px;
     }
+}
+
+@media screen and (min-width: 1920px) {
+    .container {
+        max-width: 1800px;
+        padding: 30mm;
+    }
+}
+
+/* Hide print-only room field on screen */
+.print-only-room {
+    display: none !important;
 }
 
 /* Top Controls */
@@ -350,6 +362,24 @@ input[type="number"] {
     .hospital-logo div div:last-child {
         font-size: 8px !important;
     }
+    
+    /* Ukryj datę i dobę w OIT w nagłówku na wydruku, pokaż salę/łóżko */
+    .header-right-info .field-group:not(.print-only-room) {
+        display: none !important;
+    }
+    .header-right-info .print-only-room {
+        display: block !important;
+    }
+    .header-right-info .print-only-room .field-value {
+        background: #fff !important;
+        border: 0.5px solid #000 !important;
+        color: #000 !important;
+    }
+    .header-right-info .print-only-room .field-label {
+        color: #000 !important;
+        font-size: 7px !important;
+    }
+    
     h1 {
         font-size: 10px !important;
         margin: 1mm 0 0 0 !important;
@@ -372,6 +402,22 @@ input[type="number"] {
         gap: 2mm !important; 
         grid-template-columns: repeat(4, 1fr) !important;
     }
+    
+    /* Ukryj niepotrzebne pola na wydruku */
+    /* Ukryj rozpoznanie (span 2) */
+    .patient-grid .field-group:has(#diagnosisInput),
+    /* Ukryj salę/łóżko (przeniesione do nagłówka) */
+    .patient-grid .field-group:has(#roomInput),
+    /* Ukryj alergie (span 4) */
+    .patient-grid .field-group:has(#allergiesInput) {
+        display: none !important;
+    }
+    
+    /* Dostosuj siatkę po ukryciu pól */
+    .patient-grid .field-group:has(#patientNameInput) {
+        grid-column: span 3 !important;
+    }
+    
     .field-label {
         font-size: 6.5px !important;
         color: #000 !important;
@@ -460,13 +506,7 @@ input[type="number"] {
     #fluidsTable th:nth-child(3) { width: 12% !important; }
     #fluidsTable th:nth-child(4) { width: 12% !important; }
     #fluidsTable th:nth-child(5) { width: 21% !important; }
-    
-/* Ukryj placeholdery na wydruku */
-input::-webkit-input-placeholder { color: transparent !important; }
-input::-moz-placeholder { color: transparent !important; }
-input:-ms-input-placeholder { color: transparent !important; }
-input::placeholder { color: transparent !important; }
-    
+
     /* Pola wewnątrz tabel */
     .drug-input,
     .fluid-rate,
@@ -481,6 +521,13 @@ input::placeholder { color: transparent !important; }
         padding: 0 !important;
         font-size: 7.5px !important;
     }
+    
+    /* Ukryj placeholdery na wydruku */
+    input::-webkit-input-placeholder { color: transparent !important; }
+    input::-moz-placeholder { color: transparent !important; }
+    input:-ms-input-placeholder { color: transparent !important; }
+    input::placeholder { color: transparent !important; }
+    
     .drug-name {
         font-weight: 500 !important;
     }
