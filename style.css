@@ -460,7 +460,13 @@ input[type="number"] {
     #fluidsTable th:nth-child(3) { width: 12% !important; }
     #fluidsTable th:nth-child(4) { width: 12% !important; }
     #fluidsTable th:nth-child(5) { width: 21% !important; }
-
+    
+/* Ukryj placeholdery na wydruku */
+input::-webkit-input-placeholder { color: transparent !important; }
+input::-moz-placeholder { color: transparent !important; }
+input:-ms-input-placeholder { color: transparent !important; }
+input::placeholder { color: transparent !important; }
+    
     /* Pola wewnątrz tabel */
     .drug-input,
     .fluid-rate,
