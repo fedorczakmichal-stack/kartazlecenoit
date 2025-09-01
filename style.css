@@ -403,14 +403,18 @@ input[type="number"] {
         grid-template-columns: repeat(4, 1fr) !important;
     }
     
-    /* Ukryj niepotrzebne pola na wydruku */
-    /* Ukryj rozpoznanie (span 2) */
-    .patient-grid .field-group:has(#diagnosisInput),
-    /* Ukryj salę/łóżko (przeniesione do nagłówka) */
-    .patient-grid .field-group:has(#roomInput),
-    /* Ukryj alergie (span 4) */
-    .patient-grid .field-group:has(#allergiesInput) {
-        display: none !important;
+/* Ukryj niepotrzebne pola na wydruku */
+/* Ukryj rozpoznanie (span 2) */
+.patient-grid .field-group:has(#diagnosisInput),
+/* Ukryj salę/łóżko (przeniesione do nagłówka) */
+.patient-grid .field-group:has(#roomInput),
+/* Ukryj BMI */
+.patient-grid .field-group:has(#bmiOutput),
+/* Ukryj GFR */
+.patient-grid .field-group:has(#gfrInput),
+/* Ukryj alergie (span 4) */
+.patient-grid .field-group:has(#allergiesInput) {
+    display: none !important;
     }
     
     /* Dostosuj siatkę po ukryciu pól */
