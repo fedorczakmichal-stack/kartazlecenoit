@@ -361,11 +361,7 @@ input[type="number"] {
     }
     .hospital-logo div div:last-child {
         font-size: 8px !important;
-    }
     
-    /* Ukryj datę i dobę w OIT w nagłówku na wydruku, pokaż salę/łóżko */
-    .header-right-info .field-group:not(.print-only-room) {
-        display: none !important;
     }
     .header-right-info .print-only-room {
         display: block !important;
