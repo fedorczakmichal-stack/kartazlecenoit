@@ -71,7 +71,6 @@ body {
     border-radius: 8px;
 }
 
-/* Na większych ekranach zwiększ szerokość */
 @media screen and (min-width: 1400px) {
     .container {
         max-width: 1400px;
@@ -92,12 +91,10 @@ body {
     }
 }
 
-/* Hide print-only room field on screen */
 .print-only-room {
     display: none !important;
 }
 
-/* Top Controls */
 .top-controls {
     display: flex;
     justify-content: center;
@@ -136,7 +133,6 @@ body {
 .control-button.dark-mode { background-color: var(--gray-700); }
 .control-button:hover { opacity: 0.85; }
 
-/* Header */
 .header-section {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     color: white;
@@ -152,7 +148,6 @@ body {
 .header-right-info .field-label { color: white; opacity: 0.9; }
 h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* Patient Card */
 .patient-card { background: var(--gray-50); border-radius: 8px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border-color); }
 .patient-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .field-group { display: flex; flex-direction: column; }
@@ -161,7 +156,6 @@ h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; te
 .field-value.alert-field { background: #fef2f2; border-color: var(--danger); color: var(--danger); font-weight: 600; }
 html.dark-mode .field-value.alert-field { background: #450a0a; }
 
-/* Section Headers */
 .section-header { background: linear-gradient(90deg, var(--gray-800) 0%, var(--gray-900) 100%); color: white; padding: 6px 12px; border-radius: 6px; margin: 20px 0 8px 0; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 .section-header.green { background: linear-gradient(90deg, var(--success) 0%, var(--success-dark) 100%); }
 .section-header.orange { background: linear-gradient(90deg, var(--warning) 0%, var(--warning-dark) 100%); }
@@ -169,19 +163,16 @@ html.dark-mode .field-value.alert-field { background: #450a0a; }
 .section-header.purple { background: linear-gradient(90deg, var(--purple) 0%, var(--purple-dark) 100%); }
 .section-header.gray { background: linear-gradient(90deg, var(--gray-600) 0%, var(--gray-700) 100%); }
 
-/* Tables */
 table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 th { background: var(--gray-100); padding: 6px 8px; text-align: left; font-weight: 600; font-size: 10px; color: var(--gray-600); border-bottom: 2px solid var(--border-color); }
 td { padding: 2px 8px; border-bottom: 1px solid var(--border-color); vertical-align: middle; height: 28px; }
 tr:last-child td { border-bottom: none; }
 tbody tr:hover { background: var(--gray-50); }
 
-/* GFR Dose Adjustment Styling */
 tr.gfr-dose-adjusted td { background-color: var(--warning-light) !important; }
 .dose-reduction-notice { font-size: 10px; color: var(--warning-dark); font-weight: 500; margin-left: 5px; }
 html.dark-mode .dose-reduction-notice { color: #facc15; }
 
-/* Inputs inside tables */
 .drug-input { width: 100%; border: none; background: transparent; font-size: 11px; padding: 2px; color: var(--text-color); font-family: inherit; }
 .drug-input:focus { outline: none; background: var(--primary-light); }
 .drug-name { font-weight: 500; }
@@ -192,11 +183,11 @@ html.dark-mode .nutrition-rate { color: #facc15; }
 .nutrition-type { font-weight: 500; color: var(--info-dark); }
 html.dark-mode .nutrition-type { color: #38bdf8; }
 
-.signature-box-cell { 
-    border: 1px solid var(--border-color); 
-    height: 100%; 
-    background: linear-gradient(to bottom, var(--container-bg), var(--gray-50)); 
-    border-radius: 2px; 
+.signature-box-cell {
+    border: 1px solid var(--border-color);
+    height: 100%;
+    background: linear-gradient(to bottom, var(--container-bg), var(--gray-50));
+    border-radius: 2px;
 }
 .additives-input {
     font-size: 10px;
@@ -215,7 +206,6 @@ html.dark-mode .nutrition-additives {
     color: var(--gray-400);
 }
 
-/* Buttons */
 .button-container { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 15px; }
 .add-button { display: flex; align-items: center; gap: 6px; background-color: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 500; transition: background-color 0.2s; }
 .add-button:hover { background-color: var(--primary-dark); }
@@ -229,29 +219,27 @@ html.dark-mode .nutrition-additives {
 .add-button.purple:hover { background-color: var(--purple-dark); }
 .add-button.gray { background-color: var(--gray-500); }
 .add-button.gray:hover { background-color: var(--gray-600); }
-.remove-button { 
-    background: none; 
-    border: none; 
-    color: var(--gray-400); 
-    cursor: pointer; 
-    font-size: 14px; 
+.remove-button {
+    background: none;
+    border: none;
+    color: var(--gray-400);
+    cursor: pointer;
+    font-size: 14px;
 }
-.remove-button:hover { 
-    color: var(--danger); 
+.remove-button:hover {
+    color: var(--danger);
 }
-.action-column { 
-    width: 30px; 
-    text-align: center; 
+.action-column {
+    width: 30px;
+    text-align: center;
 }
 
-/* Summary */
 .controls-summary-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
 .summary-container { text-align: right; font-size: 12px; color: var(--gray-600); }
 .summary-container strong { color: var(--text-color); }
 #fluidBalanceSummary { color: var(--info); }
 #kcalSummary { color: var(--warning); }
 
-/* Footer */
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; align-items: stretch; }
 .notes-section textarea { width: 100%; height: 100%; min-height: 80px; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px; font-size: 11px; background: var(--container-bg); color: var(--text-color); resize: vertical; }
 .signature-box { text-align: center; display: flex; flex-direction: column; justify-content: flex-end; }
@@ -259,7 +247,6 @@ html.dark-mode .nutrition-additives {
 .signature-label { font-size: 10px; color: var(--gray-600); font-weight: 600; }
 .signature-sublabel { font-size: 9px; color: var(--gray-500); }
 
-/* Modal */
 .modal { position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
 .modal-content { background-color: var(--container-bg); border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
 .modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
@@ -267,13 +254,12 @@ html.dark-mode .nutrition-additives {
 .close { font-size: 24px; font-weight: bold; cursor: pointer; color: var(--gray-400); }
 .close:hover { color: var(--text-color); }
 .modal-body { padding: 16px; max-height: 60vh; overflow-y: auto; }
-.modal-footer { 
-    padding: 12px 16px; 
-    text-align: right; 
-    border-top: 1px solid var(--border-color); 
+.modal-footer {
+    padding: 12px 16px;
+    text-align: right;
+    border-top: 1px solid var(--border-color);
 }
 
-/* Saved cards list in modal */
 #savedCardsList {
     list-style: none;
     padding: 0;
@@ -296,7 +282,6 @@ html.dark-mode #savedCardsList li {
     color: var(--text-color);
 }
 
-/* Hide spinners in number inputs */
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -307,7 +292,14 @@ input[type="number"] {
     appearance: textfield;
 }
 
-/* ======= WYDRUK KOMPAKTOWY A4 ======= */
+input.drug-input::placeholder {
+  color: var(--gray-400);
+  opacity: 1;
+}
+
+input.drug-input::-ms-input-placeholder {
+  color: var(--gray-400);
+}
 
 @page {
     size: A4;
@@ -341,7 +333,6 @@ input[type="number"] {
         display: none !important;
     }
 
-    /* UKRYCIE STRZAŁEK W POLACH NUMBER */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none !important;
@@ -352,7 +343,6 @@ input[type="number"] {
         appearance: textfield !important;
     }
 
-    /* Nagłówek ultra kompaktowy */
     .header-section {
         background: none !important;
         color: #000 !important;
@@ -379,8 +369,7 @@ input[type="number"] {
     .hospital-logo div div:last-child {
         font-size: 9px !important;
     }
-    
-    /* Ukryj sala/łóżko z nagłówka na wydruku (zostaje tylko w tabeli pacjenta) */
+
     .header-right-info .print-only-room {
         display: none !important;
     }
@@ -395,7 +384,7 @@ input[type="number"] {
         color: #000 !important;
         font-size: 8px !important;
     }
-    
+
     h1 {
         font-size: 11px !important;
         margin: 1mm 0 0 0 !important;
@@ -405,7 +394,6 @@ input[type="number"] {
         letter-spacing: 0 !important;
     }
 
-    /* Karta pacjenta ultra kompaktowa */
     .patient-card {
         border: 0.5px solid #000 !important;
         background: #fff !important;
@@ -414,11 +402,11 @@ input[type="number"] {
         border-radius: 0 !important;
         page-break-inside: avoid !important;
     }
-    .patient-grid { 
-        gap: 1.5mm !important; 
+    .patient-grid {
+        gap: 1.5mm !important;
         grid-template-columns: repeat(4, 1fr) !important;
     }
-    
+
     .field-label {
         font-size: 7px !important;
         color: #000 !important;
@@ -449,7 +437,6 @@ input[type="number"] {
         font-weight: 700 !important;
     }
 
-    /* Nagłówki sekcji kompaktowe */
     .section-header {
         background: #e0e0e0 !important;
         color: #000 !important;
@@ -462,7 +449,6 @@ input[type="number"] {
         page-break-after: avoid !important;
     }
 
-    /* Tabele ultra kompaktowe */
     table {
         width: 100% !important;
         border-collapse: collapse !important;
@@ -487,13 +473,24 @@ input[type="number"] {
     tbody td {
         border: 0.5px solid #000 !important;
         padding: 1mm !important;
-        vertical-align: middle !important;
+        vertical-align: top !important;
         height: auto !important;
         min-height: 22px;
-        overflow-wrap: break-word !important;
+        overflow: visible !important;
+        word-wrap: break-word !important;
     }
 
-    /* Optymalizacja szerokości kolumn dla wydruku */
+    #nutritionTable tbody td {
+        height: auto !important;
+        min-height: 28px !important;
+        padding-bottom: 2mm !important;
+    }
+
+    #nutritionTable tbody td:nth-child(2) {
+        vertical-align: top !important;
+        overflow: visible !important;
+    }
+
     #continuousDrugsTable th:nth-child(1) { width: 35% !important; }
     #continuousDrugsTable th:nth-child(2) { width: 25% !important; }
     #continuousDrugsTable th:nth-child(3) { width: 15% !important; }
@@ -509,12 +506,11 @@ input[type="number"] {
     #fluidsTable th:nth-child(4) { width: 12% !important; }
     #fluidsTable th:nth-child(5) { width: 21% !important; }
 
-    #nutritionTable th:nth-child(1) { width: 25% !important; }
-    #nutritionTable th:nth-child(2) { width: 35% !important; }
+    #nutritionTable th:nth-child(1) { width: 15% !important; }
+    #nutritionTable th:nth-child(2) { width: 45% !important; }
     #nutritionTable th:nth-child(3) { width: 15% !important; }
     #nutritionTable th:nth-child(4) { width: 25% !important; }
 
-    /* Pola wewnątrz tabel */
     .drug-input,
     .fluid-rate,
     .nutrition-prep,
@@ -532,15 +528,16 @@ input[type="number"] {
         -webkit-appearance: none !important;
         appearance: none !important;
     }
-    
+
     textarea.nutrition-additives {
         border: none !important;
         background: transparent !important;
         color: #000 !important;
         padding: 0 !important;
+        margin: 0 !important;
         font-size: 7px !important;
-        margin-top: 0 !important;
-        min-height: 0 !important;
+        line-height: 1.15 !important;
+        min-height: auto !important;
         max-height: none !important;
         height: auto !important;
         width: 100% !important;
@@ -548,19 +545,22 @@ input[type="number"] {
         resize: none !important;
         -webkit-appearance: none !important;
         appearance: none !important;
+        display: block !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
     }
-    
-    /* Ukryj placeholdery na wydruku */
+
     input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { color: transparent !important; }
     input::-moz-placeholder, textarea::-moz-placeholder { color: transparent !important; }
     input:-ms-input-placeholder, textarea:-ms-input-placeholder { color: transparent !important; }
     input::placeholder, textarea::placeholder { color: transparent !important; }
-    
+
     .drug-name {
         font-weight: 500 !important;
     }
 
-    /* Podpisy kompaktowe */
     .signature-box-cell,
     .sig,
     .signature-line {
@@ -570,17 +570,15 @@ input[type="number"] {
         min-height: 20px !important;
     }
 
-    /* GFR */
-    tr.gfr-dose-adjusted td { 
-        background: #f0f0f0 !important; 
+    tr.gfr-dose-adjusted td {
+        background: #f0f0f0 !important;
     }
-    .dose-reduction-notice { 
-        color: #000 !important; 
-        font-weight: 700 !important; 
+    .dose-reduction-notice {
+        color: #000 !important;
+        font-weight: 700 !important;
         font-size: 6px !important;
     }
 
-    /* Podsumowania kompaktowe */
     .controls-summary-container {
         margin-top: 1mm !important;
         page-break-inside: avoid !important;
@@ -591,8 +589,7 @@ input[type="number"] {
         color: #000 !important;
         font-size: 8px !important;
     }
-    
-    /* Stopka ultra kompaktowa */
+
     .footer-grid {
         grid-template-columns: 2.5fr 1fr !important;
         gap: 2mm !important;
@@ -618,28 +615,27 @@ input[type="number"] {
     .signature-line {
         min-height: 25px !important;
     }
-    .signature-label { 
-        color: #000 !important; 
+    .signature-label {
+        color: #000 !important;
         font-size: 8px !important;
     }
-    .signature-sublabel { 
+    .signature-sublabel {
         color: #000 !important;
-        font-size: 7px !important; 
+        font-size: 7px !important;
     }
 
-    /* Zapobieganie dzieleniu sekcji między strony */
     .header-section,
     .patient-card,
     .footer-grid {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
     }
-    
+
     .section-header {
         page-break-after: avoid !important;
         break-after: avoid !important;
     }
-    
+
     table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
