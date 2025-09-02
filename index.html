@@ -22,7 +22,6 @@
     </div>
 
     <div class="container" id="card-container">
-        <!-- Header Section -->
         <div class="header-section">
             <div class="hospital-header">
                 <div class="hospital-logo">
@@ -50,7 +49,6 @@
             <h1>Oddział Anestezjologii i Intensywnej Terapii - Karta Zleceń Lekarskich</h1>
         </div>
 
-        <!-- Patient Information -->
         <div class="patient-card">
             <div class="patient-grid">
                 <div class="field-group" style="grid-column: span 2;">
@@ -100,7 +98,6 @@
             </div>
         </div>
 
-        <!-- Continuous Medications -->
         <div class="section-header">LEKI CIĄGŁE - POMPY INFUZYJNE</div>
         <table id="continuousDrugsTable">
             <thead>
@@ -118,7 +115,6 @@
             <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciągły</button>
         </div>
 
-        <!-- Periodic Medications -->
         <div class="section-header green">LEKI OKRESOWE</div>
         <table id="periodicDrugsTable">
             <thead>
@@ -135,7 +131,6 @@
             <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
         </div>
 
-        <!-- Fluid Therapy -->
         <div class="section-header cyan">PŁYNOTERAPIA I ŻYWIENIE</div>
         <table id="fluidsTable">
              <thead>
@@ -153,8 +148,9 @@
         <table id="nutritionTable">
             <thead>
                 <tr>
-                    <th style="width: 30%;">Typ żywienia</th>
-                    <th style="width: 45%;">Preparat / Dawka</th>
+                    <th style="width: 25%;">Typ żywienia</th>
+                    <th style="width: 35%;">Preparat / Dawka</th>
+                    <th style="width: 15%;">Prędkość [ml/h]</th>
                     <th style="width: 25%;">Podpis pielęgniarki</th>
                     <th class="action-column no-print"></th>
                 </tr>
@@ -172,7 +168,6 @@
             </div>
         </div>
 
-        <!-- Procedures -->
         <div class="section-header purple">PROCEDURY / ZABIEGI</div>
         <table id="proceduresTable">
             <thead>
@@ -189,7 +184,6 @@
             <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
         </div>
 
-        <!-- Additional Notes -->
         <div class="section-header gray">UWAGI DODATKOWE / ZALECENIA</div>
         <div class="footer-grid">
             <div class="notes-section">
@@ -203,7 +197,6 @@
         </div>
     </div>
 
-    <!-- Modals and Datalists -->
     <div id="loadCardModal" class="modal no-print" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -222,9 +215,9 @@
     <datalist id="fluidsList"></datalist>
     <datalist id="enteralProductsList"></datalist>
     <datalist id="parenteralProductsList"></datalist>
-    <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie parenteralne"><option value="Dieta doustna"> </datalist>
+    <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie pozajelitowe"><option value="Dieta doustna"> </datalist>
     <datalist id="proceduresList"> <option value="Toaleta drzewa oskrzelowego"><option value="RTG klatki piersiowej przyłóżkowe"><option value="Zmiana opatrunku CVC"><option value="Zmiana pozycji ciała"><option value="Profilaktyka odleżyn"><option value="USG płuc"><option value="USG jamy brzusznej"><option value="Bronchoskopia"><option value="Wymiana rurki intubacyjnej"><option value="Wymiana rurki tracheostomijnej"><option value="Założenie CVC"><option value="Założenie cewnika tętniczego"><option value="Założenie cewnika Foleya"><option value="Punkcja lędźwiowa"><option value="Nakłucie jamy opłucnej"><option value="Drenaż jamy opłucnej"><option value="CRRT - rozpoczęcie"><option value="CRRT - wymiana zestawu"><option value="Hemodializa"><option value="Plazmafereza"><option value="Fizjoterapia"><option value="Rehabilitacja oddechowa"><option value="Pionizacja"><option value="EKG"><option value="ECHO serca"><option value="Gastroskopia"><option value="Kolonoskopia"><option value="CT głowy"><option value="CT klatki piersiowej"><option value="CT jamy brzusznej"> </datalist>
-    <datalist id="timesList"> <option value="06:00"><option value="07:00"><option value="08:00"><option value="09:00"><option value="10:00"><option value="11:00"><option value="12:00"><option value="13:00"><option value="14:00"><option value="15:00"><option value="16:00"><option value="17:00"><option value="18:00"><option value="19:00"><option value="20:00"><option value="21:00"><option value="22:00"><option value="23:00"><option value="00:00"><option value="01:00"><option value="02:00"><option value="03:00"><option value="04:00"><option value="05:00"><option value="q1h"><option value="q2h"><option value="q4h"><option value="q6h"><option value="PRN"> </datalist>
+    <datalist id="timesList"> <option value="06:00"><option value="07:00"><option value="08:00"><option value="09:00"><option value="10:00"><option value="11:00"><option value="12:00"><option value="13:00"><option value="14:00"><option value="15:00"><option value="16:00"><option value="17:00"><option value="18:00"><option value="19:00"><option value="20:00"><option value="21:00"><option value="22:00"><option value="23:00"><option value="00:00"><option value="01:00"><option value="02:00"><option value="03:00"><option value="04:00"><option value="05:00"><option value="co 1h"><option value="co 2h"><option value="co 4h"><option value="co 6h"><option value="co 8h"><option value="co 12h"><option value="co 24h"><option value="doraźnie"> </datalist>
     
     <script src="script.js"></script>
 </body>
