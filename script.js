@@ -123,7 +123,7 @@ function calculateDoseTimes(firstTime, frequency) {
 
 // --- GŁÓWNE FUNKCJE ---
 function removeRow(button) { button.closest('tr').remove(); updateSummaries(); }
-function updateSummaries() { let totalFluids = 0; let totalKcal = 0; document.querySelectorAll('#fluidsTable tbody tr').forEach(row => { const rateInput = row.querySelector('.fluid-rate'); if (rateInput && rateInput.value) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalFluids += rate * 24; } } const nameInput = row.querySelector('.fluid-name'); if(nameInput && glucoseKcalData[nameInput.value]) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalKcal += (rate * 24) * glucoseKcalData[nameInput.value]; } } }); document.querySelectorAll('#nutritionTable tbody tr').forEach(row => { const prepInput = row.querySelector('.nutrition-prep'); if (prepInput && prepInput.value) { const productInfo = nutritionData[prepInput.value]; if (productInfo) { totalFluids += productInfo.volume; totalKcal += productInfo.kcal; } } }); document.getElementById('totalFluids').textContent = totalFluids.toFixed(0); document.getElementById('totalKcal').textContent = totalKcal.toFixed(0); }
+function updateSummaries() { let totalFluids = 0; let totalKcal = 0; document.querySelectorAll('#fluidsTbody tr').forEach(row => { const rateInput = row.querySelector('.fluid-rate'); if (rateInput && rateInput.value) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalFluids += rate * 24; } } const nameInput = row.querySelector('.fluid-name'); if(nameInput && glucoseKcalData[nameInput.value]) { const rate = parseFloat(rateInput.value.replace(',', '.')); if (!isNaN(rate)) { totalKcal += (rate * 24) * glucoseKcalData[nameInput.value]; } } }); document.querySelectorAll('#nutritionTbody tr').forEach(row => { const prepInput = row.querySelector('.nutrition-prep'); if (prepInput && prepInput.value) { const productInfo = nutritionData[prepInput.value]; if (productInfo) { totalFluids += productInfo.volume; totalKcal += productInfo.kcal; } } }); document.getElementById('totalFluids').textContent = totalFluids.toFixed(0); document.getElementById('totalKcal').textContent = totalKcal.toFixed(0); }
 function calculateInfusionRate(inputElement) { const row = inputElement.closest('tr'); if (!row) return; const weightInput = document.getElementById('patientWeight'); const weight = parseFloat(weightInput.value); const doseInput = row.querySelector('.dose'); const concentrationInput = row.querySelector('input[id$="_conc"]'); const rateOutput = row.querySelector('.infusion-rate'); if (!weight || weight <= 0 || !doseInput.value || !concentrationInput.value) { return; } let doseStr = doseInput.value.replace(',', '.'); let concStr = concentrationInput.value.replace(',', '.'); const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/; const doseMatch = doseStr.match(doseRegex); if (!doseMatch) { rateOutput.value = ''; return; } let doseValue1 = parseFloat(doseMatch[1]); let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; let doseUnit = doseMatch[3]; const perKg = doseMatch[4]; const perTime = doseMatch[5]; const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/; const concMatch = concStr.match(concRegex); let concentrationPerMl; if (concMatch) { let totalMass = parseFloat(concMatch[1]); const massUnit = concMatch[2]; const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; if (massUnit === 'mg') totalMass *= 1000; concentrationPerMl = totalMass / totalVolume; } else { rateOutput.value = ''; return; } if (concentrationPerMl === 0) return; if (doseUnit === 'mg') { doseValue1 *= 1000; if(doseValue2) doseValue2 *= 1000; } const calculateRate = (dose) => { let totalDosePerTime = dose; if (perKg) totalDosePerTime *= weight; const volumePerTime = totalDosePerTime / concentrationPerMl; return (perTime === 'min') ? volumePerTime * 60 : volumePerTime; }; const finalRate1 = calculateRate(doseValue1); if (doseValue2) { const finalRate2 = calculateRate(doseValue2); rateOutput.value = `${finalRate1.toFixed(1).replace('.', ',')} - ${finalRate2.toFixed(1).replace('.', ',')}`; } else { rateOutput.value = finalRate1.toFixed(1).replace('.', ','); } }
 function calculateIcuDay() { const admissionDateStr = document.getElementById('admissionDateInput').value; const mainDateStr = document.getElementById('mainDateInput').value; const icuDayInput = document.getElementById('icuDayInput'); const parseDate = (dateStr) => { const parts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); if (!parts) return null; return new Date(parts[3], parts[2] - 1, parts[1]); }; const admissionDate = parseDate(admissionDateStr); const mainDate = parseDate(mainDateStr); if (admissionDate && mainDate && mainDate >= admissionDate) { const utcMain = Date.UTC(mainDate.getFullYear(), mainDate.getMonth(), mainDate.getDate()); const utcAdmission = Date.UTC(admissionDate.getFullYear(), admissionDate.getMonth(), admissionDate.getDate()); const dayInMillis = 1000 * 60 * 60 * 24; const diffDays = (utcMain - utcAdmission) / dayInMillis; icuDayInput.value = Math.round(diffDays) + 1; } else { icuDayInput.value = ''; } }
 function calculateBMI() { const weightInput = document.getElementById('patientWeight'); const heightInput = document.getElementById('heightInput'); const bmiOutput = document.getElementById('bmiOutput'); const weight = parseFloat(weightInput.value); const height = parseFloat(heightInput.value); if (weight > 0 && height > 0) { const heightInMeters = height / 100; const bmi = weight / (heightInMeters * heightInMeters); bmiOutput.value = bmi.toFixed(1); } else { bmiOutput.value = ''; } }
@@ -148,7 +148,7 @@ function addPeriodicDrug() {
             <span class="dose-reduction-notice" style="display:none;">⚠️ Zredukowano</span>
         </td>
         <td>
-            <div class="dose-times-container" style="display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 4px;">
+            <div class="dose-times-container" style="display: flex; flex-direction: column; gap: 8px; padding: 4px;">
             </div>
         </td>
         <td class="action-column no-print">
@@ -169,7 +169,7 @@ function updateDoseTimes(input) {
         timesContainer.innerHTML = times.map(time => {
             return `<div style="display: flex; align-items: center; min-height: 24px;">
                         <span style="font-size: 10px; font-weight: 600; width: 40px;">${time}</span>
-                        <div style="flex: 1; border-bottom: 1px solid #ccc; margin-left: 5px; min-width: 40px;"></div>
+                        <div style="flex: 1; border-bottom: 1px solid #ccc; margin-left: 5px; min-height: 20px;"></div>
                     </div>`;
         }).join('');
     } else {
@@ -189,15 +189,7 @@ function fillPeriodicDrugData(input) {
         doseInput.dataset.originalDose = originalData.dose;
         routeInput.value = originalData.route;
         freqInput.value = originalData.frequency;
-        if (originalData.frequency === 'co 24 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 12 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 8 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 6 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 4 godz') {
+        if (originalData.frequency.includes('godz')) {
             firstTimeInput.value = '8:00';
         } else {
             firstTimeInput.value = '';
@@ -210,11 +202,11 @@ function fillPeriodicDrugData(input) {
     adjustSingleDoseForGfr(row);
 }
 
-function addFluid() { const tbody = document.querySelector('#fluidsTable tbody'); const newRow = document.createElement('tr'); const rowId = 'fluid_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" /></td><td class="additives-cell"><span class="additives-display"></span><button type="button" class="add-additive-button-icon no-print" onclick="openAdditivesModal(this)">+</button></td><td><input type="number" class="drug-input" placeholder="ml" id="${rowId}_vol" oninput="updateSummaries()" /></td><td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function addFluid() { const tbody = document.querySelector('#fluidsTbody'); const newRow = document.createElement('tr'); const rowId = 'fluid_' + Date.now(); newRow.innerHTML = `<td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" onchange="fillFluidData(this, '${rowId}')" /></td><td class="additives-cell"><span class="additives-display"></span><button type="button" class="add-additive-button-icon no-print" onclick="openAdditivesModal(this)">+</button></td><td><input type="number" class="drug-input" placeholder="ml" id="${rowId}_vol" oninput="updateSummaries()" /></td><td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 function fillFluidData(input, rowId) { const fluidName = input.value; if (fluidsData[fluidName]) { document.getElementById(rowId + '_vol').value = fluidsData[fluidName].volume.replace('ml',''); document.getElementById(rowId + '_rate').value = fluidsData[fluidName].rate; updateSummaries(); } }
-function addNutrition() { const tbody = document.querySelector('#nutritionTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Wybierz typ..." list="nutritionTypesList" onchange="updateNutritionProductList(this)" /></td><td><input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." oninput="updateSummaries()"/></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function addNutrition() { const tbody = document.querySelector('#nutritionTbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Wybierz typ..." list="nutritionTypesList" onchange="updateNutritionProductList(this)" /></td><td><input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." oninput="updateSummaries()"/></td><td></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 function updateNutritionProductList(typeInput) { const row = typeInput.closest('tr'); const prepInput = row.querySelector('.nutrition-prep'); const typeValue = typeInput.value.toLowerCase(); if (typeValue.includes('dojelitowe')) { prepInput.setAttribute('list', 'enteralProductsList'); } else if (typeValue.includes('parenteralne')) { prepInput.setAttribute('list', 'parenteralProductsList'); } else { prepInput.removeAttribute('list'); } prepInput.value = ''; prepInput.focus(); updateSummaries(); }
-function addProcedure() { const tbody = document.querySelector('#proceduresTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Godz." list="timesList" /></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
+function addProcedure() { const tbody = document.querySelector('#proceduresTbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Godz." list="timesList" /></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 
 // --- LOGIKA DAWKOWANIA (GFR, mg/kg) ---
 function recalculateDose(row) { const doseInput = row.querySelector('input[id$="_dose"]'); const originalDose = doseInput.dataset.originalDose; const weight = parseFloat(document.getElementById('patientWeight').value); if (originalDose && originalDose.includes('/kg') && weight > 0) { const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?/; const matches = originalDose.match(doseRegex); if (matches) { const dose1 = parseFloat(matches[1]); const totalDose1 = Math.round(dose1 * weight); if (matches[2]) { const dose2 = parseFloat(matches[2]); const totalDose2 = Math.round(dose2 * weight); doseInput.value = `${totalDose1}-${totalDose2}mg (${originalDose})`; } else { doseInput.value = `${totalDose1}mg (${originalDose})`; } } } else if (originalDose) { doseInput.value = originalDose; } }
@@ -258,6 +250,7 @@ function populateDatalists() {
     document.getElementById('continuousDrugsList').innerHTML = createOptions(continuousDrugsData);
     document.getElementById('periodicDrugsList').innerHTML = createOptions(periodicDrugsData);
     document.getElementById('fluidsList').innerHTML = createOptions(fluidsData);
+    document.getElementById('additivesList').innerHTML = createOptions(additivesData);
     const enteral = {};
     const parenteral = {};
     Object.keys(nutritionData).forEach(key => {
@@ -311,7 +304,7 @@ function getCardState() {
             firstTime: inputs[2] ? inputs[2].value : '8:00'
         });
     });
-    document.querySelectorAll('#fluidsTable tbody tr').forEach(row => {
+    document.querySelectorAll('#fluidsTbody tr').forEach(row => {
         const additivesDisplay = row.querySelector('.additives-display');
         cardState.tables.fluids.push({
             name: row.cells[0].querySelector('input').value,
@@ -320,13 +313,13 @@ function getCardState() {
             rate: row.cells[3].querySelector('input').value
         });
     });
-    document.querySelectorAll('#nutritionTable tbody tr').forEach(row => {
+    document.querySelectorAll('#nutritionTbody tr').forEach(row => {
         cardState.tables.nutrition.push({
             type: row.cells[0].querySelector('input').value,
             prep: row.cells[1].querySelector('input').value
         });
     });
-    document.querySelectorAll('#proceduresTable tbody tr').forEach(row => {
+    document.querySelectorAll('#proceduresTbody tr').forEach(row => {
         cardState.tables.procedures.push({
             time: row.cells[0].querySelector('input').value,
             name: row.cells[1].querySelector('input').value
@@ -432,7 +425,7 @@ function populateCardFromState(cardState) {
     });
     cardState.tables.fluids.forEach(data => {
         addFluid();
-        const newRow = document.querySelector('#fluidsTable tbody tr:last-child');
+        const newRow = document.querySelector('#fluidsTbody tr:last-child');
         newRow.cells[0].querySelector('input').value = data.name;
         newRow.cells[2].querySelector('input').value = data.volume;
         newRow.cells[3].querySelector('input').value = data.rate;
@@ -449,14 +442,14 @@ function populateCardFromState(cardState) {
     });
     cardState.tables.nutrition.forEach(data => {
         addNutrition();
-        const newRow = document.querySelector('#nutritionTable tbody tr:last-child');
+        const newRow = document.querySelector('#nutritionTbody tr:last-child');
         newRow.cells[0].querySelector('input').value = data.type;
         updateNutritionProductList(newRow.cells[0].querySelector('input'));
         newRow.cells[1].querySelector('input').value = data.prep;
     });
     cardState.tables.procedures.forEach(data => {
         addProcedure();
-        const newRow = document.querySelector('#proceduresTable tbody tr:last-child');
+        const newRow = document.querySelector('#proceduresTbody tr:last-child');
         newRow.cells[0].querySelector('input').value = data.time;
         newRow.cells[1].querySelector('input').value = data.name;
     });
@@ -467,7 +460,7 @@ function populateCardFromState(cardState) {
     alert('✅ Karta została wczytana!');
 }
 
-function clearCard(force = false) { if (force || confirm('Czy na pewno chcesz wyczyścić całą kartę?')) { document.querySelectorAll('input, textarea').forEach(input => { if(!input.closest('.no-clear')) input.value = ''; }); document.querySelectorAll('tbody').forEach(tbody => { tbody.innerHTML = ''; }); updateSummaries(); initializeCard(); if (!force) alert('Karta została wyczyszczona!'); } }
+function clearCard(force = false) { if (force || confirm('Czy na pewno chcesz wyczyścić całą kartę?')) { document.querySelectorAll('input:not([type=file]), textarea').forEach(input => { if(!input.closest('.no-clear')) input.value = ''; }); document.querySelectorAll('tbody').forEach(tbody => { tbody.innerHTML = ''; }); updateSummaries(); initializeCard(); if (!force) alert('Karta została wyczyszczona!'); } }
 
 function generatePDF() {
     const element = document.getElementById('card-container');
@@ -478,13 +471,73 @@ function generatePDF() {
     html2pdf().set(opt).from(element).save();
 }
 
+let currentAdditivesTarget = null;
+function openAdditivesModal(button) {
+    currentAdditivesTarget = button.previousElementSibling;
+    const modalList = document.getElementById('additives-list');
+    modalList.innerHTML = '';
+    const existingAdditives = currentAdditivesTarget.dataset.additives ? JSON.parse(currentAdditivesTarget.dataset.additives) : [];
+    if (existingAdditives.length > 0) {
+        existingAdditives.forEach(ad => addAdditiveRowToModal(ad.name, ad.volume));
+    } else {
+        addAdditiveRowToModal();
+    }
+    document.getElementById('additivesModal').style.display = 'flex';
+}
+
+function addAdditiveRowToModal(name = '', volume = '') {
+    const list = document.getElementById('additives-list');
+    const newRow = document.createElement('div');
+    newRow.className = 'additive-modal-row';
+    const unit = (additivesData[name] && additivesData[name].unit) ? additivesData[name].unit : 'ml';
+    newRow.innerHTML = `<input type="text" class="field-value additive-name" placeholder="Nazwa dodatku" list="additivesList" value="${name}" onchange="updateAdditiveUnit(this)">
+                      <input type="number" class="field-value additive-volume" placeholder="ilość" value="${volume}">
+                      <span class="additive-unit">${unit}</span>
+                      <button type="button" class="remove-button" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>`;
+    list.appendChild(newRow);
+}
+
+function updateAdditiveUnit(input) {
+    const row = input.closest('.additive-modal-row');
+    const unitSpan = row.querySelector('.additive-unit');
+    const additiveName = input.value;
+    const unit = (additivesData[additiveName] && additivesData[additiveName].unit) ? additivesData[additiveName].unit : 'ml';
+    unitSpan.textContent = unit;
+}
+
+function saveAdditives() {
+    const modalList = document.getElementById('additives-list');
+    const additives = [];
+    let displayText = [];
+    modalList.querySelectorAll('.additive-modal-row').forEach(row => {
+        const nameInput = row.querySelector('.additive-name');
+        const volumeInput = row.querySelector('.additive-volume');
+        if (nameInput.value && volumeInput.value) {
+            const unit = (additivesData[nameInput.value] && additivesData[nameInput.value].unit) ? additivesData[nameInput.value].unit : 'ml';
+            additives.push({ name: nameInput.value, volume: volumeInput.value });
+            displayText.push(`+ ${nameInput.value} ${volumeInput.value}${unit}`);
+        }
+    });
+    currentAdditivesTarget.textContent = displayText.join(' ');
+    currentAdditivesTarget.dataset.additives = JSON.stringify(additives);
+    closeModal('additivesModal');
+    updateSummaries();
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// --- ZAPIS/ODCZYT Z PLIKU ---
 function saveCardToFile() {
     const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
     const historyNumber = document.getElementById('historyNumberInput').value.trim() || 'XXXX';
     const filename = `KartaOIT_${patientName.replace(/\s+/g, '_')}_${historyNumber.replace(/[\/\s]+/g, '-')}.json`;
+
     const cardState = getCardState();
     const fileContent = JSON.stringify(cardState, null, 2);
     const blob = new Blob([fileContent], { type: 'application/json' });
+
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = filename;
@@ -497,6 +550,7 @@ function saveCardToFile() {
 function loadCardFromFile(event) {
     const file = event.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
