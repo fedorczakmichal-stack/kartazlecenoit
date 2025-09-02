@@ -142,9 +142,8 @@ function addPeriodicDrug() {
             <input type="text" class="drug-input" placeholder="Dawka" id="${rowId}_dose" />
         </td>
         <td>
-            <input type="text" class="drug-input" placeholder="i.v." id="${rowId}_route" style="width: 35%;" />
-            <input type="text" class="drug-input" placeholder="co 24 godz" id="${rowId}_freq" style="width: 40%;" oninput="updateDoseTimes(this)" />
-            <input type="text" class="drug-input" placeholder="8:00" id="${rowId}_firstTime" style="width: 25%;" oninput="updateDoseTimes(this)" />
+            <input type="text" class="drug-input" placeholder="i.v." id="${rowId}_route" style="width: 50%;" />
+            <input type="text" class="drug-input" placeholder="co 24 godz" id="${rowId}_freq" style="width: 50%;" oninput="updateDoseTimes(this)" />
             <span class="dose-reduction-notice" style="display:none;">⚠️ Zredukowano</span>
         </td>
         <td>
@@ -159,16 +158,18 @@ function addPeriodicDrug() {
 
 function updateDoseTimes(input) {
     const row = input.closest('tr');
-    const firstTimeInput = row.querySelector('input[id$="_firstTime"]');
     const freqInput = row.querySelector('input[id$="_freq"]');
     const timesContainer = row.querySelector('.dose-times-container');
-    const firstTime = firstTimeInput.value || '8:00';
+    const existingFirstTimeInput = timesContainer.querySelector('.dose-time');
+
+    const firstTime = existingFirstTimeInput ? existingFirstTimeInput.value : '8:00';
     const frequency = freqInput.value;
+
     if (frequency && frequency.match(/co \d+ godz/)) {
         const times = calculateDoseTimes(firstTime, frequency);
         timesContainer.innerHTML = times.map(time => {
             return `<div style="display: flex; align-items: center; min-height: 24px;">
-                        <span style="font-size: 10px; font-weight: 600; width: 40px;">${time}</span>
+                        <input type="text" class="drug-input dose-time" value="${time}" style="width: 40px; font-size: 10px; font-weight: 600; text-align: center;">
                         <div style="flex: 1; border-bottom: 1px solid #ccc; margin-left: 5px; min-width: 40px;"></div>
                     </div>`;
         }).join('');
@@ -183,29 +184,17 @@ function fillPeriodicDrugData(input) {
     const doseInput = row.querySelector('input[id$="_dose"]');
     const routeInput = row.querySelector('input[id$="_route"]');
     const freqInput = row.querySelector('input[id$="_freq"]');
-    const firstTimeInput = row.querySelector('input[id$="_firstTime"]');
     const originalData = periodicDrugsData[drugName];
+
     if (originalData) {
         doseInput.dataset.originalDose = originalData.dose;
         routeInput.value = originalData.route;
         freqInput.value = originalData.frequency;
-        if (originalData.frequency === 'co 24 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 12 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 8 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 6 godz') {
-            firstTimeInput.value = '8:00';
-        } else if (originalData.frequency === 'co 4 godz') {
-            firstTimeInput.value = '8:00';
-        } else {
-            firstTimeInput.value = '';
-        }
         updateDoseTimes(freqInput);
     } else {
         doseInput.dataset.originalDose = '';
     }
+
     recalculateDose(row);
     adjustSingleDoseForGfr(row);
 }
@@ -258,6 +247,7 @@ function populateDatalists() {
     document.getElementById('continuousDrugsList').innerHTML = createOptions(continuousDrugsData);
     document.getElementById('periodicDrugsList').innerHTML = createOptions(periodicDrugsData);
     document.getElementById('fluidsList').innerHTML = createOptions(fluidsData);
+    document.getElementById('additivesList').innerHTML = createOptions(additivesData);
     const enteral = {};
     const parenteral = {};
     Object.keys(nutritionData).forEach(key => {
@@ -303,12 +293,13 @@ function getCardState() {
     });
     document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => {
         const inputs = row.cells[1].querySelectorAll('input');
+        const doseTimes = Array.from(row.querySelectorAll('.dose-time')).map(input => input.value);
         cardState.tables.periodic.push({
             name: row.cells[0].querySelectorAll('input')[0].value,
             dose: row.cells[0].querySelectorAll('input')[1].value,
             route: inputs[0].value,
             freq: inputs[1].value,
-            firstTime: inputs[2] ? inputs[2].value : '8:00'
+            times: doseTimes
         });
     });
     document.querySelectorAll('#fluidsTable tbody tr').forEach(row => {
@@ -425,9 +416,25 @@ function populateCardFromState(cardState) {
         const cellInputs = newRow.cells[1].querySelectorAll('input');
         cellInputs[0].value = data.route;
         cellInputs[1].value = data.freq;
-        if (cellInputs[2]) {
-            cellInputs[2].value = data.firstTime || '8:00';
-            updateDoseTimes(cellInputs[2]);
+
+        const timesContainer = newRow.querySelector('.dose-times-container');
+        if (data.times && data.times.length > 0) {
+            timesContainer.innerHTML = data.times.map(time => {
+                return `<div style="display: flex; align-items: center; min-height: 24px;">
+                            <input type="text" class="drug-input dose-time" value="${time}" style="width: 40px; font-size: 10px; font-weight: 600; text-align: center;">
+                            <div style="flex: 1; border-bottom: 1px solid #ccc; margin-left: 5px; min-width: 40px;"></div>
+                        </div>`;
+            }).join('');
+        } else if (data.firstTime) { // For backwards compatibility with old saves
+             const times = calculateDoseTimes(data.firstTime, data.freq);
+             timesContainer.innerHTML = times.map(time => {
+                return `<div style="display: flex; align-items: center; min-height: 24px;">
+                            <input type="text" class="drug-input dose-time" value="${time}" style="width: 40px; font-size: 10px; font-weight: 600; text-align: center;">
+                            <div style="flex: 1; border-bottom: 1px solid #ccc; margin-left: 5px; min-width: 40px;"></div>
+                        </div>`;
+            }).join('');
+        } else {
+            updateDoseTimes(cellInputs[1]);
         }
     });
     cardState.tables.fluids.forEach(data => {
@@ -478,13 +485,72 @@ function generatePDF() {
     html2pdf().set(opt).from(element).save();
 }
 
+let currentAdditivesTarget = null;
+function openAdditivesModal(button) {
+    currentAdditivesTarget = button.previousElementSibling;
+    const modalList = document.getElementById('additives-list');
+    modalList.innerHTML = '';
+    const existingAdditives = currentAdditivesTarget.dataset.additives ? JSON.parse(currentAdditivesTarget.dataset.additives) : [];
+    if (existingAdditives.length > 0) {
+        existingAdditives.forEach(ad => addAdditiveRowToModal(ad.name, ad.volume));
+    } else {
+        addAdditiveRowToModal();
+    }
+    document.getElementById('additivesModal').style.display = 'flex';
+}
+
+function addAdditiveRowToModal(name = '', volume = '') {
+    const list = document.getElementById('additives-list');
+    const newRow = document.createElement('div');
+    newRow.className = 'additive-modal-row';
+    const unit = (additivesData[name] && additivesData[name].unit) ? additivesData[name].unit : 'ml';
+    newRow.innerHTML = `<input type="text" class="field-value additive-name" placeholder="Nazwa dodatku" list="additivesList" value="${name}" onchange="updateAdditiveUnit(this)">
+                      <input type="number" class="field-value additive-volume" placeholder="ilość" value="${volume}">
+                      <span class="additive-unit">${unit}</span>
+                      <button type="button" class="remove-button" onclick="this.parentElement.remove()"><i class="fas fa-trash"></i></button>`;
+    list.appendChild(newRow);
+}
+
+function updateAdditiveUnit(input) {
+    const row = input.closest('.additive-modal-row');
+    const unitSpan = row.querySelector('.additive-unit');
+    const additiveName = input.value;
+    const unit = (additivesData[additiveName] && additivesData[additiveName].unit) ? additivesData[additiveName].unit : 'ml';
+    unitSpan.textContent = unit;
+}
+
+function saveAdditives() {
+    const modalList = document.getElementById('additives-list');
+    const additives = [];
+    let displayText = [];
+    modalList.querySelectorAll('.additive-modal-row').forEach(row => {
+        const nameInput = row.querySelector('.additive-name');
+        const volumeInput = row.querySelector('.additive-volume');
+        if (nameInput.value && volumeInput.value) {
+            const unit = (additivesData[nameInput.value] && additivesData[nameInput.value].unit) ? additivesData[nameInput.value].unit : 'ml';
+            additives.push({ name: nameInput.value, volume: volumeInput.value });
+            displayText.push(`+ ${nameInput.value} ${volumeInput.value}${unit}`);
+        }
+    });
+    currentAdditivesTarget.textContent = displayText.join(' ');
+    currentAdditivesTarget.dataset.additives = JSON.stringify(additives);
+    closeModal('additivesModal');
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// --- ZAPIS/ODCZYT Z PLIKU ---
 function saveCardToFile() {
     const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
     const historyNumber = document.getElementById('historyNumberInput').value.trim() || 'XXXX';
     const filename = `KartaOIT_${patientName.replace(/\s+/g, '_')}_${historyNumber.replace(/[\/\s]+/g, '-')}.json`;
+
     const cardState = getCardState();
     const fileContent = JSON.stringify(cardState, null, 2);
     const blob = new Blob([fileContent], { type: 'application/json' });
+
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = filename;
@@ -497,6 +563,7 @@ function saveCardToFile() {
 function loadCardFromFile(event) {
     const file = event.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
