@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edytowalna Karta Zleceń OIT</title>
+    <title>Edytowalna Karta ZleceÅ„ OIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css">
@@ -12,23 +12,24 @@
     <div class="top-controls no-print">
         <button onclick="window.print()" class="control-button print"><i class="fas fa-print"></i> Drukuj</button>
         <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
-        <button onclick="saveCard()" class="control-button save"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
-        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
+        <button onclick="saveCard()" class="control-button save"><i class="fas fa-save"></i> Zapisz w przeglÄ…darce</button>
+        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglÄ…darki</button>
         <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
         <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
         <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
-        <button onclick="clearCard()" class="control-button clear"><i class="fas fa-trash"></i> Wyczyść</button>
+        <button onclick="clearCard()" class="control-button clear"><i class="fas fa-trash"></i> WyczyÅ›Ä‡</button>
         <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
     </div>
 
     <div class="container" id="card-container">
+        <!-- Header Section -->
         <div class="header-section">
             <div class="hospital-header">
                 <div class="hospital-logo">
-                    <div class="logo-icon">🏥</div>
+                    <div class="logo-icon">ðŸ¥</div>
                     <div>
-                        <div style="font-size: 13px; font-weight: 600;">Szpital Zakonu Bonifratrów św. Jana Bożego w Łodzi</div>
-                        <div style="font-size: 10px; opacity: 0.9;">ul. Kosynierów Gdyńskich 61, 93-357 Łódź</div>
+                        <div style="font-size: 13px; font-weight: 600;">Szpital Zakonu BonifratrÃ³w Å›w. Jana BoÅ¼ego w Åodzi</div>
+                        <div style="font-size: 10px; opacity: 0.9;">ul. KosynierÃ³w GdyÅ„skich 61, 93-357 ÅÃ³dÅº</div>
                     </div>
                 </div>
                 <div class="header-right-info">
@@ -40,19 +41,16 @@
                         <span class="field-label">Doba w OIT</span>
                         <input type="number" min="0" id="icuDayInput" class="field-value small header-input"/>
                     </div>
-                    <div class="field-group print-only-room" style="display:none;">
-                        <span class="field-label">Sala/Łóżko</span>
-                        <input type="text" id="roomInputPrint" class="field-value small header-input" readonly/>
-                    </div>
                 </div>
             </div>
-            <h1>Oddział Anestezjologii i Intensywnej Terapii - Karta Zleceń Lekarskich</h1>
+            <h1>OddziaÅ‚ Anestezjologii i Intensywnej Terapii - Karta ZleceÅ„ Lekarskich</h1>
         </div>
 
+        <!-- Patient Information -->
         <div class="patient-card">
             <div class="patient-grid">
                 <div class="field-group" style="grid-column: span 2;">
-                    <span class="field-label">Imię i Nazwisko</span>
+                    <span class="field-label">ImiÄ™ i Nazwisko</span>
                     <input type="text" id="patientNameInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
@@ -64,7 +62,7 @@
                     <input type="text" id="historyNumberInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group">
-                    <span class="field-label">Data przyjęcia</span>
+                    <span class="field-label">Data przyjÄ™cia</span>
                     <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value header-input" onchange="calculateIcuDay()"/>
                 </div>
                 <div class="field-group">
@@ -88,40 +86,42 @@
                     <input type="number" id="gfrInput" class="field-value gfr-input header-input" oninput="adjustAllDosesForGfr()"/>
                 </div>
                  <div class="field-group">
-                    <span class="field-label">Sala/Łóżko</span>
+                    <span class="field-label">Sala/ÅÃ³Å¼ko</span>
                     <input type="text" id="roomInput" class="field-value header-input"/>
                 </div>
                 <div class="field-group" style="grid-column: span 4;">
-                    <span class="field-label">⚠️ ALERGIE / NIETOLERANCJE</span>
+                    <span class="field-label">âš ï¸ ALERGIE / NIETOLERANCJE</span>
                     <input type="text" id="allergiesInput" class="field-value alert-field header-input"/>
                 </div>
             </div>
         </div>
 
-        <div class="section-header">LEKI CIĄGŁE - POMPY INFUZYJNE</div>
+        <!-- Continuous Medications -->
+        <div class="section-header">LEKI CIÄ„GÅE - POMPY INFUZYJNE</div>
         <table id="continuousDrugsTable">
             <thead>
                 <tr>
-                    <th style="width: 35%;">Lek / Stężenie</th>
+                    <th style="width: 35%;">Lek / StÄ™Å¼enie</th>
                     <th style="width: 25%;">Dawka</th>
-                    <th style="width: 15%;">Prędkość [ml/h]</th>
-                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th style="width: 15%;">PrÄ™dkoÅ›Ä‡ [ml/h]</th>
+                    <th style="width: 25%;">Podpis pielÄ™gniarki</th>
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
             <tbody id="continuousDrugsTbody"></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciągły</button>
+            <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciÄ…gÅ‚y</button>
         </div>
 
+        <!-- Periodic Medications -->
         <div class="section-header green">LEKI OKRESOWE</div>
         <table id="periodicDrugsTable">
             <thead>
                 <tr>
                     <th style="width: 30%;">Lek / Dawka</th>
-                    <th style="width: 15%;">Droga / Częstość</th>
-                    <th style="width: 55%;">Podpis pielęgniarki</th>
+                    <th style="width: 15%;">Droga / CzÄ™stoÅ›Ä‡</th>
+                    <th style="width: 55%;">Podpis pielÄ™gniarki</th>
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
@@ -131,15 +131,16 @@
             <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
         </div>
 
-        <div class="section-header cyan">PŁYNOTERAPIA I ŻYWIENIE</div>
+        <!-- Fluid Therapy -->
+        <div class="section-header cyan">PÅYNOTERAPIA I Å»YWIENIE</div>
         <table id="fluidsTable">
              <thead>
                 <tr>
-                    <th style="width: 20%;">Płyn</th>
+                    <th style="width: 20%;">PÅ‚yn</th>
                     <th style="width: 35%;">Dodatki</th>
-                    <th style="width: 10%;">Objętość [ml]</th>
-                    <th style="width: 10%;">Prędkość [ml/h]</th>
-                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th style="width: 10%;">ObjÄ™toÅ›Ä‡ [ml]</th>
+                    <th style="width: 10%;">PrÄ™dkoÅ›Ä‡ [ml/h]</th>
+                    <th style="width: 25%;">Podpis pielÄ™gniarki</th>
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
@@ -148,10 +149,9 @@
         <table id="nutritionTable">
             <thead>
                 <tr>
-                    <th style="width: 25%;">Typ żywienia</th>
-                    <th style="width: 35%;">Preparat / Dawka</th>
-                    <th style="width: 15%;">Prędkość [ml/h]</th>
-                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th style="width: 30%;">Typ Å¼ywienia</th>
+                    <th style="width: 45%;">Preparat / Dawka</th>
+                    <th style="width: 25%;">Podpis pielÄ™gniarki</th>
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
@@ -159,15 +159,16 @@
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
-                <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj płyn</button>
-                <button onclick="addNutrition()" class="add-button orange"><i class="fas fa-plus-circle"></i> Dodaj żywienie</button>
+                <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj pÅ‚yn</button>
+                <button onclick="addNutrition()" class="add-button orange"><i class="fas fa-plus-circle"></i> Dodaj Å¼ywienie</button>
             </div>
             <div class="summary-container">
-                <div id="fluidBalanceSummary">Suma płynów / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
+                <div id="fluidBalanceSummary">Suma pÅ‚ynÃ³w / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
                 <div id="kcalSummary">Suma kcal / 24h: <strong><span id="totalKcal">0</span> kcal</strong></div>
             </div>
         </div>
 
+        <!-- Procedures -->
         <div class="section-header purple">PROCEDURY / ZABIEGI</div>
         <table id="proceduresTable">
             <thead>
@@ -181,9 +182,10 @@
             <tbody></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
+            <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurÄ™</button>
         </div>
 
+        <!-- Additional Notes -->
         <div class="section-header gray">UWAGI DODATKOWE / ZALECENIA</div>
         <div class="footer-grid">
             <div class="notes-section">
@@ -191,20 +193,37 @@
             </div>
             <div class="signature-box">
                 <div class="signature-line"></div>
-                <div class="signature-label">LEKARZ DYŻURNY</div>
-                <div class="signature-sublabel">(pieczątka i podpis)</div>
+                <div class="signature-label">LEKARZ DYÅ»URNY</div>
+                <div class="signature-sublabel">(pieczÄ…tka i podpis)</div>
             </div>
         </div>
     </div>
 
+    <!-- Modals and Datalists -->
+    <div id="additivesModal" class="modal no-print" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ZarzÄ…dzaj dodatkami</h3>
+                <span class="close" onclick="closeModal('additivesModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="additives-list"></div>
+                <button onclick="addAdditiveRowToModal()" class="add-button cyan small"><i class="fas fa-plus"></i> Dodaj kolejny</button>
+            </div>
+            <div class="modal-footer">
+                <button onclick="saveAdditives()" class="control-button save">Zapisz</button>
+            </div>
+        </div>
+    </div>
+    
     <div id="loadCardModal" class="modal no-print" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Wczytaj zapisaną kartę</h3>
+                <h3>Wczytaj zapisanÄ… kartÄ™</h3>
                 <span class="close" onclick="closeModal('loadCardModal')">&times;</span>
             </div>
             <div class="modal-body">
-                <p>Wybierz pacjenta z listy, aby wczytać jego kartę.</p>
+                <p>Wybierz pacjenta z listy, aby wczytaÄ‡ jego kartÄ™.</p>
                 <ul id="savedCardsList"></ul>
             </div>
         </div>
@@ -213,11 +232,12 @@
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
+    <datalist id="additivesList"></datalist>
     <datalist id="enteralProductsList"></datalist>
     <datalist id="parenteralProductsList"></datalist>
-    <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie pozajelitowe"><option value="Dieta doustna"> </datalist>
-    <datalist id="proceduresList"> <option value="Toaleta drzewa oskrzelowego"><option value="RTG klatki piersiowej przyłóżkowe"><option value="Zmiana opatrunku CVC"><option value="Zmiana pozycji ciała"><option value="Profilaktyka odleżyn"><option value="USG płuc"><option value="USG jamy brzusznej"><option value="Bronchoskopia"><option value="Wymiana rurki intubacyjnej"><option value="Wymiana rurki tracheostomijnej"><option value="Założenie CVC"><option value="Założenie cewnika tętniczego"><option value="Założenie cewnika Foleya"><option value="Punkcja lędźwiowa"><option value="Nakłucie jamy opłucnej"><option value="Drenaż jamy opłucnej"><option value="CRRT - rozpoczęcie"><option value="CRRT - wymiana zestawu"><option value="Hemodializa"><option value="Plazmafereza"><option value="Fizjoterapia"><option value="Rehabilitacja oddechowa"><option value="Pionizacja"><option value="EKG"><option value="ECHO serca"><option value="Gastroskopia"><option value="Kolonoskopia"><option value="CT głowy"><option value="CT klatki piersiowej"><option value="CT jamy brzusznej"> </datalist>
-    <datalist id="timesList"> <option value="06:00"><option value="07:00"><option value="08:00"><option value="09:00"><option value="10:00"><option value="11:00"><option value="12:00"><option value="13:00"><option value="14:00"><option value="15:00"><option value="16:00"><option value="17:00"><option value="18:00"><option value="19:00"><option value="20:00"><option value="21:00"><option value="22:00"><option value="23:00"><option value="00:00"><option value="01:00"><option value="02:00"><option value="03:00"><option value="04:00"><option value="05:00"><option value="co 1h"><option value="co 2h"><option value="co 4h"><option value="co 6h"><option value="co 8h"><option value="co 12h"><option value="co 24h"><option value="doraźnie"> </datalist>
+    <datalist id="nutritionTypesList"> <option value="Å»ywienie dojelitowe"><option value="Å»ywienie parenteralne"><option value="Dieta doustna"> </datalist>
+    <datalist id="proceduresList"> <option value="Toaleta drzewa oskrzelowego"><option value="RTG klatki piersiowej przyÅ‚Ã³Å¼kowe"><option value="Zmiana opatrunku CVC"><option value="Zmiana pozycji ciaÅ‚a"><option value="Profilaktyka odleÅ¼yn"><option value="USG pÅ‚uc"><option value="USG jamy brzusznej"><option value="Bronchoskopia"><option value="Wymiana rurki intubacyjnej"><option value="Wymiana rurki tracheostomijnej"><option value="ZaÅ‚oÅ¼enie CVC"><option value="ZaÅ‚oÅ¼enie cewnika tÄ™tniczego"><option value="ZaÅ‚oÅ¼enie cewnika Foleya"><option value="Punkcja lÄ™dÅºwiowa"><option value="NakÅ‚ucie jamy opÅ‚ucnej"><option value="DrenaÅ¼ jamy opÅ‚ucnej"><option value="CRRT - rozpoczÄ™cie"><option value="CRRT - wymiana zestawu"><option value="Hemodializa"><option value="Plazmafereza"><option value="Fizjoterapia"><option value="Rehabilitacja oddechowa"><option value="Pionizacja"><option value="EKG"><option value="ECHO serca"><option value="Gastroskopia"><option value="Kolonoskopia"><option value="CT gÅ‚owy"><option value="CT klatki piersiowej"><option value="CT jamy brzusznej"> </datalist>
+    <datalist id="timesList"> <option value="06:00"><option value="07:00"><option value="08:00"><option value="09:00"><option value="10:00"><option value="11:00"><option value="12:00"><option value="13:00"><option value="14:00"><option value="15:00"><option value="16:00"><option value="17:00"><option value="18:00"><option value="19:00"><option value="20:00"><option value="21:00"><option value="22:00"><option value="23:00"><option value="00:00"><option value="01:00"><option value="02:00"><option value="03:00"><option value="04:00"><option value="05:00"><option value="q1h"><option value="q2h"><option value="q4h"><option value="q6h"><option value="PRN"> </datalist>
     
     <script src="script.js"></script>
 </body>
