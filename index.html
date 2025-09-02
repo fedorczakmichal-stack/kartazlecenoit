@@ -143,7 +143,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="fluidsTbody"></tbody>
         </table>
         <table id="nutritionTable">
             <thead>
@@ -155,7 +155,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="nutritionTbody"></tbody>
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
@@ -178,7 +178,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="proceduresTbody"></tbody>
         </table>
         <div class="button-container no-print">
             <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
@@ -209,10 +209,27 @@
             </div>
         </div>
     </div>
+    
+    <div id="additivesModal" class="modal no-print" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Dodaj / Edytuj dodatki</h3>
+                <span class="close" onclick="closeModal('additivesModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="additives-list"></div>
+                <button type="button" onclick="addAdditiveRowToModal()" class="add-button gray" style="margin-top: 10px;"><i class="fas fa-plus"></i> Dodaj kolejny</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="control-button save" onclick="saveAdditives()">Zapisz dodatki</button>
+            </div>
+        </div>
+    </div>
 
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
+    <datalist id="additivesList"></datalist>
     <datalist id="enteralProductsList"></datalist>
     <datalist id="parenteralProductsList"></datalist>
     <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie pozajelitowe"><option value="Dieta doustna"> </datalist>
