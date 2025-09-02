@@ -187,6 +187,10 @@ html.dark-mode .dose-reduction-notice { color: #facc15; }
 .drug-name { font-weight: 500; }
 .infusion-rate { font-weight: 600; color: var(--success-dark); }
 html.dark-mode .infusion-rate { color: #4ade80; }
+.nutrition-rate { font-weight: 500; color: var(--warning-dark); }
+html.dark-mode .nutrition-rate { color: #facc15; }
+.nutrition-type { font-weight: 500; color: var(--info-dark); }
+html.dark-mode .nutrition-type { color: #38bdf8; }
 
 .signature-box-cell { 
     border: 1px solid var(--border-color); 
@@ -196,6 +200,19 @@ html.dark-mode .infusion-rate { color: #4ade80; }
 }
 .additives-input {
     font-size: 10px;
+    color: var(--gray-600);
+}
+.nutrition-additives {
+    font-size: 9px;
+    color: var(--gray-600);
+    margin-top: 2px;
+    padding: 1px 2px;
+    resize: none;
+    min-height: 20px;
+    line-height: 1.4;
+}
+html.dark-mode .nutrition-additives {
+    color: var(--gray-400);
 }
 
 /* Buttons */
@@ -301,8 +318,8 @@ input[type="number"] {
     html, body {
         background: #fff !important;
         color: #000 !important;
-        font-size: 8px !important;
-        line-height: 1.15 !important;
+        font-size: 9px !important;
+        line-height: 1.2 !important;
     }
 
     .container, #card-container {
@@ -357,27 +374,30 @@ input[type="number"] {
         font-size: 12px !important;
     }
     .hospital-logo div div:first-child {
-        font-size: 10px !important;
+        font-size: 11px !important;
     }
     .hospital-logo div div:last-child {
-        font-size: 8px !important;
+        font-size: 9px !important;
+    }
     
-    }
+    /* Ukryj sala/łóżko z nagłówka na wydruku (zostaje tylko w tabeli pacjenta) */
     .header-right-info .print-only-room {
-        display: block !important;
+        display: none !important;
     }
-    .header-right-info .print-only-room .field-value {
+    .header-right-info .field-group .field-value {
         background: #fff !important;
         border: 0.5px solid #000 !important;
         color: #000 !important;
+        min-width: 50px !important;
+        font-size: 9px !important;
     }
-    .header-right-info .print-only-room .field-label {
+    .header-right-info .field-group .field-label {
         color: #000 !important;
-        font-size: 7px !important;
+        font-size: 8px !important;
     }
     
     h1 {
-        font-size: 10px !important;
+        font-size: 11px !important;
         margin: 1mm 0 0 0 !important;
         text-align: center !important;
         color: #000 !important;
@@ -395,33 +415,14 @@ input[type="number"] {
         page-break-inside: avoid !important;
     }
     .patient-grid { 
-        gap: 2mm !important; 
+        gap: 1.5mm !important; 
         grid-template-columns: repeat(4, 1fr) !important;
     }
     
-/* Ukryj niepotrzebne pola na wydruku */
-/* Ukryj rozpoznanie (span 2) */
-.patient-grid .field-group:has(#diagnosisInput),
-/* Ukryj salę/łóżko (przeniesione do nagłówka) */
-.patient-grid .field-group:has(#roomInput),
-/* Ukryj BMI */
-.patient-grid .field-group:has(#bmiOutput),
-/* Ukryj GFR */
-.patient-grid .field-group:has(#gfrInput),
-/* Ukryj alergie (span 4) */
-.patient-grid .field-group:has(#allergiesInput) {
-    display: none !important;
-    }
-    
-    /* Dostosuj siatkę po ukryciu pól */
-    .patient-grid .field-group:has(#patientNameInput) {
-        grid-column: span 3 !important;
-    }
-    
     .field-label {
-        font-size: 6.5px !important;
+        font-size: 7px !important;
         color: #000 !important;
-        margin-bottom: 0.5px !important;
+        margin-bottom: 1px !important;
         letter-spacing: 0.1px !important;
         text-transform: uppercase !important;
     }
@@ -432,9 +433,9 @@ input[type="number"] {
         border: 0.5px solid #000 !important;
         background: #fff !important;
         color: #000 !important;
-        font-size: 8px !important;
-        padding: 0.5px 2px !important;
-        min-height: 16px !important;
+        font-size: 9px !important;
+        padding: 1px 2px !important;
+        min-height: 18px !important;
         border-radius: 0 !important;
     }
     .field-value.small {
@@ -453,10 +454,10 @@ input[type="number"] {
         background: #e0e0e0 !important;
         color: #000 !important;
         border: 0.5px solid #000 !important;
-        padding: 1px 3px !important;
+        padding: 2px 4px !important;
         border-radius: 0 !important;
         margin: 2mm 0 1mm 0 !important;
-        font-size: 8px !important;
+        font-size: 9px !important;
         font-weight: 700 !important;
         page-break-after: avoid !important;
     }
@@ -465,7 +466,7 @@ input[type="number"] {
     table {
         width: 100% !important;
         border-collapse: collapse !important;
-        font-size: 7.5px !important;
+        font-size: 8px !important;
         border: 0.5px solid #000 !important;
         margin: 1mm 0 !important;
         table-layout: fixed !important;
@@ -480,15 +481,29 @@ input[type="number"] {
         color: #000 !important;
         font-weight: 600 !important;
         border: 0.5px solid #000 !important;
-        padding: 1mm !important;
-        font-size: 7px !important;
+        padding: 1.5mm !important;
+        font-size: 7.5px !important;
     }
     tbody td {
         border: 0.5px solid #000 !important;
-        padding: 0.8mm 1mm !important;
-        vertical-align: middle !important;
-        height: 18px !important;
-        overflow-wrap: break-word !important;
+        padding: 1mm !important;
+        vertical-align: top !important;
+        height: auto !important;
+        min-height: 22px;
+        overflow: visible !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Specjalne reguły dla tabeli żywienia */
+    #nutritionTable tbody td {
+        height: auto !important;
+        min-height: 28px !important;
+        padding-bottom: 2mm !important;
+    }
+    
+    #nutritionTable tbody td:nth-child(2) {
+        vertical-align: top !important;
+        overflow: visible !important;
     }
 
     /* Optymalizacja szerokości kolumn dla wydruku */
@@ -507,10 +522,18 @@ input[type="number"] {
     #fluidsTable th:nth-child(4) { width: 12% !important; }
     #fluidsTable th:nth-child(5) { width: 21% !important; }
 
+    /* ZMIENIONE PROPORCJE KOLUMN DLA ŻYWIENIA */
+    #nutritionTable th:nth-child(1) { width: 15% !important; }
+    #nutritionTable th:nth-child(2) { width: 45% !important; }
+    #nutritionTable th:nth-child(3) { width: 15% !important; }
+    #nutritionTable th:nth-child(4) { width: 25% !important; }
+
     /* Pola wewnątrz tabel */
     .drug-input,
     .fluid-rate,
     .nutrition-prep,
+    .nutrition-rate,
+    .nutrition-type,
     .dose,
     .infusion-rate,
     .fluid-name,
@@ -519,14 +542,40 @@ input[type="number"] {
         background: transparent !important;
         color: #000 !important;
         padding: 0 !important;
-        font-size: 7.5px !important;
+        font-size: 8px !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
+    
+    /* POPRAWKA DLA DODATKÓW ŻYWIENIA */
+    textarea.nutrition-additives {
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 7px !important;
+        line-height: 1.15 !important;
+        min-height: auto !important;
+        max-height: none !important;
+        height: auto !important;
+        width: 100% !important;
+        overflow: visible !important;
+        resize: none !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        display: block !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
     }
     
     /* Ukryj placeholdery na wydruku */
-    input::-webkit-input-placeholder { color: transparent !important; }
-    input::-moz-placeholder { color: transparent !important; }
-    input:-ms-input-placeholder { color: transparent !important; }
-    input::placeholder { color: transparent !important; }
+    input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { color: transparent !important; }
+    input::-moz-placeholder, textarea::-moz-placeholder { color: transparent !important; }
+    input:-ms-input-placeholder, textarea:-ms-input-placeholder { color: transparent !important; }
+    input::placeholder, textarea::placeholder { color: transparent !important; }
     
     .drug-name {
         font-weight: 500 !important;
@@ -539,7 +588,7 @@ input[type="number"] {
         border: 0.5px solid #000 !important;
         border-radius: 0 !important;
         background: #fff !important;
-        min-height: 16px !important;
+        min-height: 20px !important;
     }
 
     /* GFR */
@@ -561,7 +610,7 @@ input[type="number"] {
     #fluidBalanceSummary,
     #kcalSummary {
         color: #000 !important;
-        font-size: 7.5px !important;
+        font-size: 8px !important;
     }
     
     /* Stopka ultra kompaktowa */
@@ -576,27 +625,27 @@ input[type="number"] {
     .notes,
     textarea {
         border: 0.5px solid #000 !important;
-        min-height: 30px !important;
-        max-height: 40px !important;
-        padding: 1mm !important;
+        min-height: 35px !important;
+        max-height: 45px !important;
+        padding: 1.5mm !important;
         resize: none !important;
         background: #fff !important;
         color: #000 !important;
-        font-size: 7px !important;
+        font-size: 8px !important;
     }
     .signature-box {
         padding-top: 1mm !important;
     }
     .signature-line {
-        min-height: 20px !important;
+        min-height: 25px !important;
     }
     .signature-label { 
         color: #000 !important; 
-        font-size: 7px !important;
+        font-size: 8px !important;
     }
     .signature-sublabel { 
         color: #000 !important;
-        font-size: 6px !important; 
+        font-size: 7px !important; 
     }
 
     /* Zapobieganie dzieleniu sekcji między strony */
@@ -607,57 +656,11 @@ input[type="number"] {
         page-break-inside: avoid !important;
     }
     
-    /* Grupowanie nagłówków sekcji z tabelami jako niepodzielne bloki */
     .section-header {
         page-break-after: avoid !important;
         break-after: avoid !important;
     }
     
-    /* Każda sekcja (nagłówek + tabela) jako niepodzielny blok */
-    .section-header:has(+ table) {
-        page-break-after: avoid !important;
-    }
-    
-    /* Alternatywne podejście - owijanie w grupy */
-    /* Leki ciągłe */
-    .section-header:nth-of-type(1),
-    .section-header:nth-of-type(1) + table,
-    .section-header:nth-of-type(1) ~ .button-container:nth-of-type(1) {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Leki okresowe */
-    .section-header.green,
-    .section-header.green + table {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Płynoterapia i żywienie */
-    .section-header.cyan,
-    .section-header.cyan + table,
-    .section-header.cyan ~ table:nth-of-type(2),
-    .section-header.cyan ~ .controls-summary-container {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Procedury */
-    .section-header.purple,
-    .section-header.purple + table {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Uwagi dodatkowe */
-    .section-header.gray,
-    .section-header.gray + .footer-grid {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-    
-    /* Zapobiegaj dzieleniu tabel */
     table {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
