@@ -63,38 +63,12 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 210mm;
     margin: 20px auto;
-    padding: 20mm;
+    padding: 10mm;
     background: var(--container-bg);
     box-shadow: 0 4px 12px var(--shadow-color);
     border-radius: 8px;
-}
-
-/* Na większych ekranach zwiększ szerokość */
-@media screen and (min-width: 1400px) {
-    .container {
-        max-width: 1400px;
-        padding: 25mm;
-    }
-}
-
-@media screen and (min-width: 1600px) {
-    .container {
-        max-width: 1600px;
-    }
-}
-
-@media screen and (min-width: 1920px) {
-    .container {
-        max-width: 1800px;
-        padding: 30mm;
-    }
-}
-
-/* Hide print-only room field on screen */
-.print-only-room {
-    display: none !important;
 }
 
 /* Top Controls */
@@ -187,33 +161,9 @@ html.dark-mode .dose-reduction-notice { color: #facc15; }
 .drug-name { font-weight: 500; }
 .infusion-rate { font-weight: 600; color: var(--success-dark); }
 html.dark-mode .infusion-rate { color: #4ade80; }
-.nutrition-rate { font-weight: 500; color: var(--warning-dark); }
-html.dark-mode .nutrition-rate { color: #facc15; }
-.nutrition-type { font-weight: 500; color: var(--info-dark); }
-html.dark-mode .nutrition-type { color: #38bdf8; }
 
-.signature-box-cell { 
-    border: 1px solid var(--border-color); 
-    height: 100%; 
-    background: linear-gradient(to bottom, var(--container-bg), var(--gray-50)); 
-    border-radius: 2px; 
-}
-.additives-input {
-    font-size: 10px;
-    color: var(--gray-600);
-}
-.nutrition-additives {
-    font-size: 9px;
-    color: var(--gray-600);
-    margin-top: 2px;
-    padding: 1px 2px;
-    resize: none;
-    min-height: 20px;
-    line-height: 1.4;
-}
-html.dark-mode .nutrition-additives {
-    color: var(--gray-400);
-}
+.signature-box-cell { border: 1px solid var(--border-color); height: 100%; background: linear-gradient(to bottom, var(--container-bg), var(--gray-50)); border-radius: 2px; }
+.additives-cell { display: flex; align-items: center; gap: 5px; }
 
 /* Buttons */
 .button-container { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 15px; }
@@ -229,20 +179,26 @@ html.dark-mode .nutrition-additives {
 .add-button.purple:hover { background-color: var(--purple-dark); }
 .add-button.gray { background-color: var(--gray-500); }
 .add-button.gray:hover { background-color: var(--gray-600); }
-.remove-button { 
-    background: none; 
-    border: none; 
-    color: var(--gray-400); 
-    cursor: pointer; 
-    font-size: 14px; 
+.remove-button { background: none; border: none; color: var(--gray-400); cursor: pointer; font-size: 14px; }
+.remove-button:hover { color: var(--danger); }
+.action-column { width: 30px; text-align: center; }
+
+.add-additive-button-icon {
+    background: var(--gray-200);
+    border: none;
+    color: var(--gray-600);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    width: 20px;
+    height: 20px;
+    line-height: 18px;
+    text-align: center;
+    transition: all 0.2s ease;
 }
-.remove-button:hover { 
-    color: var(--danger); 
-}
-.action-column { 
-    width: 30px; 
-    text-align: center; 
-}
+.add-additive-button-icon:hover { background: var(--primary); color: white; }
+html.dark-mode .add-additive-button-icon { background: var(--gray-700); color: var(--gray-300); }
 
 /* Summary */
 .controls-summary-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
@@ -267,51 +223,17 @@ html.dark-mode .nutrition-additives {
 .close { font-size: 24px; font-weight: bold; cursor: pointer; color: var(--gray-400); }
 .close:hover { color: var(--text-color); }
 .modal-body { padding: 16px; max-height: 60vh; overflow-y: auto; }
-.modal-footer { 
-    padding: 12px 16px; 
-    text-align: right; 
-    border-top: 1px solid var(--border-color); 
-}
-
-/* Saved cards list in modal */
-#savedCardsList {
-    list-style: none;
-    padding: 0;
-}
-#savedCardsList li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    margin-bottom: 6px;
-    background: var(--gray-50);
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-}
-html.dark-mode #savedCardsList li {
-    background: #1f2937;
-}
-#savedCardsList .patient-name {
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-/* Hide spinners in number inputs */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
+.modal-footer { padding: 12px 16px; text-align: right; border-top: 1px solid var(--border-color); }
+.additive-modal-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+.additive-name { flex: 3; }
+.additive-volume { flex: 1; }
+.additive-unit { font-size: 11px; color: var(--gray-500); }
 
 /* ======= WYDRUK KOMPAKTOWY A4 ======= */
 
 @page {
     size: A4;
-    margin: 5mm;
+    margin: 6mm;
 }
 
 @media print {
@@ -325,7 +247,7 @@ input[type="number"] {
     .container, #card-container {
         max-width: none !important;
         margin: 0 !important;
-        padding: 3mm !important;
+        padding: 5mm !important;
         background: #fff !important;
         border: none !important;
         box-shadow: none !important;
@@ -341,7 +263,7 @@ input[type="number"] {
         display: none !important;
     }
 
-    /* UKRYCIE STRZAŁEK W POLACH NUMBER */
+    /* 1) UKRYCIE STRZAÅEK W POLACH NUMBER (Chrome/Edge/Opera + Firefox) */
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button {
         -webkit-appearance: none !important;
@@ -352,317 +274,181 @@ input[type="number"] {
         appearance: textfield !important;
     }
 
-    /* Nagłówek ultra kompaktowy */
+    /* NagÅ‚Ã³wek prosty */
     .header-section {
         background: none !important;
         color: #000 !important;
-        border-bottom: 0.5px solid #000 !important;
-        padding: 1mm 0 !important;
-        margin-bottom: 2mm !important;
+        border-bottom: 1px solid #000 !important;
+        padding: 2mm 0 !important;
+        margin-bottom: 3mm !important;
         border-radius: 0 !important;
-        page-break-inside: avoid !important;
-    }
-    .hospital-header {
-        margin-bottom: 1mm !important;
     }
     .logo-icon {
-        width: 20px !important;
-        height: 20px !important;
         background: none !important;
         color: #000 !important;
-        border: 0.5px solid #000 !important;
-        font-size: 12px !important;
+        border: 0.6px solid #000 !important;
     }
-    .hospital-logo div div:first-child {
-        font-size: 11px !important;
-    }
-    .hospital-logo div div:last-child {
-        font-size: 9px !important;
-    }
-    
-    /* Ukryj sala/łóżko z nagłówka na wydruku (zostaje tylko w tabeli pacjenta) */
-    .header-right-info .print-only-room {
-        display: none !important;
-    }
-    .header-right-info .field-group .field-value {
-        background: #fff !important;
-        border: 0.5px solid #000 !important;
-        color: #000 !important;
-        min-width: 50px !important;
-        font-size: 9px !important;
-    }
-    .header-right-info .field-group .field-label {
-        color: #000 !important;
-        font-size: 8px !important;
-    }
-    
     h1 {
         font-size: 11px !important;
-        margin: 1mm 0 0 0 !important;
+        margin: 2mm 0 0 0 !important;
         text-align: center !important;
         color: #000 !important;
-        text-transform: uppercase !important;
+        text-transform: none !important;
         letter-spacing: 0 !important;
     }
 
-    /* Karta pacjenta ultra kompaktowa */
+    /* Karta pacjenta ciaÅ›niej */
     .patient-card {
-        border: 0.5px solid #000 !important;
+        border: 0.6px solid #000 !important;
         background: #fff !important;
-        padding: 2mm !important;
-        margin-bottom: 2mm !important;
+        padding: 3mm !important;
+        margin-bottom: 3mm !important;
         border-radius: 0 !important;
-        page-break-inside: avoid !important;
     }
-    .patient-grid { 
-        gap: 1.5mm !important; 
-        grid-template-columns: repeat(4, 1fr) !important;
-    }
-    
+    .patient-grid { gap: 3mm !important; }
     .field-label {
-        font-size: 7px !important;
+        font-size: 7.5px !important;
         color: #000 !important;
         margin-bottom: 1px !important;
-        letter-spacing: 0.1px !important;
+        letter-spacing: .2px !important;
         text-transform: uppercase !important;
     }
     .field-value,
     .header-input,
     input.field-value,
     textarea.field-value {
-        border: 0.5px solid #000 !important;
+        border: 0.6px solid #000 !important;
         background: #fff !important;
         color: #000 !important;
         font-size: 9px !important;
-        padding: 1px 2px !important;
-        min-height: 18px !important;
+        padding: 1px 3px !important;
+        min-height: auto !important;
         border-radius: 0 !important;
-    }
-    .field-value.small {
-        width: auto !important;
-        min-width: 40px !important;
     }
     .alert-field {
         background: #fff !important;
-        border: 1px solid #000 !important;
+        border-color: #000 !important;
         color: #000 !important;
         font-weight: 700 !important;
     }
 
-    /* Nagłówki sekcji kompaktowe */
+    /* NagÅ‚Ã³wki sekcji */
     .section-header {
-        background: #e0e0e0 !important;
+        background: #eee !important;
         color: #000 !important;
-        border: 0.5px solid #000 !important;
+        border: 0.6px solid #000 !important;
         padding: 2px 4px !important;
         border-radius: 0 !important;
-        margin: 2mm 0 1mm 0 !important;
+        margin: 4mm 0 2mm 0 !important;
         font-size: 9px !important;
         font-weight: 700 !important;
-        page-break-after: avoid !important;
     }
 
-    /* Tabele ultra kompaktowe */
+    /* Tabele */
     table {
         width: 100% !important;
         border-collapse: collapse !important;
-        font-size: 8px !important;
-        border: 0.5px solid #000 !important;
-        margin: 1mm 0 !important;
+        font-size: 9px !important;
+        border: 0.6px solid #000 !important;
+        margin: 2mm 0 !important;
         table-layout: fixed !important;
-        page-break-inside: avoid !important;
-    }
-    thead {
-        page-break-inside: avoid !important;
-        page-break-after: avoid !important;
     }
     thead th {
-        background: #f0f0f0 !important;
+        background: #f5f5f5 !important;
         color: #000 !important;
-        font-weight: 600 !important;
-        border: 0.5px solid #000 !important;
-        padding: 1.5mm !important;
-        font-size: 7.5px !important;
+        font-weight: 700 !important;
+        border: 0.6px solid #000 !important;
+        padding: 1.5mm 2mm !important;
     }
     tbody td {
-        border: 0.5px solid #000 !important;
-        padding: 1mm !important;
-        vertical-align: top !important;
+        border: 0.6px solid #000 !important;
+        padding: 1.2mm 2mm !important;
+        vertical-align: middle !important;
         height: auto !important;
-        min-height: 22px;
-        overflow: visible !important;
-        word-wrap: break-word !important;
+        overflow-wrap: anywhere;
     }
 
-    /* Specjalne reguły dla tabeli żywienia */
-    #nutritionTable tbody td {
-        height: auto !important;
-        min-height: 28px !important;
-        padding-bottom: 2mm !important;
-    }
-    
-    #nutritionTable tbody td:nth-child(2) {
-        vertical-align: top !important;
-        overflow: visible !important;
-    }
-
-    /* Optymalizacja szerokości kolumn dla wydruku */
-    #continuousDrugsTable th:nth-child(1) { width: 35% !important; }
-    #continuousDrugsTable th:nth-child(2) { width: 25% !important; }
-    #continuousDrugsTable th:nth-child(3) { width: 15% !important; }
-    #continuousDrugsTable th:nth-child(4) { width: 25% !important; }
-
-    #periodicDrugsTable th:nth-child(1) { width: 35% !important; }
-    #periodicDrugsTable th:nth-child(2) { width: 20% !important; }
-    #periodicDrugsTable th:nth-child(3) { width: 45% !important; }
-
-    #fluidsTable th:nth-child(1) { width: 22% !important; }
-    #fluidsTable th:nth-child(2) { width: 33% !important; }
-    #fluidsTable th:nth-child(3) { width: 12% !important; }
-    #fluidsTable th:nth-child(4) { width: 12% !important; }
-    #fluidsTable th:nth-child(5) { width: 21% !important; }
-
-    /* ZMIENIONE PROPORCJE KOLUMN DLA ŻYWIENIA */
-    #nutritionTable th:nth-child(1) { width: 15% !important; }
-    #nutritionTable th:nth-child(2) { width: 45% !important; }
-    #nutritionTable th:nth-child(3) { width: 15% !important; }
-    #nutritionTable th:nth-child(4) { width: 25% !important; }
-
-    /* Pola wewnątrz tabel */
+    /* Pola wewnÄ…trz tabel â€” bez dodatkowych ramek */
     .drug-input,
     .fluid-rate,
     .nutrition-prep,
-    .nutrition-rate,
-    .nutrition-type,
     .dose,
     .infusion-rate,
-    .fluid-name,
-    .additives-input {
+    .fluid-name {
         border: none !important;
         background: transparent !important;
         color: #000 !important;
         padding: 0 !important;
-        font-size: 8px !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-    }
-    
-    /* POPRAWKA DLA DODATKÓW ŻYWIENIA */
-    textarea.nutrition-additives {
-        border: none !important;
-        background: transparent !important;
-        color: #000 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-size: 7px !important;
-        line-height: 1.15 !important;
-        min-height: auto !important;
-        max-height: none !important;
-        height: auto !important;
-        width: 100% !important;
-        overflow: visible !important;
-        resize: none !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        display: block !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        word-break: normal !important;
-        overflow-wrap: break-word !important;
-    }
-    
-    /* Ukryj placeholdery na wydruku */
-    input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { color: transparent !important; }
-    input::-moz-placeholder, textarea::-moz-placeholder { color: transparent !important; }
-    input:-ms-input-placeholder, textarea:-ms-input-placeholder { color: transparent !important; }
-    input::placeholder, textarea::placeholder { color: transparent !important; }
-    
-    .drug-name {
-        font-weight: 500 !important;
+        font-size: 9px !important;
     }
 
-    /* Podpisy kompaktowe */
+    /* 2) USUNIÄ˜CIE OBRAMOWANIA DLA â€žDODATKÃ“Wâ€ (TYLKO WYDRUK) */
+    /* â€“ brak ramek/teÅ‚ wokÃ³Å‚ listy dodatkÃ³w */
+    .additives-cell,
+    .additives-cell .additives-display {
+        border: none !important;
+        outline: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+    /* JeÅ›li chcesz rÃ³wnieÅ¼ â€žrozpuÅ›ciÄ‡â€ linie kratki tylko w tej kolumnie, odkomentuj:
+    #fluidsTable td:nth-child(2),
+    #fluidsTable th:nth-child(2) {
+        border-left: none !important;
+        border-right: none !important;
+    }
+    */
+
+    /* Podpisy */
     .signature-box-cell,
     .sig,
     .signature-line {
-        border: 0.5px solid #000 !important;
+        border: 0.6px solid #000 !important;
         border-radius: 0 !important;
         background: #fff !important;
-        min-height: 20px !important;
+        min-height: 22px !important;
     }
 
     /* GFR */
-    tr.gfr-dose-adjusted td { 
-        background: #f0f0f0 !important; 
-    }
-    .dose-reduction-notice { 
-        color: #000 !important; 
-        font-weight: 700 !important; 
-        font-size: 6px !important;
-    }
+    tr.gfr-dose-adjusted td { background: #fff !important; }
+    .dose-reduction-notice { color: #000 !important; font-weight: 700 !important; }
 
-    /* Podsumowania kompaktowe */
-    .controls-summary-container {
-        margin-top: 1mm !important;
-        page-break-inside: avoid !important;
-    }
+    /* Podsumowania / stopka */
+    .controls-summary-container,
     .summary-container,
     #fluidBalanceSummary,
     #kcalSummary {
         color: #000 !important;
-        font-size: 8px !important;
+        font-size: 9px !important;
     }
-    
-    /* Stopka ultra kompaktowa */
     .footer-grid {
-        grid-template-columns: 2.5fr 1fr !important;
-        gap: 2mm !important;
+        grid-template-columns: 2fr 1fr !important;
+        gap: 3mm !important;
         align-items: stretch !important;
-        margin-top: 2mm !important;
-        page-break-inside: avoid !important;
     }
     .notes-section textarea,
     .notes,
     textarea {
-        border: 0.5px solid #000 !important;
-        min-height: 35px !important;
-        max-height: 45px !important;
-        padding: 1.5mm !important;
+        border: 0.6px solid #000 !important;
+        min-height: 45px !important;
+        padding: 2mm !important;
         resize: none !important;
         background: #fff !important;
         color: #000 !important;
-        font-size: 8px !important;
     }
-    .signature-box {
-        padding-top: 1mm !important;
-    }
-    .signature-line {
-        min-height: 25px !important;
-    }
-    .signature-label { 
-        color: #000 !important; 
-        font-size: 8px !important;
-    }
-    .signature-sublabel { 
-        color: #000 !important;
-        font-size: 7px !important; 
-    }
+    .signature-label, .signature-sublabel { color: #000 !important; }
 
-    /* Zapobieganie dzieleniu sekcji między strony */
+    /* Stabilne podziaÅ‚y stron */
     .header-section,
     .patient-card,
+    .section-header,
+    table,
+    thead,
+    tbody,
+    tr,
     .footer-grid {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
-    }
-    
-    .section-header {
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    table {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
     }
 }
