@@ -268,7 +268,230 @@ function initializeCard() { const today = new Date(); const day = String(today.g
 document.addEventListener('DOMContentLoaded', () => {
     populateDatalists();
     const toggle = document.getElementById('darkModeToggle'); const html = document.documentElement; const icon = toggle.querySelector('i'); if (localStorage.getItem('darkMode') === 'enabled') { html.classList.add('dark-mode'); icon.className = 'fas fa-sun'; } toggle.addEventListener('click', () => { html.classList.toggle('dark-mode'); if (html.classList.contains('dark-mode')) { localStorage.setItem('darkMode', 'enabled'); icon.className = 'fas fa-sun'; } else { localStorage.setItem('darkMode', 'disabled'); icon.className = 'fas fa-moon'; } }); initializeCard();
+    
+    // Dodanie obsługi dla urządzeń mobilnych
+    detectMobileDevice();
+    addMobileInteractions();
+    handleMobileKeyboard();
 });
+
+// Detekcja urządzenia mobilnego
+function detectMobileDevice() {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+        document.body.classList.add('mobile-device');
+    }
+    
+    // Dodanie klasy dla ekranów dotykowych
+    if ('ontouchstart' in window) {
+        document.body.classList.add('touch-device');
+    }
+}
+
+// Ulepszenia interakcji mobilnych
+function addMobileInteractions() {
+    // Płynne przewijanie dla kontrolek
+    const topControls = document.querySelector('.top-controls');
+    if (topControls && window.innerWidth <= 767) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        
+        topControls.addEventListener('touchstart', (e) => {
+            isDown = true;
+            startX = e.touches[0].pageX - topControls.offsetLeft;
+            scrollLeft = topControls.scrollLeft;
+        });
+        
+        topControls.addEventListener('touchend', () => {
+            isDown = false;
+        });
+        
+        topControls.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - topControls.offsetLeft;
+            const walk = (x - startX) * 2;
+            topControls.scrollLeft = scrollLeft - walk;
+        });
+    }
+    
+    // Lepsza obsługa modali na mobile
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('touchstart', (e) => {
+            if (e.target === modal) {
+                closeModal(modal.id);
+            }
+        });
+    });
+    
+    // Zwiększenie obszaru kliknięcia dla małych przycisków
+    const smallButtons = document.querySelectorAll('.remove-button, .add-additive-button-icon');
+    smallButtons.forEach(btn => {
+        const touchArea = document.createElement('div');
+        touchArea.style.position = 'absolute';
+        touchArea.style.width = '44px';
+        touchArea.style.height = '44px';
+        touchArea.style.top = '50%';
+        touchArea.style.left = '50%';
+        touchArea.style.transform = 'translate(-50%, -50%)';
+        touchArea.style.zIndex = '1';
+        btn.style.position = 'relative';
+        btn.appendChild(touchArea);
+    });
+}
+
+// Obsługa klawiatury mobilnej
+function handleMobileKeyboard() {
+    if (window.innerWidth <= 767) {
+        const inputs = document.querySelectorAll('input, textarea');
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                // Przewiń do elementu gdy klawiatura się pojawi
+                setTimeout(() => {
+                    input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            });
+            
+            // Dodanie typu inputu dla lepszej klawiatury mobilnej
+            if (input.type === 'number') {
+                input.inputMode = 'decimal';
+            }
+            if (input.id && input.id.includes('Date')) {
+                input.inputMode = 'numeric';
+                input.pattern = '[0-9.]*';
+            }
+        });
+    }
+}
+
+// Ulepszona funkcja dodawania leków dla mobile
+function addContinuousDrugMobile() {
+    addContinuousDrug();
+    // Przewiń do nowego wiersza na mobile
+    if (window.innerWidth <= 767) {
+        setTimeout(() => {
+            const newRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+            if (newRow) {
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newRow.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function addPeriodicDrugMobile() {
+    addPeriodicDrug();
+    if (window.innerWidth <= 767) {
+        setTimeout(() => {
+            const newRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+            if (newRow) {
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newRow.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function addFluidMobile() {
+    addFluid();
+    if (window.innerWidth <= 767) {
+        setTimeout(() => {
+            const newRow = document.querySelector('#fluidsTbody tr:last-child');
+            if (newRow) {
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newRow.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function addNutritionMobile() {
+    addNutrition();
+    if (window.innerWidth <= 767) {
+        setTimeout(() => {
+            const newRow = document.querySelector('#nutritionTbody tr:last-child');
+            if (newRow) {
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newRow.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+}
+
+function addProcedureMobile() {
+    addProcedure();
+    if (window.innerWidth <= 767) {
+        setTimeout(() => {
+            const newRow = document.querySelector('#proceduresTbody tr:last-child');
+            if (newRow) {
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const firstInput = newRow.querySelector('input');
+                if (firstInput) firstInput.focus();
+            }
+        }, 100);
+    }
+}
+
+// Zastąp oryginalne funkcje wersjami mobilnymi na małych ekranach
+if (window.innerWidth <= 767) {
+    window.addContinuousDrug = addContinuousDrugMobile;
+    window.addPeriodicDrug = addPeriodicDrugMobile;
+    window.addFluid = addFluidMobile;
+    window.addNutrition = addNutritionMobile;
+    window.addProcedure = addProcedureMobile;
+}
+
+// Obsługa orientacji ekranu
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        detectMobileDevice();
+        if (window.innerWidth <= 767) {
+            window.addContinuousDrug = addContinuousDrugMobile;
+            window.addPeriodicDrug = addPeriodicDrugMobile;
+            window.addFluid = addFluidMobile;
+            window.addNutrition = addNutritionMobile;
+            window.addProcedure = addProcedureMobile;
+        } else {
+            // Przywróć oryginalne funkcje
+            window.addContinuousDrug = addContinuousDrug;
+            window.addPeriodicDrug = addPeriodicDrug;
+            window.addFluid = addFluid;
+            window.addNutrition = addNutrition;
+            window.addProcedure = addProcedure;
+        }
+    }, 100);
+});
+
+// Ulepszona obsługa modali dla mobile
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+    // Przywróć scrollowanie body na mobile
+    if (window.innerWidth <= 767) {
+        document.body.style.overflow = '';
+    }
+}
+
+function openLoadModalMobile() {
+    openLoadModal();
+    // Zablokuj scrollowanie body na mobile gdy modal jest otwarty
+    if (window.innerWidth <= 767) {
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function openAdditivesModalMobile(button) {
+    openAdditivesModal(button);
+    if (window.innerWidth <= 767) {
+        document.body.style.overflow = 'hidden';
+    }
+}
 
 // --- LOGIKA ZAPISU I WCZYTYWANIA ---
 function getCardState() {
@@ -522,10 +745,6 @@ function saveAdditives() {
     currentAdditivesTarget.dataset.additives = JSON.stringify(additives);
     closeModal('additivesModal');
     updateSummaries();
-}
-
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
 }
 
 // --- ZAPIS/ODCZYT Z PLIKU ---
