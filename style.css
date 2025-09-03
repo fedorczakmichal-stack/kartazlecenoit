@@ -121,14 +121,6 @@ body {
     transition: all 0.2s ease;
     color: white;
 }
-@media screen and (min-width: 768px) {
-    .control-button span {
-        display: none;
-    }
-    .control-button.dark-mode span {
-        display: none;
-    }
-}
 .control-button.small { padding: 6px 12px; font-size: 11px; }
 .control-button i { font-size: 14px; }
 .control-button.print { background-color: var(--primary); }
@@ -650,662 +642,159 @@ input.drug-input::-ms-input-placeholder {
     }
 }
 
-/* ============================================
-   STYLE MOBILNE - TELEFON I TABLET
-   ============================================ */
+/* =========================================== */
+/* ========== STYLE DLA URZĄDZEŃ MOBILNYCH ========== */
+/* =========================================== */
 
-/* Tablet (768px - 1024px) */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 768px) {
     body {
-        font-size: 12px;
-        padding: 0;
-        margin: 0;
-    }
-    
-    .container {
-        margin: 0;
-        padding: 15px;
-        border-radius: 0;
-        max-width: 100%;
-    }
-    
-    .top-controls {
-        padding: 10px;
-        gap: 8px;
-        position: fixed;
-        bottom: 0;
-        top: auto;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-        border-top: 1px solid var(--border-color);
-        border-bottom: none;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-    
-    .control-button {
-        padding: 10px 14px;
-        font-size: 11px;
-        flex-shrink: 0;
-    }
-    
-    .control-button span {
-        display: inline;
-    }
-    
-    .patient-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
-    table {
-        font-size: 11px;
-    }
-    
-    th {
-        font-size: 11px;
-        padding: 8px 6px;
-    }
-    
-    td {
-        padding: 6px;
-    }
-    
-    .drug-input {
-        font-size: 12px;
-        padding: 4px;
-    }
-    
-    #card-container {
-        padding-bottom: 80px; /* Space for fixed controls */
-    }
-}
-
-/* Smartphone (poniżej 768px) */
-@media screen and (max-width: 767px) {
-    body {
+        /* Zwiększenie bazowego rozmiaru czcionki dla lepszej czytelności */
         font-size: 13px;
-        background: var(--container-bg);
     }
-    
+
     .container {
+        /* Usunięcie marginesów i cienia, aby karta wypełniła ekran */
         margin: 0;
         padding: 10px;
+        border-radius: 0;
         box-shadow: none;
     }
-    
-    /* Kontrolki na dole - styl mobilny */
+
     .top-controls {
-        position: fixed;
-        bottom: 0;
-        top: auto;
-        left: 0;
-        right: 0;
-        background: var(--container-bg);
-        border-top: 2px solid var(--primary);
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
-        padding: 12px 8px;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        /* Zapewnienie, że przyciski ładnie się zawijają */
+        padding: 10px 5px;
         gap: 6px;
-        z-index: 1000;
-        max-height: 120px;
-        overflow-y: auto;
     }
-    
+
     .control-button {
-        padding: 10px 8px;
-        font-size: 10px;
-        flex-direction: column;
-        gap: 4px;
-        text-align: center;
-        min-height: 50px;
-        justify-content: center;
-    }
-    
-    .control-button span {
-        display: block;
-        font-size: 9px;
+        /* Lekkie powiększenie przycisków dla łatwiejszej obsługi dotykowej */
+        padding: 10px 12px;
+        font-size: 11px;
     }
     
     .control-button i {
-        font-size: 18px;
-    }
-    
-    #card-container {
-        padding-bottom: 140px; /* Więcej miejsca na kontrolki */
-    }
-    
-    /* Nagłówek szpitala - mobilny */
-    .header-section {
-        padding: 10px;
-        margin-bottom: 12px;
-    }
-    
-    .hospital-header {
-        flex-direction: column;
-        gap: 10px;
-        align-items: flex-start;
-    }
-    
-    .hospital-logo {
-        width: 100%;
-    }
-    
-    .logo-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 20px;
-    }
-    
-    .header-right-info {
-        width: 100%;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-    
-    .header-right-info .field-group {
-        width: 100%;
-    }
-    
-    .header-right-info .field-value {
-        width: 100%;
-        padding: 6px;
-        font-size: 12px;
-    }
-    
-    h1 {
-        font-size: 13px;
-        line-height: 1.3;
-        margin-top: 12px;
-    }
-    
-    /* Karta pacjenta - mobilna */
-    .patient-card {
-        padding: 12px;
-        margin-bottom: 12px;
-    }
-    
-    .patient-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    .field-label {
-        font-size: 10px;
-        margin-bottom: 4px;
-    }
-    
-    .field-value, .header-input {
-        padding: 10px;
-        font-size: 14px;
-        min-height: 40px;
-        border-radius: 8px;
-        border: 2px solid var(--border-color);
-    }
-    
-    .field-value:focus, .header-input:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-    
-    /* Sekcje - mobilne */
-    .section-header {
-        padding: 10px 12px;
-        font-size: 13px;
-        border-radius: 8px;
-        margin: 16px 0 10px 0;
-        position: sticky;
-        top: 0;
-        z-index: 50;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    
-    /* Tabele - mobilne (zmiana na karty) */
-    @media screen and (max-width: 767px) {
-        table {
-            display: block;
-            border: none;
-        }
-        
-        thead {
-            display: none;
-        }
-        
-        tbody {
-            display: block;
-        }
-        
-        tr {
-            display: block;
-            margin-bottom: 12px;
-            background: var(--gray-50);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            position: relative;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        
-        td {
-            display: block;
-            padding: 8px 0;
-            border: none;
-            position: relative;
-        }
-        
-        /* Etykiety dla pól w trybie karty */
-        #continuousDrugsTbody td:nth-child(1):before { content: "Lek / Stężenie:"; }
-        #continuousDrugsTbody td:nth-child(2):before { content: "Dawka:"; }
-        #continuousDrugsTbody td:nth-child(3):before { content: "Prędkość [ml/h]:"; }
-        #continuousDrugsTbody td:nth-child(4):before { content: "Podpis:"; }
-        
-        #periodicDrugsTbody td:nth-child(1):before { content: "Lek / Dawka:"; }
-        #periodicDrugsTbody td:nth-child(2):before { content: "Droga / Częstość:"; }
-        #periodicDrugsTbody td:nth-child(3):before { content: "Godziny podania:"; }
-        
-        #fluidsTbody td:nth-child(1):before { content: "Płyn:"; }
-        #fluidsTbody td:nth-child(2):before { content: "Dodatki:"; }
-        #fluidsTbody td:nth-child(3):before { content: "Objętość [ml]:"; }
-        #fluidsTbody td:nth-child(4):before { content: "Prędkość [ml/h]:"; }
-        #fluidsTbody td:nth-child(5):before { content: "Podpis:"; }
-        
-        #nutritionTbody td:nth-child(1):before { content: "Typ żywienia:"; }
-        #nutritionTbody td:nth-child(2):before { content: "Preparat:"; }
-        #nutritionTbody td:nth-child(3):before { content: "Prędkość:"; }
-        #nutritionTbody td:nth-child(4):before { content: "Podpis:"; }
-        
-        #proceduresTbody td:nth-child(1):before { content: "Godzina:"; }
-        #proceduresTbody td:nth-child(2):before { content: "Procedura:"; }
-        #proceduresTbody td:nth-child(3):before { content: "Wykonano:"; }
-        
-        td:before {
-            font-weight: 600;
-            color: var(--gray-600);
-            display: block;
-            font-size: 11px;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-        }
-    }
-    
-    .drug-input {
-        width: 100%;
-        font-size: 14px;
-        padding: 8px;
-        background: var(--container-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        margin-bottom: 4px;
-    }
-    
-    .drug-input:focus {
-        border-color: var(--primary);
-        outline: none;
-        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-    }
-    
-    /* Przyciski akcji - mobilne */
-    .action-column {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: auto;
-    }
-    
-    .remove-button {
-        background: var(--danger);
-        color: white;
-        border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
-    }
-    
-    .remove-button:hover {
-        background: var(--danger-dark);
-        transform: scale(1.1);
-    }
-    
-    /* Przyciski dodawania - mobilne */
-    .button-container {
-        margin: 16px 0;
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .add-button {
-        padding: 14px;
-        font-size: 13px;
-        border-radius: 8px;
-        width: 100%;
-        justify-content: center;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    
-    .add-button:active {
-        transform: scale(0.98);
-    }
-    
-    /* Dodatki - przycisk mobilny */
-    .add-additive-button-icon {
-        background: var(--primary);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 32px;
-        height: 32px;
-        font-size: 18px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .additives-cell {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    
-    .additives-display {
-        flex: 1;
-        font-size: 12px;
-        line-height: 1.4;
-    }
-    
-    /* Podsumowanie - mobilne */
-    .controls-summary-container {
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 16px;
-    }
-    
-    .summary-container {
-        width: 100%;
-        background: var(--gray-50);
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-    }
-    
-    .summary-container div {
-        font-size: 14px;
-        margin: 4px 0;
-    }
-    
-    /* Stopka - mobilna */
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-    
-    .notes-section textarea {
-        min-height: 120px;
-        font-size: 14px;
-        padding: 12px;
-        border-radius: 8px;
-        border: 2px solid var(--border-color);
-    }
-    
-    .signature-box {
-        padding: 16px;
-        background: var(--gray-50);
-        border-radius: 8px;
-        min-height: 100px;
-    }
-    
-    .signature-line {
-        min-height: 60px;
-        border-bottom: 2px solid var(--gray-400);
-    }
-    
-    /* Modale - mobilne */
-    .modal-content {
-        width: 95%;
-        max-width: none;
-        margin: 20px;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-    
-    .modal-header {
-        padding: 16px;
-        position: sticky;
-        top: 0;
-        background: var(--container-bg);
-        z-index: 10;
-    }
-    
-    .modal-header h3 {
         font-size: 16px;
     }
     
-    .close {
-        font-size: 28px;
-        padding: 4px;
-        min-width: 32px;
-        min-height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    .modal-body {
-        padding: 16px;
-        max-height: none;
-    }
-    
-    #savedCardsList li {
-        flex-direction: column;
-        gap: 10px;
-        padding: 12px;
-        align-items: flex-start;
-    }
-    
-    #savedCardsList .patient-name {
-        font-size: 14px;
-    }
-    
-    #savedCardsList div {
-        width: 100%;
-        display: flex;
-        gap: 8px;
-    }
-    
-    #savedCardsList button {
-        flex: 1;
-    }
-    
-    /* Modal dodatków - mobilny */
-    .additive-modal-row {
-        display: grid;
-        grid-template-columns: 1fr auto auto;
-        gap: 8px;
-        margin-bottom: 10px;
-        align-items: center;
-    }
-    
-    .additive-modal-row input {
-        font-size: 14px;
-        padding: 10px;
-    }
-    
-    .additive-unit {
+    h1 {
+        /* Zmniejszenie czcionki nagłówka */
         font-size: 12px;
-        color: var(--gray-600);
-        padding: 0 8px;
     }
     
-    /* Czas dawkowania - mobilny */
-    .dose-times-container {
-        padding: 8px !important;
+    /* === Adaptacyjny panel danych pacjenta === */
+    .patient-grid {
+        /* Zmiana układu z 4 kolumn na 1 */
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    /* Resetowanie rozpiętości kolumn ustawionej dla desktopu */
+    .patient-grid .field-group[style*="grid-column"] {
+        grid-column: auto;
+    }
+
+    .section-header {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+
+    /* === Transformacja tabel w "karty" === */
+    table {
+        border: none;
+        margin-bottom: 15px;
+    }
+
+    /* Ukrycie nagłówków tabeli */
+    table thead {
+        display: none;
+    }
+    
+    table tbody, table tr, table td {
+        display: block; /* Każdy element tabeli jako osobny blok */
+        width: 100% !important;
+    }
+    
+    table tr {
+        /* Stylizowanie wierszy jako oddzielne karty */
+        margin-bottom: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 8px;
+        background-color: var(--gray-50);
+    }
+    
+    table td {
+        /* Układ komórek wewnątrz karty */
+        padding: 5px;
+        border: none;
+        display: flex;
+        justify-content: space-between; /* Etykieta po lewej, wartość po prawej */
+        align-items: center;
+        text-align: right; /* Wartość wyrównana do prawej */
+        border-bottom: 1px dashed var(--border-color); /* Separator między danymi */
+        min-height: 32px;
+    }
+    
+    table td:last-child {
+        border-bottom: none;
+    }
+
+    /* Dodanie etykiet (nazw kolumn) przed wartościami w komórkach */
+    table td::before {
+        content: attr(data-label); /* Pobranie etykiety z atrybutu data-label */
+        font-weight: 600;
+        color: var(--gray-500);
+        text-align: left;
+        margin-right: 10px;
+    }
+
+    .drug-input {
+        text-align: right;
+        padding: 4px;
+    }
+    
+    /* Ukrycie pustych komórek z przyciskami usuwania (są one w ostatniej komórce) */
+    .action-column {
+        padding: 0 !important;
+    }
+
+    /* Przycisk usuwania jest już w komórce, więc nie potrzebujemy dla niego etykiety */
+    table td:has(.remove-button)::before {
+        display: none;
+    }
+
+    table td:has(.remove-button) {
+        justify-content: center;
+        background-color: var(--gray-100);
+        margin-top: 5px;
+        border-radius: 4px;
+    }
+
+    .remove-button {
+        font-size: 16px;
+        padding: 5px;
+        width: 100%;
+        color: var(--danger);
+    }
+
+    /* Poprawki dla sekcji podsumowania */
+    .controls-summary-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .summary-container {
+        text-align: left;
+        width: 100%;
+        padding: 10px;
         background: var(--gray-50);
         border-radius: 6px;
-        margin-top: 8px;
     }
     
-    .dose-times-container > div {
-        margin-bottom: 6px;
-    }
-    
-    /* Input file - ukryty ale dostępny */
-    input[type="file"] {
-        position: absolute !important;
-        clip: rect(1px, 1px, 1px, 1px);
-        padding: 0 !important;
-        border: 0 !important;
-        height: 1px !important;
-        width: 1px !important;
-        overflow: hidden;
-    }
-    
-    /* Poprawki dla Dark Mode na mobile */
-    html.dark-mode .control-button {
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    html.dark-mode .modal-content {
-        border: 1px solid var(--border-color);
-    }
-    
-    html.dark-mode tr {
-        background: var(--gray-700);
-    }
-    
-    html.dark-mode .drug-input {
-        background: var(--gray-800);
-        border-color: var(--gray-600);
-    }
-    
-    html.dark-mode .summary-container {
-        background: var(--gray-800);
-    }
-    
-    html.dark-mode .signature-box {
-        background: var(--gray-800);
-    }
-    
-    /* Animacje dotykowe */
-    @media (hover: none) {
-        .control-button:active,
-        .add-button:active,
-        .remove-button:active {
-            transform: scale(0.95);
-            opacity: 0.8;
-        }
-        
-        .drug-input:active,
-        .field-value:active {
-            background: var(--primary-light);
-        }
-    }
-    
-    /* Dostosowanie dla bardzo małych ekranów */
-    @media screen and (max-width: 375px) {
-        .top-controls {
-            grid-template-columns: repeat(3, 1fr);
-        }
-        
-        .control-button {
-            font-size: 9px;
-            padding: 8px 6px;
-        }
-        
-        .control-button span {
-            font-size: 8px;
-        }
-        
-        .control-button i {
-            font-size: 16px;
-        }
-        
-        h1 {
-            font-size: 12px;
-        }
-        
-        .field-value, .header-input {
-            font-size: 13px;
-        }
-    }
-    
-    /* Orientacja pozioma na telefonie */
-    @media screen and (max-width: 767px) and (orientation: landscape) {
-        .top-controls {
-            grid-template-columns: repeat(6, 1fr);
-            max-height: 70px;
-            padding: 8px 6px;
-        }
-        
-        .control-button {
-            min-height: 40px;
-            font-size: 9px;
-            padding: 6px;
-        }
-        
-        .control-button i {
-            font-size: 14px;
-        }
-        
-        #card-container {
-            padding-bottom: 80px;
-        }
-        
-        .patient-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-}
-
-/* Tablet w orientacji pionowej */
-@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
-    .patient-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    
+    /* Układ stopki */
     .footer-grid {
-        grid-template-columns: 2fr 1fr;
-    }
-    
-    table {
-        font-size: 12px;
-    }
-    
-    .drug-input {
-        font-size: 13px;
-        padding: 6px;
-    }
-}
-
-/* Tablet w orientacji poziomej */
-@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-    .container {
-        max-width: 100%;
-        padding: 20px;
-    }
-    
-    .patient-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-/* Wsparcie dla gestów i dotyku */
-@media (pointer: coarse) {
-    .remove-button,
-    .add-additive-button-icon,
-    .close {
-        min-width: 44px;
-        min-height: 44px;
-    }
-    
-    .control-button {
-        min-height: 44px;
-    }
-    
-    input, textarea, select {
-        min-height: 44px;
+        grid-template-columns: 1fr; /* Zmiana na pojedynczą kolumnę */
+        gap: 15px;
     }
 }
