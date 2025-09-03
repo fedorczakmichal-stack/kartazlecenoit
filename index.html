@@ -2,11 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edytowalna Karta Zleceń OIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -14,15 +10,15 @@
 </head>
 <body>
     <div class="top-controls no-print">
-        <button onclick="window.print()" class="control-button print" aria-label="Drukuj kartę"><i class="fas fa-print"></i> <span>Drukuj</span></button>
-        <button onclick="generatePDF()" class="control-button pdf" aria-label="Eksport do PDF"><i class="fas fa-file-pdf"></i> <span>PDF</span></button>
-        <button onclick="saveCard()" class="control-button save" aria-label="Zapisz w przeglądarce"><i class="fas fa-save"></i> <span>Zapisz</span></button>
-        <button onclick="openLoadModal()" class="control-button load" aria-label="Wczytaj z przeglądarki"><i class="fas fa-folder-open"></i> <span>Wczytaj</span></button>
-        <button onclick="saveCardToFile()" class="control-button save-file" aria-label="Zapisz do pliku"><i class="fas fa-file-download"></i> <span>Do pliku</span></button>
-        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file" aria-label="Wczytaj z pliku"><i class="fas fa-file-upload"></i> <span>Z pliku</span></button>
+        <button onclick="window.print()" class="control-button print"><i class="fas fa-print"></i> Drukuj</button>
+        <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+        <button onclick="saveCard()" class="control-button save"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
+        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
+        <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
+        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
         <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
-        <button onclick="clearCard()" class="control-button clear" aria-label="Wyczyść kartę"><i class="fas fa-trash"></i> <span>Wyczyść</span></button>
-        <button id="darkModeToggle" class="control-button dark-mode" aria-label="Przełącz tryb ciemny"><i class="fas fa-moon"></i> <span>Tryb</span></button>
+        <button onclick="clearCard()" class="control-button clear"><i class="fas fa-trash"></i> Wyczyść</button>
+        <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
     </div>
 
     <div class="container" id="card-container">
@@ -147,7 +143,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="fluidsTbody"></tbody>
+            <tbody></tbody>
         </table>
         <table id="nutritionTable">
             <thead>
@@ -159,7 +155,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="nutritionTbody"></tbody>
+            <tbody></tbody>
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
@@ -182,7 +178,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="proceduresTbody"></tbody>
+            <tbody></tbody>
         </table>
         <div class="button-container no-print">
             <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
@@ -213,27 +209,10 @@
             </div>
         </div>
     </div>
-    
-    <div id="additivesModal" class="modal no-print" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Dodaj / Edytuj dodatki</h3>
-                <span class="close" onclick="closeModal('additivesModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="additives-list"></div>
-                <button type="button" onclick="addAdditiveRowToModal()" class="add-button gray" style="margin-top: 10px;"><i class="fas fa-plus"></i> Dodaj kolejny</button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="control-button save" onclick="saveAdditives()">Zapisz dodatki</button>
-            </div>
-        </div>
-    </div>
 
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
-    <datalist id="additivesList"></datalist>
     <datalist id="enteralProductsList"></datalist>
     <datalist id="parenteralProductsList"></datalist>
     <datalist id="nutritionTypesList"> <option value="Żywienie dojelitowe"><option value="Żywienie pozajelitowe"><option value="Dieta doustna"> </datalist>
