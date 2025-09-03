@@ -80,66 +80,6 @@ body {
     border-radius: 8px;
 }
 
-/* ===== POPRAWKI WYGLĄDU W PRZEGLĄDARCE ===== */
-@media screen {
-    body {
-        font-size: 14px; /* Zwiększona czytelność na ekranie */
-    }
-
-    .field-label {
-        font-size: 10px;
-    }
-
-    .field-value, .drug-input, .notes-section textarea {
-        font-size: 14px;
-        padding: 8px 10px;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    
-    .drug-input {
-        padding: 4px; /* Mniejszy padding dla pól w tabelach */
-    }
-    
-    /* Lepszy wygląd aktywnego pola */
-    .field-value:focus, .notes-section textarea:focus {
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px var(--primary-light);
-        outline: none;
-    }
-
-    .drug-input:focus {
-        background: var(--primary-light);
-        outline: none;
-        border-radius: 3px;
-    }
-
-    h1 {
-        font-size: 18px;
-    }
-
-    th {
-        font-size: 12px;
-        padding: 10px;
-    }
-
-    td {
-        padding: 8px 10px;
-        min-height: 36px;
-    }
-    
-    .control-button {
-        padding: 10px 18px;
-        font-size: 13px;
-    }
-    
-    .add-button {
-        padding: 8px 14px;
-        font-size: 13px;
-    }
-}
-/* ============================================== */
-
-
 /* Na większych ekranach zwiększ szerokość */
 @media screen and (min-width: 1400px) {
     .container {
@@ -337,17 +277,79 @@ html.dark-mode .nutrition-additives {
 .signature-sublabel { font-size: 9px; color: var(--gray-500); }
 
 /* Modal */
-.modal { position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
-.modal-content { background-color: var(--container-bg); border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-.modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-.modal-header h3 { font-size: 14px; font-weight: 600; }
-.close { font-size: 24px; font-weight: bold; cursor: pointer; color: var(--gray-400); }
-.close:hover { color: var(--text-color); }
-.modal-body { padding: 16px; max-height: 60vh; overflow-y: auto; }
+.modal { 
+    position: fixed; 
+    z-index: 1001; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.6); 
+    display: none; 
+    align-items: center; 
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+.modal-content { 
+    background-color: var(--container-bg); 
+    border-radius: 12px; 
+    width: 90%; 
+    max-width: 600px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: modalSlideIn 0.3s ease-out;
+}
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+.modal-header { 
+    padding: 20px 24px; 
+    border-bottom: 1px solid var(--border-color); 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    background: var(--gray-50);
+    border-radius: 12px 12px 0 0;
+}
+.modal-header h3 { 
+    font-size: 18px; 
+    font-weight: 600;
+    color: var(--text-color);
+}
+.close { 
+    font-size: 24px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    color: var(--gray-400);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+.close:hover { 
+    color: var(--text-color);
+    background: var(--gray-200);
+}
+.modal-body { 
+    padding: 24px; 
+    max-height: 60vh; 
+    overflow-y: auto;
+}
 .modal-footer { 
-    padding: 12px 16px; 
+    padding: 16px 24px; 
     text-align: right; 
-    border-top: 1px solid var(--border-color); 
+    border-top: 1px solid var(--border-color);
+    background: var(--gray-50);
+    border-radius: 0 0 12px 12px;
 }
 
 /* Saved cards list in modal */
@@ -359,18 +361,26 @@ html.dark-mode .nutrition-additives {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    margin-bottom: 6px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
     background: var(--gray-50);
-    border-radius: 4px;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
+    transition: all 0.2s;
+}
+#savedCardsList li:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 html.dark-mode #savedCardsList li {
-    background: #1f2937;
+    background: var(--gray-700);
 }
 #savedCardsList .patient-name {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--text-color);
+    font-size: 14px;
 }
 
 /* Hide spinners in number inputs */
@@ -849,7 +859,7 @@ input[type="number"] {
             <tbody id="continuousDrugsTbody"></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addContinuousDrug()" class="add-button">Dodaj lek ciągły</button>
+            <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciągły</button>
         </div>
 
         <div class="section-header green">LEKI OKRESOWE</div>
@@ -865,7 +875,7 @@ input[type="number"] {
             <tbody id="periodicDrugsTbody"></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addPeriodicDrug()" class="add-button green">Dodaj lek okresowy</button>
+            <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
         </div>
 
         <div class="section-header cyan">PŁYNOTERAPIA I ŻYWIENIE</div>
@@ -896,8 +906,8 @@ input[type="number"] {
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
-                <button onclick="addFluid()" class="add-button cyan">Dodaj płyn</button>
-                <button onclick="addNutrition()" class="add-button orange">Dodaj żywienie</button>
+                <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj płyn</button>
+                <button onclick="addNutrition()" class="add-button orange"><i class="fas fa-plus-circle"></i> Dodaj żywienie</button>
             </div>
             <div class="summary-container">
                 <div id="fluidBalanceSummary">Suma płynów / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
@@ -918,7 +928,7 @@ input[type="number"] {
             <tbody></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addProcedure()" class="add-button purple">Dodaj procedurę</button>
+            <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
         </div>
 
         <div class="section-header gray">UWAGI DODATKOWE / ZALECENIA</div>
@@ -947,6 +957,7 @@ input[type="number"] {
         </div>
     </div>
 
+    <!-- DATALIST z prawidłowo sformatowanymi opcjami -->
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
@@ -1025,6 +1036,8 @@ input[type="number"] {
     </datalist>
     
     <script>
+// --- ENHANCED MEDICAL CARD SYSTEM ---
+
 // --- BAZY DANYCH I KONFIGURACJA ---
 const continuousDrugsData = { 'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-1.0 μg/kg/min' }, 'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 μg/kg/min' }, 'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 μg/kg/min' }, 'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 μg/kg/min' }, 'WAZOPRESYNA': { concentration: '20j/20ml', dose: '0.01-0.04 j/min' }, 'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 μg/kg/min' }, 'PROPOFOL 1%': { concentration: '10mg/ml', dose: '1-4 mg/kg/h' }, 'PROPOFOL 2%': { concentration: '20mg/ml', dose: '1-4 mg/kg/h' }, 'MIDAZOLAM': { concentration: '50mg/50ml', dose: '1-15 mg/h' }, 'DEKSMEDETOMIDYNA': { concentration: '200μg/50ml', dose: '0.2-1.4 μg/kg/h' }, 'FENTANYL': { concentration: '500μg/50ml', dose: '25-100 μg/h' }, 'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 μg/kg/min' }, 'MORFINA': { concentration: '20mg/20ml', dose: '1-5 mg/h' }, 'LIGNOCAINA 1%': { concentration: '500mg/50ml', dose: '1-2 mg/min' }, 'OKSYKODON': { concentration: '20mg/20ml', dose: '1-2 mg/h' }, 'KETAMINA': { concentration: '250mg/50ml', dose: '0.5-2 mg/kg/h' }, 'ROKURONIOM': { concentration: '50mg/5ml', dose: '0.3-0.6 mg/kg/h' }, 'CISATRAKURIUM': { concentration: '20mg/10ml', dose: '0.06-0.18 mg/kg/h' }, 'INSULINA': { concentration: '50j/50ml', dose: '0.5-10 j/h' }, 'HEPARYNA': { concentration: '25000j/50ml', dose: '500-2000 j/h' }, 'FUROSEMID': { concentration: '100mg/50ml', dose: '5-20 mg/h' }, 'AMIODARON': { concentration: '300mg/50ml 5% Glc', dose: '20-50 mg/h' }, 'NITROGLICERYNA': { concentration: '25mg/50ml', dose: '5-200 μg/min' }, 'PIPERACYLINA/TAZOBAKTAM': { concentration: '18g/100ml', dose: 'wlew 24h', fixedRate: '4.2' }, 'PANTOPRAZOL': { concentration: '80mg/100ml', dose: '4.2 ml/h', fixedRate: '4.2' }, 'METOPROLOL': { concentration: '10mg/50ml', dose: '1-5 mg/h' }, 'SALBUTAMOL': { concentration: '5mg/50ml', dose: '3-20 μg/min' }, 'DIAZEPAM': { concentration: '50mg/50ml', dose: '2-10 mg/h' } };
 
@@ -1034,17 +1047,13 @@ const fluidsData = { 'NaCl 0.9%': { volume: '500ml', rate: '50' }, 'Plasmalyte':
 
 const glucoseKcalData = { "Glukoza 5%": 0.17, "Glukoza 10%": 0.34 };
 
-// Domyślne przepływy dla preparatów żywieniowych (ml/h)
 const nutritionFlowRates = {
-    // Dojelitowe
     "Nutricomp Standard 500ml (1 kcal/ml)": 50, "Nutricomp Standard 1000ml (1 kcal/ml)": 80, 
     "Nutricomp intensiv 500ml (1.5 kcal/ml)": 40, "Nutricomp intensiv 1000ml (1.5 kcal/ml)": 60,
     "Nutricomp Standard Fibre 500ml (1 kcal/ml)": 50, "Nutrison 500ml (1 kcal/ml)": 50, 
     "Nutrison 1000ml (1 kcal/ml)": 80, "Nutrison 1500ml (1 kcal/ml)": 100, 
     "Nutrison Advanced Peptisorb 500ml (1 kcal/ml)": 50, "Nutrison Advanced Peptisorb 1000ml (1 kcal/ml)": 80,
     "Nutrison Multi Fibre 500ml (1 kcal/ml)": 50, "Nutrison Multi Fibre 1000ml (1 kcal/ml)": 80,
-    
-    // Pozajelitowe
     "OMEGAFLEX PLUS 1250ml (1.3 kcal/ml)": 50, "OMEGAFLEX PLUS 1875ml (1.3 kcal/ml)": 75,
     "OMEGAFLEX SPECIAL 625ml (1.3 kcal/ml)": 25, "OMEGAFLEX SPECIAL 1250ml (1.3 kcal/ml)": 50, 
     "OMEGAFLEX SPECIAL 1875ml (1.3 kcal/ml)": 75, "Nutriflex Peri 1000ml (1.2 kcal/ml)": 80,
@@ -1057,7 +1066,6 @@ const nutritionFlowRates = {
 };
 
 const nutritionData = { 
-    // Dojelitowe
     "Nutricomp Standard 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
     "Nutricomp Standard 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
     "Nutricomp intensiv 500ml (1.5 kcal/ml)": { kcal: 750, volume: 500 }, 
@@ -1070,8 +1078,6 @@ const nutritionData = {
     "Nutrison Advanced Peptisorb 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
     "Nutrison Multi Fibre 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
     "Nutrison Multi Fibre 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
-    
-    // Pozajelitowe
     "OMEGAFLEX PLUS 1250ml (1.3 kcal/ml)": { kcal: 1625, volume: 1250 }, 
     "OMEGAFLEX PLUS 1875ml (1.3 kcal/ml)": { kcal: 2438, volume: 1875 },
     "OMEGAFLEX SPECIAL 625ml (1.3 kcal/ml)": { kcal: 813, volume: 625 }, 
@@ -1125,6 +1131,230 @@ const gfrDoseAdjustments = {
         { gfrMax: 30, dose: '20mg', frequency: 'co 24h' }
     ]
 };
+
+// SZABLONY KART
+const cardTemplates = {
+    'postop-cardiac': {
+        title: '🫀 Kardiochirurgia (Post-op)',
+        description: 'Typowy zestaw leków po operacjach kardiochirurgicznych',
+        diagnosis: 'Stan po operacji kardiochirurgicznej',
+        continuousDrugs: [
+            { name: 'NORADRENALINA', conc: '8mg/50ml', dose: '0.1-0.5 μg/kg/min', rate: '' },
+            { name: 'PROPOFOL 1%', conc: '10mg/ml', dose: '1-3 mg/kg/h', rate: '' },
+            { name: 'FENTANYL', conc: '500μg/50ml', dose: '50-100 μg/h', rate: '' }
+        ],
+        periodicDrugs: [
+            { name: 'PARACETAMOL', dose: '1g', route: 'i.v.', freq: 'co 6h' },
+            { name: 'PANTOPRAZOL', dose: '40mg', route: 'i.v.', freq: 'co 24h' },
+            { name: 'ENOKSAPARYNA', dose: '40mg', route: 's.c.', freq: 'co 24h' }
+        ],
+        fluids: [
+            { name: 'Plasmalyte', additives: '', volume: '500', rate: '50' }
+        ],
+        procedures: [
+            { time: '06:00', name: 'RTG klatki piersiowej przyłóżkowe' },
+            { time: 'co 4h', name: 'Zmiana pozycji ciała' }
+        ]
+    },
+    'sepsis': {
+        title: '🦠 Sepsa / Wstrząs septyczny',
+        description: 'Protokół leczenia sepsy z antybiotykami i wazopresornami',
+        diagnosis: 'Sepsa / Wstrząs septyczny',
+        continuousDrugs: [
+            { name: 'NORADRENALINA', conc: '8mg/50ml', dose: '0.2-1.0 μg/kg/min', rate: '' },
+            { name: 'WAZOPRESYNA', conc: '20j/20ml', dose: '0.01-0.04 j/min', rate: '' }
+        ],
+        periodicDrugs: [
+            { name: 'MEROPENEM', dose: '1g', route: 'wlew i.v. 30min', freq: 'co 8h' },
+            { name: 'WANKOMYCYNA', dose: '1g', route: 'wlew i.v. 1h', freq: 'co 12h' },
+            { name: 'FLUKONAZOL', dose: '400mg', route: 'i.v.', freq: 'co 24h' },
+            { name: 'HYDROKORTYZON', dose: '50mg', route: 'i.v.', freq: 'co 6h' }
+        ],
+        fluids: [
+            { name: 'Plasmalyte', additives: '', volume: '500', rate: '100' },
+            { name: 'Albuminy 5%', additives: '', volume: '250', rate: '100' }
+        ]
+    },
+    'trauma': {
+        title: '🚨 Uraz wielonarządowy',
+        description: 'Leczenie po ciężkim urazie z sedacją i analgezją',
+        diagnosis: 'Uraz wielonarządowy',
+        continuousDrugs: [
+            { name: 'PROPOFOL 1%', conc: '10mg/ml', dose: '2-4 mg/kg/h', rate: '' },
+            { name: 'FENTANYL', conc: '500μg/50ml', dose: '75-150 μg/h', rate: '' },
+            { name: 'CISATRAKURIUM', conc: '20mg/10ml', dose: '0.06-0.18 mg/kg/h', rate: '' }
+        ],
+        periodicDrugs: [
+            { name: 'AMOKSYCYLINA/KWAS KLAWULANOWY', dose: '1.2g', route: 'i.v.', freq: 'co 8h' },
+            { name: 'METAMIZOL', dose: '1g', route: 'i.v.', freq: 'co 6h' },
+            { name: 'PANTOPRAZOL', dose: '40mg', route: 'i.v.', freq: 'co 24h' }
+        ],
+        fluids: [
+            { name: 'Plasmalyte', additives: '', volume: '500', rate: '75' }
+        ]
+    },
+    'respiratory': {
+        title: '🫁 Niewydolność oddechowa',
+        description: 'Leczenie wspomagające w niewydolności oddechowej',
+        diagnosis: 'Ostra niewydolność oddechowa',
+        continuousDrugs: [
+            { name: 'DEKSMEDETOMIDYNA', conc: '200μg/50ml', dose: '0.2-1.0 μg/kg/h', rate: '' },
+            { name: 'SALBUTAMOL', conc: '5mg/50ml', dose: '5-15 μg/min', rate: '' }
+        ],
+        periodicDrugs: [
+            { name: 'DEKSAMETAZON', dose: '8mg', route: 'i.v.', freq: 'co 12h' },
+            { name: 'SALBUTAMOL (NEBULIZACJA)', dose: '2.5mg', route: 'nebulizacja', freq: 'co 4h' },
+            { name: 'ACETYLOCYSTEINA', dose: '300mg (3ml)', route: 'nebulizacja', freq: 'co 8h' },
+            { name: 'FUROSEMID', dose: '20mg', route: 'i.v.', freq: 'co 12h' }
+        ],
+        procedures: [
+            { time: 'co 4h', name: 'Toaleta drzewa oskrzelowego' },
+            { time: 'co 8h', name: 'Rehabilitacja oddechowa' }
+        ]
+    },
+    'renal': {
+        title: '🫘 Niewydolność nerek',
+        description: 'Leczenie w niewydolności nerek z CRRT',
+        diagnosis: 'Ostra niewydolność nerek',
+        continuousDrugs: [
+            { name: 'HEPARYNA', conc: '25000j/50ml', dose: '500-1000 j/h', rate: '' },
+            { name: 'FUROSEMID', conc: '100mg/50ml', dose: '10-20 mg/h', rate: '' }
+        ],
+        periodicDrugs: [
+            { name: 'MEROPENEM', dose: '0.5g', route: 'wlew i.v. 30min', freq: 'co 12h' },
+            { name: 'WANKOMYCYNA', dose: '1g', route: 'wlew i.v. 1h', freq: 'co 48h + TDM' },
+            { name: 'ENOKSAPARYNA', dose: '20mg', route: 's.c.', freq: 'co 24h' }
+        ],
+        procedures: [
+            { time: '08:00', name: 'CRRT - rozpoczęcie' },
+            { time: 'co 24h', name: 'CRRT - wymiana zestawu' }
+        ],
+        gfr: 15
+    }
+};
+
+// GLOBALNE ZMIENNE
+let autosaveInterval = null;
+let hasUnsavedChanges = false;
+let dragSortables = [];
+let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+let isOnline = navigator.onLine;
+
+// --- TOAST NOTIFICATIONS SYSTEM ---
+function showToast(title, message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+        <i class="fas ${icons[type]} toast-icon"></i>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="removeToast(this)">×</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Auto remove after duration
+    setTimeout(() => {
+        if (toast.parentNode) {
+            removeToast(toast.querySelector('.toast-close'));
+        }
+    }, duration);
+}
+
+function removeToast(button) {
+    const toast = button.parentElement;
+    toast.style.animation = 'toastSlideIn 0.3s ease-out reverse';
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 300);
+}
+
+// --- AUTOSAVE SYSTEM ---
+function updateAutosaveIndicator(status, message) {
+    const indicator = document.getElementById('autosaveIndicator');
+    indicator.className = `autosave-indicator ${status}`;
+    indicator.querySelector('span').textContent = message;
+    
+    const icons = {
+        saving: 'fa-circle',
+        saved: 'fa-check-circle', 
+        error: 'fa-exclamation-circle'
+    };
+    indicator.querySelector('i').className = `fas ${icons[status] || 'fa-circle'}`;
+}
+
+function markAsChanged() {
+    hasUnsavedChanges = true;
+    updateAutosaveIndicator('saving', 'Zapisywanie...');
+}
+
+function autoSave() {
+    if (!hasUnsavedChanges) return;
+    
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    if (!patientName) {
+        updateAutosaveIndicator('error', 'Brak nazwy pacjenta');
+        return;
+    }
+    
+    try {
+        const cardState = getCardState();
+        const autoSaveKey = `autosave_${patientName.replace(/\s+/g, '-')}`;
+        localStorage.setItem(autoSaveKey, JSON.stringify({
+            ...cardState,
+            timestamp: new Date().toISOString(),
+            isAutoSave: true
+        }));
+        
+        hasUnsavedChanges = false;
+        updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+        
+    } catch (e) {
+        updateAutosaveIndicator('error', 'Błąd zapisu automatycznego');
+        console.error('Autosave error:', e);
+    }
+}
+
+function startAutosave() {
+    if (autosaveInterval) clearInterval(autosaveInterval);
+    autosaveInterval = setInterval(autoSave, 30000); // co 30 sekund
+}
+
+function restoreFromAutosave() {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    if (!patientName) return;
+    
+    const autoSaveKey = `autosave_${patientName.replace(/\s+/g, '-')}`;
+    const savedData = localStorage.getItem(autoSaveKey);
+    
+    if (savedData) {
+        try {
+            const cardState = JSON.parse(savedData);
+            if (cardState.isAutoSave) {
+                const saveTime = new Date(cardState.timestamp).toLocaleString();
+                if (confirm(`Znaleziono automatyczny zapis z ${saveTime}. Czy przywrócić dane?`)) {
+                    populateCardFromState(cardState);
+                    showToast('Przywrócono', 'Dane zostały przywrócone z automatycznego zapisu', 'success');
+                }
+            }
+        } catch (e) {
+            console.error('Error restoring autosave:', e);
+        }
+    }
+}
 
 // --- FUNKCJE POMOCNICZE ---
 function autoResizeTextarea(textarea) {
@@ -1293,9 +1523,39 @@ function updateNutritionProductList(typeInput) {
 function addProcedure() { const tbody = document.querySelector('#proceduresTable tbody'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="drug-input" placeholder="Godz." list="timesList" autocomplete="off" /></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" autocomplete="off" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; tbody.appendChild(newRow); }
 
 // --- LOGIKA DAWKOWANIA (GFR, mg/kg) ---
-function recalculateDose(row) { const doseInput = row.querySelector('input[id$="_dose"]'); const originalDose = doseInput.dataset.originalDose; const weight = parseFloat(document.getElementById('patientWeight').value); if (originalDose && originalDose.includes('/kg') && weight > 0) { const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?/; const matches = originalDose.match(doseRegex); if (matches) { const dose1 = parseFloat(matches[1]); const totalDose1 = Math.round(dose1 * weight); if (matches[2]) { const dose2 = parseFloat(matches[2]); const totalDose2 = Math.round(dose2 * weight); doseInput.value = `${totalDose1}-${totalDose2}mg (${originalDose})`; } else { doseInput.value = `${totalDose1}mg (${originalDose})`; } } } else if (originalDose) { doseInput.value = originalDose; } }
-function recalculateAllKgDoses(){ document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => recalculateDose(row)); adjustAllDosesForGfr(); }
-function adjustAllDosesForGfr() { document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => adjustSingleDoseForGfr(row)); }
+function recalculateDose(row) { 
+    const doseInput = row.querySelector('input[id$="_dose"]'); 
+    const originalDose = doseInput.dataset.originalDose; 
+    const weight = parseFloat(document.getElementById('patientWeight').value); 
+    
+    if (originalDose && originalDose.includes('/kg') && weight > 0) { 
+        const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?/; 
+        const matches = originalDose.match(doseRegex); 
+        if (matches) { 
+            const dose1 = parseFloat(matches[1]); 
+            const totalDose1 = Math.round(dose1 * weight); 
+            if (matches[2]) { 
+                const dose2 = parseFloat(matches[2]); 
+                const totalDose2 = Math.round(dose2 * weight); 
+                doseInput.value = `${totalDose1}-${totalDose2}mg (${originalDose})`; 
+            } else { 
+                doseInput.value = `${totalDose1}mg (${originalDose})`; 
+            } 
+        } 
+    } else if (originalDose) { 
+        doseInput.value = originalDose; 
+    } 
+}
+
+function recalculateAllKgDoses(){ 
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => recalculateDose(row)); 
+    adjustAllDosesForGfr(); 
+}
+
+function adjustAllDosesForGfr() { 
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => adjustSingleDoseForGfr(row)); 
+}
+
 function adjustSingleDoseForGfr(row) {
     const gfrInput = document.getElementById('gfrInput');
     const gfr = gfrInput.value ? parseFloat(gfrInput.value) : null;
@@ -1315,19 +1575,39 @@ function adjustSingleDoseForGfr(row) {
     if (!gfr || !adjustmentRules) return;
 
     let appliedRule = null;
-    for (const rule of adjustmentRules) { if (gfr <= rule.gfrMax) { appliedRule = rule; break; } }
+    for (const rule of adjustmentRules) { 
+        if (gfr <= rule.gfrMax) { 
+            appliedRule = rule; 
+            break; 
+        } 
+    }
 
     if (appliedRule) {
         if (appliedRule.dose.includes('/kg')) {
             const weight = parseFloat(document.getElementById('patientWeight').value);
             if (weight > 0) {
-                const doseRegex = /([\d\.]+)/; const matches = appliedRule.dose.match(doseRegex);
-                if(matches) { const totalDose = Math.round(parseFloat(matches[1]) * weight); doseInput.value = `${totalDose}mg (${appliedRule.dose})`; }
-            } else { doseInput.value = appliedRule.dose; }
-        } else { doseInput.value = appliedRule.dose; }
+                const doseRegex = /([\d\.]+)/; 
+                const matches = appliedRule.dose.match(doseRegex);
+                if(matches) { 
+                    const totalDose = Math.round(parseFloat(matches[1]) * weight); 
+                    doseInput.value = `${totalDose}mg (${appliedRule.dose})`; 
+                }
+            } else { 
+                doseInput.value = appliedRule.dose; 
+            }
+        } else { 
+            doseInput.value = appliedRule.dose; 
+        }
+        
         if (appliedRule.frequency && freqInput) freqInput.value = appliedRule.frequency;
         row.classList.add('gfr-dose-adjusted');
         if (notice) notice.style.display = 'inline';
+        
+        // Show warning toast for first adjustment
+        if (!row.dataset.gfrWarningShown) {
+            showToast('Dostosowano dawkę', `Dawka ${drugName} została dostosowana do GFR=${gfr}`, 'warning', 6000);
+            row.dataset.gfrWarningShown = 'true';
+        }
     }
 }
 
@@ -1359,38 +1639,259 @@ function initializeCard() {
     document.getElementById('mainDateInput').value = `${day}.${month}.${year}`; 
     calculateIcuDay(); 
     calculateBMI(); 
+    updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
 }
-document.addEventListener('DOMContentLoaded', () => { 
-    populateDatalists();
-    const toggle = document.getElementById('darkModeToggle'); 
-    const html = document.documentElement; 
-    const icon = toggle.querySelector('i'); 
-    if (localStorage.getItem('darkMode') === 'enabled') { 
-        html.classList.add('dark-mode'); 
-        icon.className = 'fas fa-sun'; 
-    } 
-    toggle.addEventListener('click', () => { 
-        html.classList.toggle('dark-mode'); 
-        if (html.classList.contains('dark-mode')) { 
-            localStorage.setItem('darkMode', 'enabled'); 
-            icon.className = 'fas fa-sun'; 
-        } else { 
-            localStorage.setItem('darkMode', 'disabled'); 
-            icon.className = 'fas fa-moon'; 
-        } 
-    }); 
-    initializeCard(); 
+
+// --- ENHANCED SAVE/LOAD SYSTEM ---
+function saveCard() {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    const historyNumber = document.getElementById('historyNumberInput').value.trim();
     
-    const roomInput = document.getElementById('roomInput');
-    const roomInputPrint = document.getElementById('roomInputPrint');
-    if (roomInput && roomInputPrint) {
-        roomInput.addEventListener('input', function() {
-            roomInputPrint.value = this.value;
+    if (!patientName || !historyNumber) {
+        showToast('Brak danych', 'Proszę wypełnić Imię i Nazwisko oraz Numer Historii, aby zapisać kartę.', 'warning');
+        
+        // Highlight required fields
+        if (!patientName) {
+            document.getElementById('patientNameInput').classList.add('field-error');
+            setTimeout(() => document.getElementById('patientNameInput').classList.remove('field-error'), 3000);
+        }
+        if (!historyNumber) {
+            document.getElementById('historyNumberInput').classList.add('field-error');
+            setTimeout(() => document.getElementById('historyNumberInput').classList.remove('field-error'), 3000);
+        }
+        return;
+    }
+    
+    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
+    const cardState = getCardState();
+
+    try {
+        // Add metadata
+        cardState.metadata = {
+            savedAt: new Date().toISOString(),
+            version: '2.0',
+            patientSummary: {
+                name: patientName,
+                historyNumber: historyNumber,
+                diagnosis: document.getElementById('diagnosisInput').value || 'Brak rozpoznania'
+            }
+        };
+        
+        const storageKey = isOnline ? cardKey : `offline_${cardKey}`;
+        localStorage.setItem(storageKey, JSON.stringify(cardState));
+        
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+        if (!savedCardsIndex.includes(cardKey)) {
+            savedCardsIndex.push(cardKey);
+            localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        }
+        
+        hasUnsavedChanges = false;
+        updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+        
+        showToast('Zapisano', 'Karta została pomyślnie zapisana!', 'success');
+        
+    } catch (e) {
+        console.error("Błąd zapisu:", e);
+        showToast('Błąd zapisu', 'Wystąpił błąd podczas zapisu karty. Spróbuj ponownie.', 'error');
+    }
+}
+
+function openLoadModal() {
+    const savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+    const listElement = document.getElementById('savedCardsList');
+    listElement.innerHTML = '';
+    
+    if (savedCardsIndex.length === 0) {
+        listElement.innerHTML = '<li style="text-align: center; padding: 20px; color: var(--gray-500);">Brak zapisanych kart.</li>';
+    } else {
+        // Sort by most recent
+        const cardsWithDates = savedCardsIndex.map(key => {
+            const data = localStorage.getItem(key);
+            let savedAt = null;
+            try {
+                const parsed = JSON.parse(data);
+                savedAt = parsed.metadata?.savedAt ? new Date(parsed.metadata.savedAt) : new Date(0);
+            } catch(e) {
+                savedAt = new Date(0);
+            }
+            return { key, savedAt };
+        }).sort((a, b) => b.savedAt - a.savedAt);
+        
+        cardsWithDates.forEach(({key, savedAt}) => {
+            const friendlyName = key.replace('card_', '').replace(/_/g, ' ');
+            const timeAgo = getTimeAgo(savedAt);
+            
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div>
+                    <div class="patient-name">${friendlyName}</div>
+                    <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">Zapisano: ${timeAgo}</div>
+                </div>
+                <div>
+                    <button class="control-button load small" onclick="loadCard('${key}')">Wczytaj</button>
+                    <button class="control-button clear small" onclick="deleteCard('${key}', this)">Usuń</button>
+                </div>`;
+            listElement.appendChild(li);
         });
     }
-});
+    
+    document.getElementById('loadCardModal').style.display = 'flex';
+}
 
-// --- LOGIKA ZAPISU I WCZYTYWANIA ---
+function getTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 60) return `${diffMins} min temu`;
+    if (diffHours < 24) return `${diffHours}h temu`;
+    if (diffDays < 7) return `${diffDays} dni temu`;
+    return date.toLocaleDateString('pl-PL');
+}
+
+function deleteCard(cardKey, button) {
+    const friendlyName = cardKey.replace('card_', '').replace(/_/g, ' ');
+    if (confirm(`Czy na pewno chcesz usunąć kartę: ${friendlyName}?`)) {
+        localStorage.removeItem(cardKey);
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+        savedCardsIndex = savedCardsIndex.filter(key => key !== cardKey);
+        localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        button.closest('li').remove();
+        
+        showToast('Usunięto', `Karta "${friendlyName}" została usunięta`, 'info');
+    }
+}
+
+function loadCard(cardKey) {
+    const savedStateJSON = localStorage.getItem(cardKey);
+    if (!savedStateJSON) {
+        showToast('Błąd', 'Nie można wczytać karty. Mogła zostać usunięta.', 'error');
+        return;
+    }
+    
+    try {
+        const cardState = JSON.parse(savedStateJSON);
+        populateCardFromState(cardState);
+        closeModal('loadCardModal');
+        
+        const patientName = cardState.metadata?.patientSummary?.name || 'Pacjent';
+        showToast('Wczytano', `Pomyślnie wczytano kartę dla: ${patientName}`, 'success');
+        
+    } catch (e) {
+        console.error('Load error:', e);
+        showToast('Błąd', 'Wystąpił błąd podczas wczytywania karty.', 'error');
+    }
+}
+
+function populateCardFromState(cardState) {
+    clearCard(true);
+    
+    // Restore header data
+    Object.keys(cardState.header || {}).forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = cardState.header[id];
+    });
+    
+    // Sync room fields
+    const roomInput = document.getElementById('roomInput');
+    const roomInputPrint = document.getElementById('roomInputPrint');
+    if (roomInput && roomInputPrint && roomInput.value) {
+        roomInputPrint.value = roomInput.value;
+    }
+    
+    // Restore tables data with enhanced features
+    const tables = cardState.tables || {};
+    
+    // Continuous drugs
+    (tables.continuous || []).forEach(data => {
+        addContinuousDrug();
+        const newRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+        const inputs = newRow.querySelectorAll('input');
+        inputs[1].value = data.name; // Skip drag handle
+        inputs[2].value = data.conc;
+        inputs[3].value = data.dose;
+        inputs[4].value = data.rate;
+        
+        // Trigger autofill
+        if (data.name) {
+            fillContinuousDrugData(inputs[1], inputs[1].id.replace('_name', ''));
+        }
+    });
+    
+    // Periodic drugs
+    (tables.periodic || []).forEach(data => {
+        addPeriodicDrug();
+        const newRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+        const inputs = newRow.querySelectorAll('input');
+        inputs[1].value = data.name; // Skip drag handle
+        inputs[2].value = data.dose;
+        inputs[3].value = data.route;
+        inputs[4].value = data.freq;
+        
+        // Trigger autofill
+        if (data.name) {
+            fillPeriodicDrugData(inputs[1]);
+        }
+    });
+    
+    // Fluids
+    (tables.fluids || []).forEach(data => {
+        addFluid();
+        const newRow = document.querySelector('#fluidsTable tbody tr:last-child');
+        const inputs = newRow.querySelectorAll('input');
+        inputs[1].value = data.name; // Skip drag handle
+        inputs[2].value = data.additives || '';
+        inputs[3].value = data.volume || '';
+        inputs[4].value = data.rate || '';
+    });
+    
+    // Nutrition
+    (tables.nutrition || []).forEach(data => {
+        addNutrition();
+        const newRow = document.querySelector('#nutritionTable tbody tr:last-child');
+        const typeInput = newRow.querySelector('.nutrition-type');
+        const prepInput = newRow.querySelector('.nutrition-prep');
+        const additivesTextarea = newRow.querySelector('.nutrition-additives');
+        const rateInput = newRow.querySelector('.nutrition-rate');
+        
+        if (data.type) {
+            typeInput.value = data.type;
+            updateNutritionProductList(typeInput);
+        }
+        if (data.prep) prepInput.value = data.prep;
+        if (data.additives && additivesTextarea) {
+            additivesTextarea.value = data.additives;
+            autoResizeTextarea(additivesTextarea);
+        }
+        if (data.rate) rateInput.value = data.rate;
+    });
+    
+    // Procedures
+    (tables.procedures || []).forEach(data => {
+        addProcedure();
+        const newRow = document.querySelector('#proceduresTable tbody tr:last-child');
+        const inputs = newRow.querySelectorAll('input');
+        inputs[1].value = data.time || ''; // Skip drag handle
+        inputs[2].value = data.name || '';
+    });
+    
+    // Restore notes
+    if (cardState.notes) {
+        document.querySelector('.notes-section textarea').value = cardState.notes;
+    }
+    
+    // Recalculate everything
+    handleWeightHeightChange();
+    updateSummaries();
+    adjustAllDosesForGfr();
+    
+    hasUnsavedChanges = false;
+    updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+}
+
 function getCardState() {
     const cardState = {
         header: {},
@@ -1403,203 +1904,62 @@ function getCardState() {
         },
         notes: ''
     };
+    
+    // Save header data
     document.querySelectorAll('.header-input').forEach(input => {
         if (input.id) cardState.header[input.id] = input.value;
     });
+    
+    // Save table data (skip drag handles)
     document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => {
+        const inputs = row.querySelectorAll('input');
         cardState.tables.continuous.push({
-            name: row.cells[0].querySelectorAll('input')[0].value,
-            conc: row.cells[0].querySelectorAll('input')[1].value,
-            dose: row.cells[1].querySelector('input').value,
-            rate: row.cells[2].querySelector('input').value
+            name: inputs[1]?.value || '', // Skip drag handle
+            conc: inputs[2]?.value || '',
+            dose: inputs[3]?.value || '',
+            rate: inputs[4]?.value || ''
         });
     });
+    
     document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => {
+        const inputs = row.querySelectorAll('input');
         cardState.tables.periodic.push({
-            name: row.cells[0].querySelectorAll('input')[0].value,
-            dose: row.cells[0].querySelectorAll('input')[1].value,
-            route: row.cells[1].querySelectorAll('input')[0].value,
-            freq: row.cells[1].querySelectorAll('input')[1].value
+            name: inputs[1]?.value || '', // Skip drag handle
+            dose: inputs[2]?.value || '',
+            route: inputs[3]?.value || '',
+            freq: inputs[4]?.value || ''
         });
     });
+    
     document.querySelectorAll('#fluidsTable tbody tr').forEach(row => {
+        const inputs = row.querySelectorAll('input');
         cardState.tables.fluids.push({
-            name: row.cells[0].querySelector('input').value,
-            additives: row.cells[1].querySelector('input').value,
-            volume: row.cells[2].querySelector('input').value,
-            rate: row.cells[3].querySelector('input').value
+            name: inputs[1]?.value || '', // Skip drag handle
+            additives: inputs[2]?.value || '',
+            volume: inputs[3]?.value || '',
+            rate: inputs[4]?.value || ''
         });
     });
+    
     document.querySelectorAll('#nutritionTable tbody tr').forEach(row => {
         cardState.tables.nutrition.push({
-            type: row.cells[0].querySelector('input').value,
-            prep: row.cells[1].querySelector('input').value,
-            additives: row.cells[1].querySelector('textarea').value,
-            rate: row.cells[2].querySelector('input').value
+            type: row.querySelector('.nutrition-type')?.value || '',
+            prep: row.querySelector('.nutrition-prep')?.value || '',
+            additives: row.querySelector('.nutrition-additives')?.value || '',
+            rate: row.querySelector('.nutrition-rate')?.value || ''
         });
     });
+    
     document.querySelectorAll('#proceduresTable tbody tr').forEach(row => {
+        const inputs = row.querySelectorAll('input');
         cardState.tables.procedures.push({
-            time: row.cells[0].querySelector('input').value,
-            name: row.cells[1].querySelector('input').value
+            time: inputs[1]?.value || '', // Skip drag handle
+            name: inputs[2]?.value || ''
         });
     });
+    
     cardState.notes = document.querySelector('.notes-section textarea').value;
     return cardState;
-}
-
-function saveCard() {
-    const patientName = document.getElementById('patientNameInput').value.trim();
-    const historyNumber = document.getElementById('historyNumberInput').value.trim();
-    if (!patientName || !historyNumber) {
-        alert("Proszę wypełnić Imię i Nazwisko oraz Numer Historii, aby zapisać kartę.");
-        return;
-    }
-    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
-    
-    const cardState = getCardState();
-
-    try {
-        localStorage.setItem(cardKey, JSON.stringify(cardState));
-        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
-        if (!savedCardsIndex.includes(cardKey)) {
-            savedCardsIndex.push(cardKey);
-            localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
-        }
-        alert('✅ Karta została pomyślnie zapisana w przeglądarce!');
-    } catch (e) {
-        console.error("Błąd zapisu:", e);
-        alert('❌ Wystąpił błąd podczas zapisu karty.');
-    }
-}
-
-function openLoadModal() {
-    const savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
-    const listElement = document.getElementById('savedCardsList');
-    listElement.innerHTML = '';
-    if (savedCardsIndex.length === 0) {
-        listElement.innerHTML = '<li>Brak zapisanych kart.</li>';
-    } else {
-        savedCardsIndex.forEach(key => {
-            const friendlyName = key.replace('card_', '').replace(/_/g, ' ');
-            const li = document.createElement('li');
-            li.innerHTML = `<span class="patient-name">${friendlyName}</span>
-                            <div>
-                                <button class="control-button load small" onclick="loadCard('${key}')">Wczytaj</button>
-                                <button class="control-button clear small" onclick="deleteCard('${key}', this)">Usuń</button>
-                            </div>`;
-            listElement.appendChild(li);
-        });
-    }
-    document.getElementById('loadCardModal').style.display = 'flex';
-}
-
-function deleteCard(cardKey, button) {
-    if (confirm(`Czy na pewno chcesz usunąć kartę: ${cardKey.replace('card_', '').replace(/_/g, ' ')}?`)) {
-        localStorage.removeItem(cardKey);
-        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex')) || [];
-        savedCardsIndex = savedCardsIndex.filter(key => key !== cardKey);
-        localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
-        button.closest('li').remove();
-    }
-}
-
-function loadCard(cardKey) {
-    const savedStateJSON = localStorage.getItem(cardKey);
-    if (!savedStateJSON) {
-        alert('📂 Nie można wczytać karty. Mogła zostać usunięta.');
-        return;
-    }
-    const cardState = JSON.parse(savedStateJSON);
-    populateCardFromState(cardState);
-    closeModal('loadCardModal');
-}
-
-function populateCardFromState(cardState) {
-    clearCard(true);
-    Object.keys(cardState.header).forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = cardState.header[id];
-    });
-    
-    const roomInput = document.getElementById('roomInput');
-    const roomInputPrint = document.getElementById('roomInputPrint');
-    if (roomInput && roomInputPrint && roomInput.value) {
-        roomInputPrint.value = roomInput.value;
-    }
-    
-    cardState.tables.continuous.forEach(data => {
-        addContinuousDrug();
-        const newRow = document.querySelector('#continuousDrugsTbody tr:last-child');
-        newRow.cells[0].querySelectorAll('input')[0].value = data.name;
-        newRow.cells[0].querySelectorAll('input')[1].value = data.conc;
-        newRow.cells[1].querySelector('input').value = data.dose;
-        newRow.cells[2].querySelector('input').value = data.rate;
-    });
-    cardState.tables.periodic.forEach(data => {
-        addPeriodicDrug();
-        const newRow = document.querySelector('#periodicDrugsTbody tr:last-child');
-        const drugInput = newRow.cells[0].querySelectorAll('input')[0];
-        drugInput.value = data.name;
-        fillPeriodicDrugData(drugInput);
-        newRow.cells[0].querySelectorAll('input')[1].value = data.dose;
-        newRow.cells[1].querySelectorAll('input')[0].value = data.route;
-        newRow.cells[1].querySelectorAll('input')[1].value = data.freq;
-    });
-    cardState.tables.fluids.forEach(data => {
-        addFluid();
-        const newRow = document.querySelector('#fluidsTable tbody tr:last-child');
-        newRow.cells[0].querySelector('input').value = data.name;
-        
-        if (data.additives) {
-            if (data.additives.startsWith('[')) {
-                try {
-                    const additives = JSON.parse(data.additives);
-                    const displayText = additives.map(ad => `+ ${ad.name} ${ad.volume}ml`).join(' | ');
-                    newRow.cells[1].querySelector('input').value = displayText;
-                } catch (e) {
-                    newRow.cells[1].querySelector('input').value = data.additives;
-                }
-            } else {
-                newRow.cells[1].querySelector('input').value = data.additives;
-            }
-        }
-        
-        newRow.cells[2].querySelector('input').value = data.volume;
-        newRow.cells[3].querySelector('input').value = data.rate;
-    });
-    cardState.tables.nutrition.forEach(data => {
-        addNutrition();
-        const newRow = document.querySelector('#nutritionTable tbody tr:last-child');
-        const typeInput = newRow.cells[0].querySelector('input');
-        const prepInput = newRow.cells[1].querySelector('input');
-        const additivesTextarea = newRow.cells[1].querySelector('textarea');
-        const rateInput = newRow.cells[2].querySelector('input');
-        
-        typeInput.value = data.type || '';
-        if (data.type) {
-            updateNutritionProductList(typeInput);
-        }
-        prepInput.value = data.prep || '';
-        if(data.additives) {
-            additivesTextarea.value = data.additives;
-            autoResizeTextarea(additivesTextarea); // Zmień rozmiar po wczytaniu
-        }
-        if (data.rate) {
-            rateInput.value = data.rate;
-        }
-    });
-    cardState.tables.procedures.forEach(data => {
-        addProcedure();
-        const newRow = document.querySelector('#proceduresTable tbody tr:last-child');
-        newRow.cells[0].querySelector('input').value = data.time;
-        newRow.cells[1].querySelector('input').value = data.name;
-    });
-    document.querySelector('.notes-section textarea').value = cardState.notes;
-    handleWeightHeightChange();
-    updateSummaries();
-    adjustAllDosesForGfr();
-    alert('✅ Karta została wczytana!');
 }
 
 function clearCard(force = false) { 
@@ -1607,17 +1967,26 @@ function clearCard(force = false) {
         document.querySelectorAll('input, textarea').forEach(input => { 
             if(!input.closest('.no-clear') && input.id !== 'roomInputPrint') {
                 input.value = ''; 
+                input.classList.remove('field-error', 'field-warning', 'field-success');
             }
         }); 
+        
         const roomInputPrint = document.getElementById('roomInputPrint');
         if (roomInputPrint) roomInputPrint.value = '';
         
         document.querySelectorAll('tbody').forEach(tbody => { 
             tbody.innerHTML = ''; 
         }); 
+        
         updateSummaries(); 
         initializeCard(); 
-        if (!force) alert('Karta została wyczyszczona!'); 
+        
+        hasUnsavedChanges = false;
+        updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+        
+        if (!force) {
+            showToast('Wyczyszczono', 'Karta została wyczyszczona', 'info');
+        }
     } 
 }
 
@@ -1626,21 +1995,46 @@ function generatePDF() {
     const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
     const date = document.getElementById('mainDateInput').value || 'aktualna_data';
     const filename = `Karta_OIT_${patientName.replace(/\s+/g, '_')}_${date.replace(/\./g, '-')}.pdf`;
-    const opt = { margin: 10, filename: filename, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
-    html2pdf().set(opt).from(element).save();
+    
+    showToast('Generowanie PDF', 'Przygotowywanie dokumentu do pobrania...', 'info');
+    
+    const opt = { 
+        margin: 10, 
+        filename: filename, 
+        image: { type: 'jpeg', quality: 0.98 }, 
+        html2canvas: { scale: 2, useCORS: true }, 
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+    };
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        showToast('PDF utworzony', `Plik ${filename} został pobrany`, 'success');
+    }).catch((error) => {
+        showToast('Błąd PDF', 'Wystąpił problem podczas tworzenia PDF', 'error');
+        console.error('PDF Error:', error);
+    });
 }
 
 function closeModal(modalId) { 
     document.getElementById(modalId).style.display = 'none'; 
 }
 
-// --- ZAPIS/ODCZYT Z PLIKU ---
+// --- FILE SAVE/LOAD ---
 function saveCardToFile() {
     const patientName = document.getElementById('patientNameInput').value.trim() || 'Pacjent';
     const historyNumber = document.getElementById('historyNumberInput').value.trim() || 'XXXX';
     const filename = `KartaOIT_${patientName.replace(/\s+/g, '_')}_${historyNumber.replace(/[\/\s]+/g, '-')}.json`;
 
     const cardState = getCardState();
+    cardState.metadata = {
+        exportedAt: new Date().toISOString(),
+        version: '2.0',
+        application: 'Medical Card System',
+        patientSummary: {
+            name: patientName,
+            historyNumber: historyNumber
+        }
+    };
+    
     const fileContent = JSON.stringify(cardState, null, 2);
     const blob = new Blob([fileContent], { type: 'application/json' });
 
@@ -1651,6 +2045,8 @@ function saveCardToFile() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+    
+    showToast('Zapisano do pliku', `Plik ${filename} został pobrany`, 'success');
 }
 
 function loadCardFromFile(event) {
@@ -1661,24 +2057,134 @@ function loadCardFromFile(event) {
     reader.onload = function(e) {
         try {
             const cardState = JSON.parse(e.target.result);
+            
             if (cardState.header && cardState.tables) {
-                if (confirm('Czy na pewno chcesz wczytać dane z pliku? Obecne dane zostaną nadpisane.')) {
+                if (confirm('Czy na pewno chcesz wczytać dane z pliku? Obecne dane zostaną zastąpione.')) {
                     populateCardFromState(cardState);
+                    
+                    const patientName = cardState.metadata?.patientSummary?.name || 'Pacjent';
+                    showToast('Wczytano z pliku', `Pomyślnie wczytano kartę: ${patientName}`, 'success');
                 }
             } else {
-                alert('Błąd: Wybrany plik ma nieprawidłową strukturę.');
+                showToast('Błędny plik', 'Wybrany plik ma nieprawidłową strukturę.', 'error');
             }
         } catch (error) {
-            alert('Błąd: Nie można odczytać pliku. Upewnij się, że to prawidłowy plik zapisu (.json).');
+            showToast('Błąd pliku', 'Nie można odczytać pliku. Upewnij się, że to prawidłowy plik zapisu (.json).', 'error');
             console.error("Błąd parsowania pliku JSON:", error);
         }
     };
+    
     reader.onerror = function() {
-        alert('Wystąpił błąd podczas odczytu pliku.');
+        showToast('Błąd odczytu', 'Wystąpił błąd podczas odczytu pliku.', 'error');
     };
+    
     reader.readAsText(file);
     event.target.value = '';
 }
+
+// --- MAIN INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize all systems
+    populateDatalists();
+    setupKeyboardShortcuts();
+    setupSearchInput();
+    setupValidation();
+    setupOfflineMode();
+    initializeDragAndDrop();
+    startAutosave();
+    
+    // Dark mode toggle
+    const toggle = document.getElementById('darkModeToggle'); 
+    const html = document.documentElement; 
+    const icon = toggle.querySelector('i'); 
+    
+    if (localStorage.getItem('darkMode') === 'enabled') { 
+        html.classList.add('dark-mode'); 
+        icon.className = 'fas fa-sun'; 
+    } 
+    
+    toggle.addEventListener('click', () => { 
+        html.classList.toggle('dark-mode'); 
+        if (html.classList.contains('dark-mode')) { 
+            localStorage.setItem('darkMode', 'enabled'); 
+            icon.className = 'fas fa-sun'; 
+            showToast('Tryb ciemny', 'Włączono tryb ciemny', 'info');
+        } else { 
+            localStorage.setItem('darkMode', 'disabled'); 
+            icon.className = 'fas fa-moon';
+            showToast('Tryb jasny', 'Włączono tryb jasny', 'info');
+        } 
+    }); 
+    
+    // Room input sync
+    const roomInput = document.getElementById('roomInput');
+    const roomInputPrint = document.getElementById('roomInputPrint');
+    if (roomInput && roomInputPrint) {
+        roomInput.addEventListener('input', function() {
+            roomInputPrint.value = this.value;
+            markAsChanged();
+        });
+    }
+    
+    // Add change listeners for autosave
+    document.addEventListener('input', function(e) {
+        if (e.target.matches('input, textarea, select')) {
+            markAsChanged();
+        }
+    });
+    
+    // Patient name change listener for autosave restore
+    document.getElementById('patientNameInput').addEventListener('blur', function() {
+        if (this.value.trim()) {
+            setTimeout(() => restoreFromAutosave(), 500);
+        }
+    });
+    
+    // Initialize card
+    initializeCard();
+    
+    // Show welcome message
+    setTimeout(() => {
+        showToast('System gotowy', 'Karta Zleceń OIT - wszystkie funkcje aktywne', 'success');
+    }, 1000);
+    
+    console.log('🏥 Medical Card System v2.0 - Enhanced Edition loaded successfully!');
+});
+
+// --- UTILITY FUNCTIONS ---
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Debounced autosave trigger
+const debouncedMarkAsChanged = debounce(markAsChanged, 1000);
+
+// Prevent accidental page close with unsaved changes
+window.addEventListener('beforeunload', function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = 'Masz niezapisane zmiany. Czy na pewno chcesz opuścić stronę?';
+        return e.returnValue;
+    }
+});
+
+// Add floating search button
+document.addEventListener('DOMContentLoaded', () => {
+    const fab = document.createElement('button');
+    fab.className = 'fab';
+    fab.innerHTML = '🔍';
+    fab.title = 'Szybkie wyszukiwanie leków (Ctrl+F)';
+    fab.onclick = openSearchModal;
+    document.body.appendChild(fab);
+});
     </script>
 </body>
 </html>
