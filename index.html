@@ -2,7 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2563eb">
     <title>Edytowalna Karta Zleceń OIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -10,15 +14,15 @@
 </head>
 <body>
     <div class="top-controls no-print">
-        <button onclick="window.print()" class="control-button print"><i class="fas fa-print"></i> Drukuj</button>
-        <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
-        <button onclick="saveCard()" class="control-button save"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
-        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
-        <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
-        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
+        <button onclick="window.print()" class="control-button print" aria-label="Drukuj kartę"><i class="fas fa-print"></i> <span>Drukuj</span></button>
+        <button onclick="generatePDF()" class="control-button pdf" aria-label="Eksport do PDF"><i class="fas fa-file-pdf"></i> <span>PDF</span></button>
+        <button onclick="saveCard()" class="control-button save" aria-label="Zapisz w przeglądarce"><i class="fas fa-save"></i> <span>Zapisz</span></button>
+        <button onclick="openLoadModal()" class="control-button load" aria-label="Wczytaj z przeglądarki"><i class="fas fa-folder-open"></i> <span>Wczytaj</span></button>
+        <button onclick="saveCardToFile()" class="control-button save-file" aria-label="Zapisz do pliku"><i class="fas fa-file-download"></i> <span>Do pliku</span></button>
+        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file" aria-label="Wczytaj z pliku"><i class="fas fa-file-upload"></i> <span>Z pliku</span></button>
         <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
-        <button onclick="clearCard()" class="control-button clear"><i class="fas fa-trash"></i> Wyczyść</button>
-        <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
+        <button onclick="clearCard()" class="control-button clear" aria-label="Wyczyść kartę"><i class="fas fa-trash"></i> <span>Wyczyść</span></button>
+        <button id="darkModeToggle" class="control-button dark-mode" aria-label="Przełącz tryb ciemny"><i class="fas fa-moon"></i> <span>Tryb</span></button>
     </div>
 
     <div class="container" id="card-container">
