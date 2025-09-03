@@ -71,6 +71,65 @@ body {
     border-radius: 8px;
 }
 
+/* ===== POPRAWKI WYGLĄDU W PRZEGLĄDARCE ===== */
+@media screen {
+    body {
+        font-size: 14px; /* Zwiększona czytelność na ekranie */
+    }
+
+    .field-label {
+        font-size: 10px;
+    }
+
+    .field-value, .drug-input, .notes-section textarea {
+        font-size: 14px;
+        padding: 8px 10px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .drug-input {
+        padding: 4px; /* Mniejszy padding dla pól w tabelach */
+    }
+    
+    /* Lepszy wygląd aktywnego pola */
+    .field-value:focus, .notes-section textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+        outline: none;
+    }
+
+    .drug-input:focus {
+        background: var(--primary-light);
+        outline: none;
+        border-radius: 3px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    th {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    td {
+        padding: 8px 10px;
+        min-height: 36px;
+    }
+    
+    .control-button {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+    
+    .add-button {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+/* ============================================== */
+
 /* Na większych ekranach zwiększ szerokość */
 @media screen and (min-width: 1400px) {
     .container {
@@ -182,7 +241,15 @@ tr.gfr-dose-adjusted td { background-color: var(--warning-light) !important; }
 html.dark-mode .dose-reduction-notice { color: #facc15; }
 
 /* Inputs inside tables */
-.drug-input { width: 100%; border: none; background: transparent; font-size: 11px; padding: 2px; color: var(--text-color); font-family: inherit; }
+.drug-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 11px;
+    padding: 2px;
+    color: var(--text-color);
+    font-family: inherit;
+}
 .drug-input:focus { outline: none; background: var(--primary-light); }
 .drug-name { font-weight: 500; }
 .infusion-rate { font-weight: 600; color: var(--success-dark); }
