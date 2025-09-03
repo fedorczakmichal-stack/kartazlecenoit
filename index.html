@@ -80,6 +80,66 @@ body {
     border-radius: 8px;
 }
 
+/* ===== POPRAWKI WYGLĄDU W PRZEGLĄDARCE ===== */
+@media screen {
+    body {
+        font-size: 14px; /* Zwiększona czytelność na ekranie */
+    }
+
+    .field-label {
+        font-size: 10px;
+    }
+
+    .field-value, .drug-input, .notes-section textarea {
+        font-size: 14px;
+        padding: 8px 10px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .drug-input {
+        padding: 4px; /* Mniejszy padding dla pól w tabelach */
+    }
+    
+    /* Lepszy wygląd aktywnego pola */
+    .field-value:focus, .notes-section textarea:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-light);
+        outline: none;
+    }
+
+    .drug-input:focus {
+        background: var(--primary-light);
+        outline: none;
+        border-radius: 3px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
+
+    th {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    td {
+        padding: 8px 10px;
+        min-height: 36px;
+    }
+    
+    .control-button {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+    
+    .add-button {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+/* ============================================== */
+
+
 /* Na większych ekranach zwiększ szerokość */
 @media screen and (min-width: 1400px) {
     .container {
@@ -277,79 +337,17 @@ html.dark-mode .nutrition-additives {
 .signature-sublabel { font-size: 9px; color: var(--gray-500); }
 
 /* Modal */
-.modal { 
-    position: fixed; 
-    z-index: 1001; 
-    left: 0; 
-    top: 0; 
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0,0,0,0.6); 
-    display: none; 
-    align-items: center; 
-    justify-content: center;
-    backdrop-filter: blur(4px);
-}
-.modal-content { 
-    background-color: var(--container-bg); 
-    border-radius: 12px; 
-    width: 90%; 
-    max-width: 600px; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    animation: modalSlideIn 0.3s ease-out;
-}
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-.modal-header { 
-    padding: 20px 24px; 
-    border-bottom: 1px solid var(--border-color); 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    background: var(--gray-50);
-    border-radius: 12px 12px 0 0;
-}
-.modal-header h3 { 
-    font-size: 18px; 
-    font-weight: 600;
-    color: var(--text-color);
-}
-.close { 
-    font-size: 24px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    color: var(--gray-400);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-.close:hover { 
-    color: var(--text-color);
-    background: var(--gray-200);
-}
-.modal-body { 
-    padding: 24px; 
-    max-height: 60vh; 
-    overflow-y: auto;
-}
+.modal { position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; }
+.modal-content { background-color: var(--container-bg); border-radius: 8px; width: 90%; max-width: 500px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+.modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { font-size: 14px; font-weight: 600; }
+.close { font-size: 24px; font-weight: bold; cursor: pointer; color: var(--gray-400); }
+.close:hover { color: var(--text-color); }
+.modal-body { padding: 16px; max-height: 60vh; overflow-y: auto; }
 .modal-footer { 
-    padding: 16px 24px; 
+    padding: 12px 16px; 
     text-align: right; 
-    border-top: 1px solid var(--border-color);
-    background: var(--gray-50);
-    border-radius: 0 0 12px 12px;
+    border-top: 1px solid var(--border-color); 
 }
 
 /* Saved cards list in modal */
@@ -361,26 +359,18 @@ html.dark-mode .nutrition-additives {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    margin-bottom: 8px;
+    padding: 8px;
+    margin-bottom: 6px;
     background: var(--gray-50);
-    border-radius: 8px;
+    border-radius: 4px;
     border: 1px solid var(--border-color);
-    transition: all 0.2s;
-}
-#savedCardsList li:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
 }
 html.dark-mode #savedCardsList li {
-    background: var(--gray-700);
+    background: #1f2937;
 }
 #savedCardsList .patient-name {
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-color);
-    font-size: 14px;
 }
 
 /* Hide spinners in number inputs */
@@ -859,7 +849,7 @@ input[type="number"] {
             <tbody id="continuousDrugsTbody"></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciągły</button>
+            <button onclick="addContinuousDrug()" class="add-button">Dodaj lek ciągły</button>
         </div>
 
         <div class="section-header green">LEKI OKRESOWE</div>
@@ -875,7 +865,7 @@ input[type="number"] {
             <tbody id="periodicDrugsTbody"></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
+            <button onclick="addPeriodicDrug()" class="add-button green">Dodaj lek okresowy</button>
         </div>
 
         <div class="section-header cyan">PŁYNOTERAPIA I ŻYWIENIE</div>
@@ -906,8 +896,8 @@ input[type="number"] {
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
-                <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj płyn</button>
-                <button onclick="addNutrition()" class="add-button orange"><i class="fas fa-plus-circle"></i> Dodaj żywienie</button>
+                <button onclick="addFluid()" class="add-button cyan">Dodaj płyn</button>
+                <button onclick="addNutrition()" class="add-button orange">Dodaj żywienie</button>
             </div>
             <div class="summary-container">
                 <div id="fluidBalanceSummary">Suma płynów / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
@@ -928,7 +918,7 @@ input[type="number"] {
             <tbody></tbody>
         </table>
         <div class="button-container no-print">
-            <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
+            <button onclick="addProcedure()" class="add-button purple">Dodaj procedurę</button>
         </div>
 
         <div class="section-header gray">UWAGI DODATKOWE / ZALECENIA</div>
@@ -957,7 +947,6 @@ input[type="number"] {
         </div>
     </div>
 
-    <!-- DATALIST z prawidłowo sformatowanymi opcjami -->
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
     <datalist id="fluidsList"></datalist>
