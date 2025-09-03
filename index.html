@@ -6,6 +6,7 @@
     <title>Edytowalna Karta Zleceń OIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -149,7 +150,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="fluidsTbody"></tbody>
         </table>
         <table id="nutritionTable">
             <thead>
@@ -161,7 +162,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="nutritionTbody"></tbody>
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
@@ -170,7 +171,11 @@
             </div>
             <div class="summary-container">
                 <div id="fluidBalanceSummary">Suma płynów / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
+                <div class="fluid-balance-bar-container">
+                    <div id="fluidBalanceBar" class="fluid-balance-bar"></div>
+                </div>
                 <div id="kcalSummary">Suma kcal / 24h: <strong><span id="totalKcal">0</span> kcal</strong></div>
+                <div id="kcalPerKgSummary"><strong><span id="kcalPerKg">0</span> kcal/kg</strong></div>
             </div>
         </div>
 
@@ -184,7 +189,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody id="proceduresTbody"></tbody>
         </table>
         <div class="button-container no-print">
             <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
@@ -230,69 +235,27 @@
         <option value="Toaleta drzewa oskrzelowego"></option>
         <option value="RTG klatki piersiowej przyłóżkowe"></option>
         <option value="Zmiana opatrunku CVC"></option>
-        <option value="Zmiana pozycji ciała"></option>
-        <option value="Profilaktyka odleżyn"></option>
-        <option value="USG płuc"></option>
-        <option value="USG jamy brzusznej"></option>
-        <option value="Bronchoskopia"></option>
-        <option value="Wymiana rurki intubacyjnej"></option>
-        <option value="Wymiana rurki tracheostomijnej"></option>
-        <option value="Założenie CVC"></option>
-        <option value="Założenie cewnika tętniczego"></option>
-        <option value="Założenie cewnika Foleya"></option>
-        <option value="Punkcja lędźwiowa"></option>
-        <option value="Nakłucie jamy opłucnej"></option>
-        <option value="Drenaż jamy opłucnej"></option>
-        <option value="CRRT - rozpoczęcie"></option>
-        <option value="CRRT - wymiana zestawu"></option>
-        <option value="Hemodializa"></option>
-        <option value="Plazmafereza"></option>
-        <option value="Fizjoterapia"></option>
-        <option value="Rehabilitacja oddechowa"></option>
-        <option value="Pionizacja"></option>
-        <option value="EKG"></option>
-        <option value="ECHO serca"></option>
-        <option value="Gastroskopia"></option>
-        <option value="Kolonoskopia"></option>
-        <option value="CT głowy"></option>
-        <option value="CT klatki piersiowej"></option>
-        <option value="CT jamy brzusznej"></option>
     </datalist>
     <datalist id="timesList">
-        <option value="06:00"></option>
-        <option value="07:00"></option>
         <option value="08:00"></option>
-        <option value="09:00"></option>
-        <option value="10:00"></option>
-        <option value="11:00"></option>
         <option value="12:00"></option>
-        <option value="13:00"></option>
-        <option value="14:00"></option>
-        <option value="15:00"></option>
-        <option value="16:00"></option>
-        <option value="17:00"></option>
         <option value="18:00"></option>
-        <option value="19:00"></option>
-        <option value="20:00"></option>
-        <option value="21:00"></option>
-        <option value="22:00"></option>
-        <option value="23:00"></option>
-        <option value="00:00"></option>
-        <option value="01:00"></option>
-        <option value="02:00"></option>
-        <option value="03:00"></option>
-        <option value="04:00"></option>
-        <option value="05:00"></option>
-        <option value="co 1h"></option>
-        <option value="co 2h"></option>
-        <option value="co 4h"></option>
-        <option value="co 6h"></option>
-        <option value="co 8h"></option>
-        <option value="co 12h"></option>
-        <option value="co 24h"></option>
         <option value="doraźnie"></option>
     </datalist>
     
     <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
