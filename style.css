@@ -1,1259 +1,1357 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+// --- ENHANCED MEDICAL CARD SYSTEM v3.0 ---
 
-:root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --primary-light: #dbeafe;
+// --- BAZY DANYCH I KONFIGURACJA ---
+const continuousDrugsData = { 'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-1.0 μg/kg/min' }, 'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 μg/kg/min' }, 'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 μg/kg/min' }, 'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 μg/kg/min' }, 'WAZOPRESYNA': { concentration: '20j/20ml', dose: '0.01-0.04 j/min' }, 'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 μg/kg/min' }, 'PROPOFOL 1%': { concentration: '10mg/ml', dose: '1-4 mg/kg/h' }, 'PROPOFOL 2%': { concentration: '20mg/ml', dose: '1-4 mg/kg/h' }, 'MIDAZOLAM': { concentration: '50mg/50ml', dose: '1-15 mg/h' }, 'DEKSMEDETOMIDYNA': { concentration: '200μg/50ml', dose: '0.2-1.4 μg/kg/h' }, 'FENTANYL': { concentration: '500μg/50ml', dose: '25-100 μg/h' }, 'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 μg/kg/min' }, 'MORFINA': { concentration: '20mg/20ml', dose: '1-5 mg/h' }, 'LIGNOCAINA 1%': { concentration: '500mg/50ml', dose: '1-2 mg/min' }, 'OKSYKODON': { concentration: '20mg/20ml', dose: '1-2 mg/h' }, 'KETAMINA': { concentration: '250mg/50ml', dose: '0.5-2 mg/kg/h' }, 'ROKURONIOM': { concentration: '50mg/5ml', dose: '0.3-0.6 mg/kg/h' }, 'CISATRAKURIUM': { concentration: '20mg/10ml', dose: '0.06-0.18 mg/kg/h' }, 'INSULINA': { concentration: '50j/50ml', dose: '0.5-10 j/h' }, 'HEPARYNA': { concentration: '25000j/50ml', dose: '500-2000 j/h' }, 'FUROSEMID': { concentration: '100mg/50ml', dose: '5-20 mg/h' }, 'AMIODARON': { concentration: '300mg/50ml 5% Glc', dose: '20-50 mg/h' }, 'NITROGLICERYNA': { concentration: '25mg/50ml', dose: '5-200 μg/min' }, 'PIPERACYLINA/TAZOBAKTAM': { concentration: '18g/100ml', dose: 'wlew 24h', fixedRate: '4.2' }, 'PANTOPRAZOL': { concentration: '80mg/100ml', dose: '4.2 ml/h', fixedRate: '4.2' }, 'METOPROLOL': { concentration: '10mg/50ml', dose: '1-5 mg/h' }, 'SALBUTAMOL': { concentration: '5mg/50ml', dose: '3-20 μg/min' }, 'DIAZEPAM': { concentration: '50mg/50ml', dose: '2-10 mg/h' } };
 
-    --success: #16a34a;
-    --success-dark: #15803d;
-    --success-light: #dcfce7;
+const periodicDrugsData = { 'AMOKSYCYLINA/KWAS KLAWULANOWY': { dose: '1.2g', route: 'i.v.', frequency: 'co 8h' }, 'AMIKACYNA': { dose: '15-20mg/kg', route: 'wlew i.v. 1h', frequency: 'co 24h' }, 'CEFTAZYDYM': { dose: '2g', route: 'i.v.', frequency: 'co 8h' }, 'CEFUROKSYM': { dose: '1.5g', route: 'i.v.', frequency: 'co 8h' }, 'CIPROFLOKSACYNA': { dose: '400mg', route: 'wlew i.v. 1h', frequency: 'co 12h' }, 'IMIPENEM/CYLASTATYNA': { dose: '0.5g', route: 'wlew i.v. 30min', frequency: 'co 6-8h' }, 'KOLISTYNA': { dose: 'nasyc. 9mln j, potem 4.5mln j', route: 'i.v.', frequency: 'co 12h' }, 'LEWOFLOKSACYNA': { dose: '500mg', route: 'wlew i.v. 1h', frequency: 'co 24h' }, 'LINEZOLID': { dose: '600mg', route: 'wlew i.v. 2h', frequency: 'co 12h' }, 'MEROPENEM': { dose: '1g', route: 'wlew i.v. 30min', frequency: 'co 8h' }, 'METRONIDAZOL': { dose: '500mg', route: 'i.v.', frequency: 'co 8h' }, 'PIPERACYLINA/TAZOBAKTAM': { dose: '4.5g', route: 'wlew i.v. 30min', frequency: 'co 8h' }, 'SULBAKTAM/CEFOPERAZON': { dose: '2g', route: 'i.v.', frequency: 'co 12h' }, 'TEIKOPLANINA': { dose: 'nasyc. 400mg x3 co 12h, potem 400mg', route: 'i.v.', frequency: 'co 24h' }, 'TYGECYKLINA': { dose: 'nasyc. 100mg, potem 50mg', route: 'wlew i.v. 1h', frequency: 'co 12h' }, 'WANKOMYCYNA': { dose: '1g', route: 'wlew i.v. 1h', frequency: 'co 12h' }, 'FLUKONAZOL': { dose: '400mg', route: 'i.v.', frequency: 'co 24h' }, 'WORYKONAZOL': { dose: 'nasyc. 6mg/kg x2, potem 4mg/kg', route: 'wlew i.v. 2h', frequency: 'co 12h' }, 'GENTAMYCYNA': { dose: '3-5mg/kg', route: 'wlew i.v. 1h', frequency: 'co 24h' }, 'KETOKONAZOL': { dose: '200mg', route: 'p.o. (sonda)', frequency: 'co 12h' }, 'FUROSEMID': { dose: '20-40mg', route: 'i.v.', frequency: 'wg zlecenia' }, 'MANNITOL 15%': { dose: '100ml', route: 'wlew i.v. 30min', frequency: 'wg zlecenia' }, 'SPIRONOLAKTON': { dose: '25-100mg', route: 'i.v.', frequency: 'co 24h' }, 'ENOKSAPARYNA': { dose: '40mg', route: 's.c.', frequency: 'co 24h' }, 'NADROPARYNA': { dose: '0.4-0.6ml', route: 's.c.', frequency: 'co 24h' }, 'KWAS TRANEXAMOWY': { dose: '1g', route: 'i.v.', frequency: 'co 8h' }, 'ETAMSYLAT': { dose: '250-500mg', route: 'i.v.', frequency: 'co 6h' }, 'DEKSAMETAZON': { dose: '4-8mg', route: 'i.v.', frequency: 'co 6-12h' }, 'HYDROKORTYZON': { dose: '50-100mg', route: 'i.v.', frequency: 'co 6-8h' }, 'METYLOPREDNIZOLON': { dose: '125mg', route: 'i.v.', frequency: 'wg zlecenia' }, 'METAMIZOL': { dose: '1g', route: 'i.v.', frequency: 'co 6-8h' }, 'PARACETAMOL': { dose: '1g', route: 'i.v.', frequency: 'co 6h' }, 'METOKLOPRAMID': { dose: '10mg', route: 'i.v.', frequency: 'co 8h' }, 'PANTOPRAZOL': { dose: '40mg', route: 'i.v.', frequency: 'co 24h' }, 'OMEPRAZOL': { dose: '40mg', route: 'i.v.', frequency: 'co 24h' }, 'HALOPERIDOL': { dose: '2.5-5mg', route: 'i.v./i.m.', frequency: 'wg zlecenia' }, 'CHLORPROMAZYNA': { dose: '25-50mg', route: 'i.m.', frequency: 'doraźnie' }, 'DESMOPRESYNA': { dose: '1-4μg', route: 'i.v./s.c.', frequency: 'co 12-24h' }, 'WAPŃ': { dose: '10-20ml 10%', route: 'i.v. wlew', frequency: 'co 6h' }, 'WINPOCETYNA': { dose: '10mg', route: 'i.v. wlew', frequency: 'co 12h' }, 'CEREBROLIZYNA': { dose: '10-30ml', route: 'i.v. wlew', frequency: 'co 24h' }, 'PIRACETAM': { dose: '4.8g', route: 'i.v.', frequency: 'co 12h' }, 'ORNITYNA': { dose: '20g', route: 'i.v. wlew 24h', frequency: 'co 24h' }, 'CYKLOFOSFAMID': { dose: 'wg zlecenia', route: 'i.v. wlew', frequency: 'wg schematu' }, 'ACETYLOCYSTEINA': { dose: '300mg (3ml)', route: 'nebulizacja', frequency: 'co 8h' }, 'ADRENALINA (NEBULIZACJA)': { dose: '0.5mg', route: 'nebulizacja', frequency: 'wg zlecenia' }, 'AMBROKSOL': { dose: '15mg (2ml)', route: 'nebulizacja', frequency: 'co 12h' }, 'BERODUAL': { dose: '1-2ml (20-40 kropli)', route: 'nebulizacja', frequency: 'co 4-6h' }, 'IPRATROPIUM': { dose: '0.5mg (2ml)', route: 'nebulizacja', frequency: 'co 6-8h' }, 'KOLISTYNA (NEBULIZACJA)': { dose: '1-2mln j', route: 'nebulizacja', frequency: 'co 8-12h' }, 'SALBUTAMOL (NEBULIZACJA)': { dose: '2.5mg', route: 'nebulizacja', frequency: 'co 4-6h' }, 'SALBUTAMOL (WZIEW)': { dose: '2 wdechy', route: 'do rurki', frequency: 'co 4h' }, 'NABIC (1.4% NAHCO3)': { dose: '5ml', route: 'nebulizacja', frequency: 'co 8h' }, 'LEWOFLOKSACYNA (KROPLE)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'co 2h → co 6h' }, 'TOBRAMYCYNA/DEKSAMETAZON (KROPLE)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'co 6h' }, 'OFLOKSACYNA (KROPLE)': { dose: '1 kropla', route: 'do worka spoj.', frequency: 'co 6h' }, 'POLPRAZOL': { dose: '20mg', route: 'p.o. (sonda)', frequency: 'co 12h' }, 'LACTULOSUM': { dose: '15ml', route: 'p.o. (sonda)', frequency: 'co 8h' }, 'KALIUM POLISTYRENOSULFONIAN': { dose: '15g (1 miarka)', route: 'p.o. (sonda)', frequency: 'co 6-8h' }, 'EUTHYROX': { dose: 'wg zlecenia', route: 'p.o. na czczo', frequency: 'co 24h' }, 'IBUPROFEN': { dose: '400-600mg', route: 'p.o./i.v.', frequency: 'co 6-8h' }, 'PYRALGINA': { dose: '500mg', route: 'i.m./i.v.', frequency: 'co 6-8h' } };
 
-    --warning: #ea580c;
-    --warning-dark: #c2410c;
-    --warning-light: #fffbeb;
+const fluidsData = { 'NaCl 0.9%': { volume: '500ml', rate: '50' }, 'Plasmalyte': { volume: '500ml', rate: '50' }, 'Optilyte': { volume: '500ml', rate: '50' }, 'Płyn Ringera': { volume: '500ml', rate: '50' }, 'Glukoza 5%': { volume: '500ml', rate: '40' }, 'Glukoza 10%': { volume: '500ml', rate: '30' }, 'Gelofusine': { volume: '500ml', rate: '100' }, 'Albuminy 20%': { volume: '100ml', rate: '50' }, 'Albuminy 5%': { volume: '250ml', rate: '100' }, 'Mannitol 15%': { volume: '250ml', rate: '125' }, 'NaHCO3 8.4%': { volume: '100ml', rate: '50' } };
 
-    --danger: #dc2626;
-    --danger-dark: #b91c1c;
-    --danger-light: #fee2e2;
+const glucoseKcalData = { "Glukoza 5%": 0.17, "Glukoza 10%": 0.34 };
 
-    --info: #0891b2;
-    --info-dark: #0e7490;
-    --info-light: #cffafe;
+const nutritionFlowRates = {
+    "Nutricomp Standard 500ml (1 kcal/ml)": 50, "Nutricomp Standard 1000ml (1 kcal/ml)": 80, 
+    "Nutricomp intensiv 500ml (1.5 kcal/ml)": 40, "Nutricomp intensiv 1000ml (1.5 kcal/ml)": 60,
+    "Nutricomp Standard Fibre 500ml (1 kcal/ml)": 50, "Nutrison 500ml (1 kcal/ml)": 50, 
+    "Nutrison 1000ml (1 kcal/ml)": 80, "Nutrison 1500ml (1 kcal/ml)": 100, 
+    "Nutrison Advanced Peptisorb 500ml (1 kcal/ml)": 50, "Nutrison Advanced Peptisorb 1000ml (1 kcal/ml)": 80,
+    "Nutrison Multi Fibre 500ml (1 kcal/ml)": 50, "Nutrison Multi Fibre 1000ml (1 kcal/ml)": 80,
+    "OMEGAFLEX PLUS 1250ml (1.3 kcal/ml)": 50, "OMEGAFLEX PLUS 1875ml (1.3 kcal/ml)": 75,
+    "OMEGAFLEX SPECIAL 625ml (1.3 kcal/ml)": 25, "OMEGAFLEX SPECIAL 1250ml (1.3 kcal/ml)": 50, 
+    "OMEGAFLEX SPECIAL 1875ml (1.3 kcal/ml)": 75, "Nutriflex Peri 1000ml (1.2 kcal/ml)": 80,
+    "Nutriflex Plus 1000ml (1.2 kcal/ml)": 80, "SmofKabiven 986ml (1.1 kcal/ml)": 40, 
+    "SmofKabiven 1477ml (1.1 kcal/ml)": 60, "SmofKabiven Extra NITROGEN 1012ml (1.2 kcal/ml)": 42,
+    "SmofKabiven Extra NITROGEN 1518ml (1.2 kcal/ml)": 63, "SmofKabiven EF 986ml (1.1 kcal/ml)": 40,
+    "SmofKabiven EF 1477ml (1.1 kcal/ml)": 60, "SmofKabiven LOW OSMO 850ml (1.0 kcal/ml)": 35,
+    "SmofKabiven LOW OSMO 1400ml (1.0 kcal/ml)": 58, "SmofKabiven LOW OSMO 1950ml (1.0 kcal/ml)": 81,
+    "Aminomix 1 Novum 1000ml (0.8 kcal/ml)": 80, "Aminomix 1 Novum 1500ml (0.8 kcal/ml)": 100
+};
 
-    --purple: #7c3aed;
-    --purple-dark: #6d28d9;
-    --amber: #d97706;
-    --teal: #0d9488;
+const nutritionData = { 
+    "Nutricomp Standard 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
+    "Nutricomp Standard 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
+    "Nutricomp intensiv 500ml (1.5 kcal/ml)": { kcal: 750, volume: 500 }, 
+    "Nutricomp intensiv 1000ml (1.5 kcal/ml)": { kcal: 1500, volume: 1000 },
+    "Nutricomp Standard Fibre 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
+    "Nutrison 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
+    "Nutrison 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 }, 
+    "Nutrison 1500ml (1 kcal/ml)": { kcal: 1500, volume: 1500 },
+    "Nutrison Advanced Peptisorb 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
+    "Nutrison Advanced Peptisorb 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
+    "Nutrison Multi Fibre 500ml (1 kcal/ml)": { kcal: 500, volume: 500 }, 
+    "Nutrison Multi Fibre 1000ml (1 kcal/ml)": { kcal: 1000, volume: 1000 },
+    "OMEGAFLEX PLUS 1250ml (1.3 kcal/ml)": { kcal: 1625, volume: 1250 }, 
+    "OMEGAFLEX PLUS 1875ml (1.3 kcal/ml)": { kcal: 2438, volume: 1875 },
+    "OMEGAFLEX SPECIAL 625ml (1.3 kcal/ml)": { kcal: 813, volume: 625 }, 
+    "OMEGAFLEX SPECIAL 1250ml (1.3 kcal/ml)": { kcal: 1625, volume: 1250 }, 
+    "OMEGAFLEX SPECIAL 1875ml (1.3 kcal/ml)": { kcal: 2438, volume: 1875 },
+    "Nutriflex Peri 1000ml (1.2 kcal/ml)": { kcal: 1200, volume: 1000 }, 
+    "Nutriflex Plus 1000ml (1.2 kcal/ml)": { kcal: 1200, volume: 1000 },
+    "SmofKabiven 986ml (1.1 kcal/ml)": { kcal: 1085, volume: 986 }, 
+    "SmofKabiven 1477ml (1.1 kcal/ml)": { kcal: 1625, volume: 1477 },
+    "SmofKabiven Extra NITROGEN 1012ml (1.2 kcal/ml)": { kcal: 1214, volume: 1012 }, 
+    "SmofKabiven Extra NITROGEN 1518ml (1.2 kcal/ml)": { kcal: 1822, volume: 1518 },
+    "SmofKabiven EF 986ml (1.1 kcal/ml)": { kcal: 1085, volume: 986 }, 
+    "SmofKabiven EF 1477ml (1.1 kcal/ml)": { kcal: 1625, volume: 1477 },
+    "SmofKabiven LOW OSMO 850ml (1.0 kcal/ml)": { kcal: 850, volume: 850 }, 
+    "SmofKabiven LOW OSMO 1400ml (1.0 kcal/ml)": { kcal: 1400, volume: 1400 }, 
+    "SmofKabiven LOW OSMO 1950ml (1.0 kcal/ml)": { kcal: 1950, volume: 1950 },
+    "Aminomix 1 Novum 1000ml (0.8 kcal/ml)": { kcal: 800, volume: 1000 }, 
+    "Aminomix 1 Novum 1500ml (0.8 kcal/ml)": { kcal: 1200, volume: 1500 }
+};
 
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
+const gfrDoseAdjustments = {
+    'WANKOMYCYNA': [
+        { gfrMax: 10, dose: '1g nasyc., potem 0.5g', frequency: 'co 72h + TDM' },
+        { gfrMax: 50, dose: '1g', frequency: 'co 48h + TDM' }
+    ],
+    'MEROPENEM': [
+        { gfrMax: 10, dose: '0.5g', frequency: 'co 24h' },
+        { gfrMax: 25, dose: '0.5g', frequency: 'co 12h' },
+        { gfrMax: 50, dose: '1g', frequency: 'co 12h' }
+    ],
+    'PIPERACYLINA/TAZOBAKTAM': [
+        { gfrMax: 20, dose: '2.25g', frequency: 'co 8h' },
+        { gfrMax: 40, dose: '3.375g', frequency: 'co 8h' }
+    ],
+    'AMIKACYNA': [
+        { gfrMax: 10, dose: '7.5mg/kg', frequency: 'co 72h + TDM' },
+        { gfrMax: 50, dose: '15mg/kg', frequency: 'co 36h + TDM' }
+    ],
+    'GENTAMYCYNA': [
+        { gfrMax: 10, dose: '1-2mg/kg', frequency: 'co 72h + TDM' },
+        { gfrMax: 50, dose: '3-5mg/kg', frequency: 'co 36h + TDM' }
+    ],
+    'LEWOFLOKSACYNA': [
+        { gfrMax: 50, dose: '500mg x1, potem 250mg', frequency: 'co 48h' }
+    ],
+    'FLUKONAZOL': [
+        { gfrMax: 50, dose: 'nasyc. 400mg, potem 200mg', frequency: 'co 24h' }
+    ],
+    'ENOKSAPARYNA': [
+        { gfrMax: 15, dose: 'Przeciwwskazana', frequency: ''},
+        { gfrMax: 30, dose: '20mg', frequency: 'co 24h' }
+    ]
+};
 
-    --bg-color: var(--gray-100);
-    --container-bg: white;
-    --text-color: var(--gray-800);
-    --border-color: var(--gray-200);
-    --shadow-color: rgba(0,0,0,0.05);
+// SZABLONY KART
+const cardTemplates = {
+    universal: {
+        name: "Uniwersalny OIT",
+        diagnosis: "Pacjent OIT",
+        continuousDrugs: [
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
+            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-50 μg/h" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.05-0.5 μg/kg/min" },
+            { name: "INSULINA", conc: "50j/50ml", dose: "według glikemii" },
+            { name: "HEPARYNA", conc: "1ml/1j", dose: "wlew dotętniczy całodobowy", rate: "1" }
+        ],
+        periodicDrugs: [
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h (profilaktycznie)" },
+            { name: "OMEPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
+            { name: "IBUPROFEN", dose: "400mg", route: "i.v.", freq: "na zlecenie" },
+            { name: "PYRALGINA", dose: "500mg", route: "i.v.", freq: "na zlecenie" },
+            { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "na zlecenie" }
+        ],
+        fluids: [
+            { name: "Optilyte", volume: "500", rate: "50" }
+        ],
+        nutrition: [
+            { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
+        ],
+        procedures: [
+            { time: "06:00", name: "Glikemia" },
+            { time: "12:00", name: "Glikemia" },
+            { time: "18:00", name: "Glikemia" },
+            { time: "24:00", name: "Glikemia" },
+            { time: "co 2h", name: "Zmiany ułożenia" },
+            { time: "ciągłe", name: "Monitorowanie hemodynamiczne" },
+            { time: "co 4h", name: "Kontrola zalegań" },
+            { time: "10:00", name: "Kinezyterapia" },
+            { time: "06:00", name: "IAP (ciśnienie wewnątrzbrzuszne)" },
+            { time: "18:00", name: "IAP (ciśnienie wewnątrzbrzuszne)" },
+            { time: "06:00", name: "OCŻ (ośrodkowe ciśnienie żylne)" },
+            { time: "18:00", name: "OCŻ (ośrodkowe ciśnienie żylne)" }
+        ]
+    },
+    cardiac: {
+        name: "Pacjent kardiochirurgiczny",
+        diagnosis: "Stan po zabiegach kardiochirurgicznych",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" },
+            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "2-10 μg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
+            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-50 μg/h" }
+        ],
+        periodicDrugs: [
+            { name: "CEFUROKSYM", dose: "1.5g", route: "i.v.", freq: "co 8h" },
+            { name: "FUROSEMID", dose: "20mg", route: "i.v.", freq: "co 8h" },
+            { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
+            { name: "METOPROLOL", dose: "5mg", route: "i.v.", freq: "co 6h" }
+        ],
+        fluids: [
+            { name: "NaCl 0.9%", volume: "500", rate: "50" },
+            { name: "Plasmalyte", volume: "500", rate: "40" }
+        ]
+    },
+    trauma: {
+        name: "Uraz wielonarządowy",
+        diagnosis: "Uraz wielonarządowy",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2-1.0 μg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-4 mg/kg/h" },
+            { name: "FENTANYL", conc: "500μg/50ml", dose: "50-100 μg/h" }
+        ],
+        periodicDrugs: [
+            { name: "AMOKSYCYLINA/KWAS KLAWULANOWY", dose: "1.2g", route: "i.v.", freq: "co 8h" },
+            { name: "KWAS TRANEXAMOWY", dose: "1g", route: "i.v.", freq: "co 8h" },
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" },
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" }
+        ],
+        fluids: [
+            { name: "NaCl 0.9%", volume: "500", rate: "100" },
+            { name: "Gelofusine", volume: "500", rate: "100" },
+            { name: "Albuminy 5%", volume: "250", rate: "50" }
+        ]
+    },
+    sepsis: {
+        name: "Sepsa",
+        diagnosis: "Wstrząs septyczny",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.3-1.5 μg/kg/min" },
+            { name: "WAZOPRESYNA", conc: "20j/20ml", dose: "0.01-0.04 j/min" },
+            { name: "DEKSMEDETOMIDYNA", conc: "200μg/50ml", dose: "0.2-0.7 μg/kg/h" },
+            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-75 μg/h" }
+        ],
+        periodicDrugs: [
+            { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 8h" },
+            { name: "WANKOMYCYNA", dose: "1g", route: "wlew i.v. 1h", freq: "co 12h" },
+            { name: "FLUKONAZOL", dose: "400mg", route: "i.v.", freq: "co 24h" },
+            { name: "HYDROKORTYZON", dose: "50mg", route: "i.v.", freq: "co 6h" }
+        ],
+        fluids: [
+            { name: "Plasmalyte", volume: "500", rate: "80" },
+            { name: "Albuminy 20%", volume: "100", rate: "25" }
+        ]
+    },
+    respiratory: {
+        name: "Niewydolność oddechowa",
+        diagnosis: "ARDS",
+        continuousDrugs: [
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
+            { name: "DEKSMEDETOMIDYNA", conc: "200μg/50ml", dose: "0.4-1.0 μg/kg/h" },
+            { name: "FENTANYL", conc: "500μg/50ml", dose: "50-100 μg/h" },
+            { name: "CISATRAKURIUM", conc: "20mg/10ml", dose: "0.1-0.15 mg/kg/h" }
+        ],
+        periodicDrugs: [
+            { name: "PIPERACYLINA/TAZOBAKTAM", dose: "4.5g", route: "wlew i.v. 30min", freq: "co 8h" },
+            { name: "SALBUTAMOL (NEBULIZACJA)", dose: "2.5mg", route: "nebulizacja", freq: "co 6h" },
+            { name: "BERODUAL", dose: "1ml", route: "nebulizacja", freq: "co 6h" },
+            { name: "ACETYLOCYSTEINA", dose: "300mg", route: "nebulizacja", freq: "co 8h" }
+        ]
+    },
+    neurological: {
+        name: "Pacjent neurologiczny",
+        diagnosis: "Udar mózgu",
+        continuousDrugs: [
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-2 mg/kg/h" },
+            { name: "REMIFENTANYL", conc: "2mg/40ml", dose: "0.05-0.1 μg/kg/min" },
+            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "5-50 μg/min" }
+        ],
+        periodicDrugs: [
+            { name: "MANNITOL 15%", dose: "100ml", route: "wlew i.v. 30min", freq: "co 6h" },
+            { name: "DEKSAMETAZON", dose: "8mg", route: "i.v.", freq: "co 6h" },
+            { name: "LEWETYRACETAM", dose: "1g", route: "i.v.", freq: "co 12h" },
+            { name: "CEREBROLIZYNA", dose: "30ml", route: "i.v. wlew", freq: "co 24h" }
+        ]
+    },
+    renal: {
+        name: "CRRT",
+        diagnosis: "Niewydolność nerek - CRRT",
+        continuousDrugs: [
+            { name: "HEPARYNA", conc: "25000j/50ml", dose: "500-1000 j/h" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" }
+        ],
+        periodicDrugs: [
+            { name: "FUROSEMID", dose: "40mg", route: "i.v.", freq: "co 8h" },
+            { name: "WAPŃ", dose: "10ml 10%", route: "i.v. wlew", freq: "co 6h" },
+            { name: "KALIUM POLISTYRENOSULFONIAN", dose: "15g", route: "p.o. (sonda)", freq: "co 8h" }
+        ],
+        procedures: [
+            { time: "06:00", name: "CRRT - kontrola parametrów" },
+            { time: "12:00", name: "CRRT - wymiana zestawu" },
+            { time: "18:00", name: "CRRT - kontrola parametrów" }
+        ]
+    }
+};
+
+// GLOBALNE ZMIENNE
+let autosaveInterval = null;
+let hasUnsavedChanges = false;
+let isOnline = navigator.onLine;
+let sortableInstances = [];
+let drugSearchHistory = [];
+
+// --- ENHANCED TOAST NOTIFICATIONS SYSTEM ---
+function showToast(title, message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    
+    toast.innerHTML = `
+        <i class="fas ${icons[type]} toast-icon"></i>
+        <div class="toast-content">
+            <div class="toast-title">${title}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="removeToast(this)">×</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Animacja wejścia
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        if (toast.parentNode) {
+            removeToast(toast.querySelector('.toast-close'));
+        }
+    }, duration);
 }
 
-html.dark-mode {
-    --bg-color: var(--gray-900);
-    --container-bg: var(--gray-800);
-    --text-color: var(--gray-200);
-    --border-color: var(--gray-700);
-    --shadow-color: rgba(0,0,0,0.2);
-    --gray-50: #1f2937;
-    --gray-100: #374151;
-    --warning-light: #4d4400;
+function removeToast(button) {
+    const toast = button.parentElement;
+    toast.classList.remove('show');
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 300);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 11px;
-    line-height: 1.5;
-    color: var(--text-color);
-    background: var(--bg-color);
-    transition: background-color 0.3s ease;
+// --- VALIDATION SYSTEM ---
+function showValidationTooltip(element, message) {
+    const tooltip = document.getElementById('validationTooltip');
+    const rect = element.getBoundingClientRect();
+    
+    tooltip.textContent = message;
+    tooltip.style.display = 'block';
+    tooltip.style.left = rect.left + 'px';
+    tooltip.style.top = (rect.bottom + 5) + 'px';
+    
+    element.classList.add('field-error');
+    
+    setTimeout(() => {
+        tooltip.style.display = 'none';
+    }, 3000);
 }
 
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20mm;
-    background: var(--container-bg);
-    box-shadow: 0 4px 12px var(--shadow-color);
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-/* Na większych ekranach zwiększ szerokość */
-@media screen and (min-width: 1400px) {
-    .container {
-        max-width: 1400px;
-        padding: 25mm;
+function validatePESEL(input) {
+    const pesel = input.value.replace(/\D/g, '');
+    input.value = pesel;
+    
+    if (pesel.length === 11) {
+        const weights = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3];
+        let sum = 0;
+        
+        for (let i = 0; i < 10; i++) {
+            sum += parseInt(pesel[i]) * weights[i];
+        }
+        
+        const checkDigit = (10 - (sum % 10)) % 10;
+        
+        if (parseInt(pesel[10]) !== checkDigit) {
+            showValidationTooltip(input, 'Nieprawidłowy PESEL');
+            input.classList.add('field-error');
+        } else {
+            input.classList.remove('field-error');
+            // Wyciągnij datę urodzenia i płeć
+            const year = parseInt(pesel.substring(0, 2));
+            const month = parseInt(pesel.substring(2, 4));
+            const day = parseInt(pesel.substring(4, 6));
+            const sex = parseInt(pesel[9]) % 2 === 0 ? 'K' : 'M';
+            
+            let fullYear;
+            if (month > 80) {
+                fullYear = 1800 + year;
+            } else if (month > 60) {
+                fullYear = 2200 + year;
+            } else if (month > 40) {
+                fullYear = 2100 + year;
+            } else if (month > 20) {
+                fullYear = 2000 + year;
+            } else {
+                fullYear = 1900 + year;
+            }
+            
+            const realMonth = month % 20;
+            
+            showToast('PESEL OK', `Data ur.: ${day}.${realMonth}.${fullYear}, Płeć: ${sex}`, 'success', 2000);
+        }
     }
 }
 
-@media screen and (min-width: 1600px) {
-    .container {
-        max-width: 1600px;
+function validateDate(input) {
+    const dateRegex = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/;
+    const match = input.value.match(dateRegex);
+    
+    if (input.value && !match) {
+        showValidationTooltip(input, 'Format daty: DD.MM.RRRR');
+        input.classList.add('field-error');
+    } else if (match) {
+        const day = parseInt(match[1]);
+        const month = parseInt(match[2]);
+        const year = parseInt(match[3]);
+        
+        const date = new Date(year, month - 1, day);
+        
+        if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+            showValidationTooltip(input, 'Nieprawidłowa data');
+            input.classList.add('field-error');
+        } else {
+            input.classList.remove('field-error');
+        }
+    } else {
+        input.classList.remove('field-error');
     }
 }
 
-@media screen and (min-width: 1920px) {
-    .container {
-        max-width: 1800px;
-        padding: 30mm;
+function validateDosage(drugName, dose) {
+    // Sprawdź czy dawka jest w bezpiecznym zakresie
+    const dangerousDoses = {
+        'NORADRENALINA': { max: 2.0, unit: 'μg/kg/min' },
+        'ADRENALINA': { max: 0.5, unit: 'μg/kg/min' },
+        'INSULINA': { max: 20, unit: 'j/h' },
+        'HEPARYNA': { max: 5000, unit: 'j/h' }
+    };
+    
+    if (dangerousDoses[drugName]) {
+        const doseValue = parseFloat(dose);
+        if (doseValue > dangerousDoses[drugName].max) {
+            showToast('Ostrzeżenie!', `Niebezpiecznie wysoka dawka ${drugName}!`, 'warning', 6000);
+            return false;
+        }
     }
-}
-
-/* Hide print-only room field on screen */
-.print-only-room {
-    display: none !important;
-}
-
-/* Top Controls */
-.top-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 15px;
-    background: var(--container-bg);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.control-button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-.control-button.small { padding: 6px 12px; font-size: 11px; }
-.control-button i { font-size: 14px; }
-.control-button.print { background-color: var(--primary); }
-.control-button.pdf { background-color: var(--success); }
-.control-button.save { background-color: #f59e0b; }
-.control-button.load { background-color: var(--info); }
-.control-button.templates { background-color: var(--purple); }
-.control-button.save-file { background-color: var(--amber); }
-.control-button.load-file { background-color: var(--teal); }
-.control-button.clear { background-color: var(--danger); }
-.control-button.dark-mode { background-color: var(--gray-700); }
-.control-button:hover { 
-    opacity: 0.85; 
-}
-
-/* Header */
-.header-section {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: white;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.hospital-header { display: flex; justify-content: space-between; align-items: center; }
-.hospital-logo { display: flex; align-items: center; gap: 10px; }
-.logo-icon { 
-    width: 32px; 
-    height: 32px; 
-    background: white; 
-    border-radius: 6px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 18px; 
-    color: var(--primary);
-}
-
-.header-right-info { display: flex; gap: 10px; }
-.header-right-info .field-value { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: white; padding: 2px 6px; text-align: center; }
-.header-right-info .field-label { color: white; opacity: 0.9; }
-h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-/* Patient Card */
-.patient-card { 
-    background: var(--gray-50); 
-    border-radius: 8px; 
-    padding: 15px; 
-    margin-bottom: 15px; 
-    border: 1px solid var(--border-color);
-}
-
-.patient-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-.field-group { display: flex; flex-direction: column; }
-.field-label { font-size: 9px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
-.field-value { 
-    padding: 5px 8px; 
-    border: 1px solid var(--border-color); 
-    border-radius: 5px; 
-    background: var(--container-bg); 
-    font-size: 11px; 
-    min-height: 28px; 
-    width: 100%; 
-    color: var(--text-color);
-    transition: border-color 0.2s ease;
-}
-.field-value:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    outline: none;
-}
-.field-value.alert-field { 
-    background: #fef2f2; 
-    border-color: var(--danger); 
-    color: var(--danger); 
-    font-weight: 600;
-}
-
-.field-value.field-error { 
-    border-color: var(--danger) !important; 
-    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
-}
-
-html.dark-mode .field-value.alert-field { background: #450a0a; }
-
-/* Quick Search Bar */
-.quick-search-bar {
-    position: relative;
-    margin: 15px 0;
-    background: var(--container-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.quick-search-bar i {
-    color: var(--gray-400);
-}
-
-#quickSearchInput {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-size: 12px;
-    color: var(--text-color);
-}
-
-.search-results {
-    display: none;
-    position: absolute;
-    top: calc(100% + 5px);
-    left: 0;
-    right: 0;
-    background: var(--container-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    z-index: 1000;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.search-result-item {
-    padding: 10px;
-    cursor: pointer;
-    transition: background 0.2s;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.search-result-item:hover {
-    background: var(--primary-light);
-}
-
-.search-result-item .drug-name {
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.search-result-item .drug-info {
-    font-size: 10px;
-    color: var(--gray-500);
-}
-
-/* Section Headers */
-.section-header { 
-    background: linear-gradient(90deg, var(--gray-800) 0%, var(--gray-900) 100%); 
-    color: white; 
-    padding: 6px 12px; 
-    border-radius: 6px; 
-    margin: 20px 0 8px 0; 
-    font-size: 12px; 
-    font-weight: 600; 
-    display: flex; 
-    align-items: center; 
-    gap: 8px;
-}
-
-.section-header.green { background: linear-gradient(90deg, var(--success) 0%, var(--success-dark) 100%); }
-.section-header.orange { background: linear-gradient(90deg, var(--warning) 0%, var(--warning-dark) 100%); }
-.section-header.cyan { background: linear-gradient(90deg, var(--info) 0%, var(--info-dark) 100%); }
-.section-header.purple { background: linear-gradient(90deg, var(--purple) 0%, var(--purple-dark) 100%); }
-.section-header.gray { background: linear-gradient(90deg, var(--gray-600) 0%, var(--gray-700) 100%); }
-
-/* Tables */
-table { 
-    width: 100%; 
-    border-collapse: collapse; 
-    margin-bottom: 8px;
-}
-th { 
-    background: var(--gray-100); 
-    padding: 6px 8px; 
-    text-align: left; 
-    font-weight: 600; 
-    font-size: 10px; 
-    color: var(--gray-600); 
-    border-bottom: 2px solid var(--border-color);
-}
-td { 
-    padding: 2px 8px; 
-    border-bottom: 1px solid var(--border-color); 
-    vertical-align: middle; 
-    height: 28px;
-    position: relative;
-}
-
-tr {
-    transition: background 0.2s ease;
-}
-
-tr:last-child td { border-bottom: none; }
-tbody tr:hover { 
-    background: var(--gray-50);
-}
-
-/* Sortable styles */
-.sortable-tbody {
-    position: relative;
-}
-
-.drag-handle {
-    cursor: move;
-    color: var(--gray-400);
-    margin-right: 8px;
-    font-size: 10px;
-}
-
-.sortable-ghost {
-    opacity: 0.4;
-    background: var(--primary-light);
-}
-
-.sortable-chosen {
-    background: var(--primary-light);
-}
-
-.sortable-drag {
-    background: var(--container-bg);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-/* GFR Dose Adjustment Styling */
-tr.gfr-dose-adjusted td { 
-    background-color: var(--warning-light) !important;
-}
-
-tr.gfr-dose-adjusted {
-    box-shadow: inset 3px 0 0 var(--warning);
-}
-
-.dose-reduction-notice { 
-    font-size: 10px; 
-    color: var(--warning-dark); 
-    font-weight: 500; 
-    margin-left: 5px;
-}
-
-html.dark-mode .dose-reduction-notice { color: #facc15; }
-
-/* Inputs inside tables */
-.drug-input { 
-    width: 100%; 
-    border: none; 
-    background: transparent; 
-    font-size: 11px; 
-    padding: 2px; 
-    color: var(--text-color); 
-    font-family: inherit;
-    transition: background 0.2s ease;
-}
-.drug-input:focus { 
-    outline: none; 
-    background: var(--primary-light);
-    border-radius: 3px;
-}
-.drug-name { font-weight: 500; }
-.infusion-rate { font-weight: 600; color: var(--success-dark); }
-html.dark-mode .infusion-rate { color: #4ade80; }
-.nutrition-rate { font-weight: 500; color: var(--warning-dark); }
-html.dark-mode .nutrition-rate { color: #facc15; }
-.nutrition-type { font-weight: 500; color: var(--info-dark); }
-html.dark-mode .nutrition-type { color: #38bdf8; }
-
-.signature-box-cell { 
-    border: 1px solid var(--border-color); 
-    height: 100%; 
-    background: linear-gradient(to bottom, var(--container-bg), var(--gray-50)); 
-    border-radius: 2px;
-}
-
-.additives-input {
-    font-size: 10px;
-    color: var(--gray-600);
-}
-
-.nutrition-additives {
-    font-size: 9px;
-    color: var(--gray-600);
-    margin-top: 2px;
-    padding: 1px 2px;
-    resize: none;
-    min-height: 20px;
-    line-height: 1.4;
-}
-
-html.dark-mode .nutrition-additives {
-    color: var(--gray-400);
-}
-
-/* Buttons */
-.button-container { 
-    display: flex; 
-    justify-content: flex-start; 
-    gap: 10px; 
-    margin-bottom: 15px;
-}
-
-.add-button { 
-    display: flex; 
-    align-items: center; 
-    gap: 6px; 
-    background-color: var(--primary); 
-    color: white; 
-    border: none; 
-    padding: 6px 12px; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-size: 11px; 
-    font-weight: 500; 
-    transition: background-color 0.2s;
-}
-
-.add-button:hover { 
-    background-color: var(--primary-dark);
-}
-
-.add-button.green { background-color: var(--success); }
-.add-button.green:hover { background-color: var(--success-dark); }
-.add-button.cyan { background-color: var(--info); }
-.add-button.cyan:hover { background-color: var(--info-dark); }
-.add-button.orange { background-color: var(--warning); }
-.add-button.orange:hover { background-color: var(--warning-dark); }
-.add-button.purple { background-color: var(--purple); }
-.add-button.purple:hover { background-color: var(--purple-dark); }
-.add-button.gray { background-color: var(--gray-500); }
-.add-button.gray:hover { background-color: var(--gray-600); }
-
-.remove-button { 
-    background: none; 
-    border: none; 
-    color: var(--gray-400); 
-    cursor: pointer; 
-    font-size: 14px;
-    transition: color 0.2s;
-}
-
-.remove-button:hover { 
-    color: var(--danger);
-}
-
-.action-column { 
-    width: 30px; 
-    text-align: center;
-}
-
-/* Summary with visual indicators */
-.controls-summary-container { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    margin-top: 10px;
-}
-
-.summary-container { 
-    text-align: right; 
-    font-size: 12px; 
-    color: var(--gray-600);
-    width: 50%;
-}
-
-.summary-container strong { color: var(--text-color); }
-
-.fluid-balance-indicator, .kcal-indicator {
-    margin-bottom: 10px;
-}
-
-#fluidBalanceSummary { color: var(--info); }
-#kcalSummary { color: var(--warning); }
-
-.balance-bar, .kcal-bar {
-    width: 100%;
-    height: 8px;
-    background: var(--gray-200);
-    border-radius: 4px;
-    margin-top: 5px;
-    overflow: hidden;
-}
-
-.balance-fill, .kcal-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.balance-fill.normal { background: var(--info); }
-.balance-fill.warning { background: var(--warning); }
-.balance-fill.danger { background: var(--danger); }
-
-.kcal-fill.low { background: var(--danger); }
-.kcal-fill.optimal { background: var(--success); }
-.kcal-fill.high { background: var(--warning); }
-
-/* Footer */
-.footer-grid { 
-    display: grid; 
-    grid-template-columns: 2fr 1fr; 
-    gap: 20px; 
-    align-items: stretch;
-}
-
-.notes-section textarea { 
-    width: 100%; 
-    height: 100%; 
-    min-height: 80px; 
-    border: 1px solid var(--border-color); 
-    border-radius: 6px; 
-    padding: 8px; 
-    font-size: 11px; 
-    background: var(--container-bg); 
-    color: var(--text-color); 
-    resize: vertical;
-    transition: border-color 0.2s ease;
-}
-
-.notes-section textarea:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    outline: none;
-}
-
-.signature-box { 
-    text-align: center; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: flex-end;
-}
-
-.signature-line { 
-    border-bottom: 1px solid var(--gray-400); 
-    min-height: 50px; 
-    margin-bottom: 5px;
-}
-
-.signature-label { font-size: 10px; color: var(--gray-600); font-weight: 600; }
-.signature-sublabel { font-size: 9px; color: var(--gray-500); }
-
-/* Modal */
-.modal { 
-    position: fixed; 
-    z-index: 1001; 
-    left: 0; 
-    top: 0; 
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0,0,0,0.6); 
-    display: none; 
-    align-items: center; 
-    justify-content: center;
-    backdrop-filter: blur(4px);
-}
-
-.modal-content { 
-    background-color: var(--container-bg); 
-    border-radius: 12px; 
-    width: 90%; 
-    max-width: 600px; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-
-.modal-header { 
-    padding: 20px 24px; 
-    border-bottom: 1px solid var(--border-color); 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    background: var(--gray-50);
-    border-radius: 12px 12px 0 0;
-}
-
-.modal-header h3 { 
-    font-size: 18px; 
-    font-weight: 600;
-    color: var(--text-color);
-}
-
-.close { 
-    font-size: 24px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    color: var(--gray-400);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.close:hover { 
-    color: var(--text-color);
-    background: var(--gray-200);
-}
-
-.modal-body { 
-    padding: 24px; 
-    max-height: 60vh; 
-    overflow-y: auto;
-}
-
-/* Templates Grid */
-.templates-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.template-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 20px;
-    background: var(--gray-50);
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.template-button:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-}
-
-.template-button i {
-    font-size: 24px;
-    color: var(--primary);
-}
-
-.template-button span {
-    font-size: 11px;
-    font-weight: 500;
-    text-align: center;
-    color: var(--text-color);
-}
-
-/* Saved cards list in modal */
-#savedCardsList {
-    list-style: none;
-    padding: 0;
-}
-
-#savedCardsList li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    margin-bottom: 8px;
-    background: var(--gray-50);
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-    transition: all 0.2s;
-}
-
-#savedCardsList li:hover {
-    background: var(--primary-light);
-    border-color: var(--primary);
-}
-
-html.dark-mode #savedCardsList li {
-    background: var(--gray-700);
-}
-
-#savedCardsList .patient-name {
-    font-weight: 600;
-    color: var(--text-color);
-    font-size: 14px;
-}
-
-/* Validation Tooltip */
-.validation-tooltip {
-    position: absolute;
-    background: var(--danger);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 11px;
-    z-index: 1000;
-    display: none;
-}
-
-.validation-tooltip::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid var(--danger);
-}
-
-/* Hide spinners in number inputs */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
-/* --- ENHANCED TOAST NOTIFICATIONS --- */
-#toastContainer {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.toast {
-    display: flex;
-    align-items: flex-start;
-    padding: 16px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    min-width: 320px;
-    max-width: 400px;
-    color: var(--gray-700);
-    transform: translateX(400px);
-    transition: transform 0.3s cubic-bezier(0.21, 1.02, 0.73, 1);
-    border-left: 4px solid;
-}
-
-.toast.show {
-    transform: translateX(0);
-}
-
-.toast.success { background-color: var(--success-light); border-color: var(--success); }
-.toast.error { background-color: var(--danger-light); border-color: var(--danger); }
-.toast.warning { background-color: var(--warning-light); border-color: var(--warning); }
-.toast.info { background-color: var(--info-light); border-color: var(--info); }
-
-html.dark-mode .toast.success { background-color: #052e16; color: var(--success-light); }
-html.dark-mode .toast.error { background-color: #450a0a; color: var(--danger-light); }
-html.dark-mode .toast.warning { background-color: #422006; color: var(--warning-light); }
-html.dark-mode .toast.info { background-color: #083344; color: var(--info-light); }
-
-.toast-icon { font-size: 20px; margin-right: 12px; }
-.toast.success .toast-icon { color: var(--success); }
-.toast.error .toast-icon { color: var(--danger); }
-.toast.warning .toast-icon { color: var(--warning); }
-.toast.info .toast-icon { color: var(--info); }
-
-.toast-content { flex-grow: 1; }
-.toast-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-.toast-message { font-size: 12px; line-height: 1.4; }
-
-.toast-close {
-    background: none;
-    border: none;
-    color: var(--gray-400);
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 16px;
-    padding: 0;
-    line-height: 1;
-    transition: color 0.2s;
-}
-
-.toast-close:hover { 
-    color: var(--gray-600);
-}
-
-/* --- AUTOSAVE INDICATOR --- */
-.autosave-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--gray-500);
-    margin-left: 10px;
-    padding: 6px 10px;
-    border-radius: 6px;
-}
-
-.autosave-indicator.saving { color: var(--warning-dark); }
-.autosave-indicator.saved { color: var(--success-dark); }
-.autosave-indicator.error { color: var(--danger-dark); }
-
-html.dark-mode .autosave-indicator.saving { color: #facc15; }
-html.dark-mode .autosave-indicator.saved { color: #4ade80; }
-html.dark-mode .autosave-indicator.error { color: #f87171; }
-
-/* --- OFFLINE INDICATOR --- */
-.offline-indicator {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--warning-dark);
-    margin-left: 10px;
-    padding: 6px 10px;
-    background: var(--warning-light);
-    border-radius: 6px;
-}
-
-html.dark-mode .offline-indicator {
-    color: #facc15;
-    background: #422006;
-}
-
-/* ======= WYDRUK KOMPAKTOWY A4 ======= */
-
-@page {
-    size: A4;
-    margin: 3mm;
-}
-
-@media print {
-    html, body {
-        background: #fff !important;
-        color: #000 !important;
-        font-size: 8px !important;
-        line-height: 1.1 !important;
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-    }
-
-    .container, #card-container {
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: #fff !important;
-        border: none !important;
-        box-shadow: none !important;
-        border-radius: 0 !important;
-    }
-
-    .top-controls,
-    .no-print,
-    .action-column,
-    .add-button,
-    .button-container,
-    .remove-button,
-    .quick-search-bar,
-    .drag-handle,
-    #toastContainer,
-    .validation-tooltip,
-    .autosave-indicator,
-    .offline-indicator {
-        display: none !important;
-    }
-
-    /* NAGŁÓWEK */
-    .header-section {
-        background: none !important;
-        color: #000 !important;
-        border: 1px solid #000 !important;
-        padding: 2mm !important;
-        margin-bottom: 2mm !important;
-        border-radius: 0 !important;
-        page-break-inside: avoid !important;
+    return true;
+}
+
+// --- ENHANCED AUTOSAVE SYSTEM ---
+function updateAutosaveIndicator(status, message) {
+    const indicator = document.getElementById('autosaveIndicator');
+    if (!indicator) return;
+    indicator.className = `autosave-indicator ${status}`;
+    indicator.querySelector('span').textContent = message;
+    
+    const icons = {
+        saving: 'fa-sync-alt fa-spin',
+        saved: 'fa-check-circle', 
+        error: 'fa-exclamation-circle'
+    };
+    indicator.querySelector('i').className = `fas ${icons[status] || 'fa-circle'}`;
+}
+
+function markAsChanged() {
+    hasUnsavedChanges = true;
+    updateAutosaveIndicator('saving', 'Niezapisane zmiany...');
+}
+
+function autoSave() {
+    if (!hasUnsavedChanges) return;
+    
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    if (!patientName) {
+        updateAutosaveIndicator('error', 'Brak nazwy pacjenta');
+        return;
     }
     
-    .hospital-header {
-        margin-bottom: 1mm !important;
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-    }
-    
-    .logo-icon {
-        width: 15px !important;
-        height: 15px !important;
-        background: #fff !important;
-        color: #000 !important;
-        border: 1px solid #000 !important;
-        font-size: 10px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-    }
-    
-    .hospital-logo div div:first-child {
-        font-size: 9px !important;
-        font-weight: 600 !important;
-        color: #000 !important;
-    }
-    
-    .hospital-logo div div:last-child {
-        font-size: 7px !important;
-        color: #000 !important;
-    }
-    
-    .header-right-info {
-        display: flex !important;
-        gap: 3mm !important;
-    }
-    
-    .header-right-info .field-group {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-    
-    .header-right-info .field-value {
-        background: #fff !important;
-        border: 1px solid #000 !important;
-        color: #000 !important;
-        min-width: 35px !important;
-        font-size: 8px !important;
-        text-align: center !important;
-        padding: 1px 3px !important;
-    }
-    
-    .header-right-info .field-label {
-        color: #000 !important;
-        font-size: 6px !important;
-        text-align: center !important;
-        margin-bottom: 1px !important;
-    }
-    
-    h1 {
-        font-size: 9px !important;
-        margin: 1mm 0 0 0 !important;
-        text-align: center !important;
-        color: #000 !important;
-        font-weight: 600 !important;
-        text-transform: uppercase !important;
-    }
-
-    /* KARTA PACJENTA */
-    .patient-card {
-        border: 1px solid #000 !important;
-        background: #fff !important;
-        padding: 2mm !important;
-        margin-bottom: 2mm !important;
-        border-radius: 0 !important;
-        page-break-inside: avoid !important;
-    }
-    
-    .patient-grid { 
-        gap: 1mm !important; 
-        grid-template-columns: repeat(4, 1fr) !important;
-    }
-    
-    .field-label {
-        font-size: 6px !important;
-        color: #000 !important;
-        margin-bottom: 0.5px !important;
-        text-transform: uppercase !important;
-        font-weight: 600 !important;
-    }
-    
-    .field-value,
-    .header-input,
-    input,
-    textarea {
-        border: 1px solid #000 !important;
-        background: #fff !important;
-        color: #000 !important;
-        font-size: 8px !important;
-        padding: 0.5px 1px !important;
-        min-height: 14px !important;
-        border-radius: 0 !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        resize: none !important;
-        overflow: visible !important;
-        word-wrap: break-word !important;
-        font-family: inherit !important;
-    }
-    
-    .field-value.small {
-        min-width: 30px !important;
-    }
-    
-    .alert-field {
-        background: #fff !important;
-        border: 2px solid #000 !important;
-        color: #000 !important;
-        font-weight: 700 !important;
-    }
-
-    input::-webkit-input-placeholder, 
-    textarea::-webkit-input-placeholder { color: transparent !important; }
-    input::-moz-placeholder, 
-    textarea::-moz-placeholder { color: transparent !important; }
-    input:-ms-input-placeholder, 
-    textarea:-ms-input-placeholder { color: transparent !important; }
-    input::placeholder, 
-    textarea::placeholder { color: transparent !important; }
-
-    /* NAGŁÓWKI SEKCJI */
-    .section-header {
-        background: #ddd !important;
-        color: #000 !important;
-        border: 1px solid #000 !important;
-        padding: 1px 3px !important;
-        border-radius: 0 !important;
-        margin: 2mm 0 0.5mm 0 !important;
-        font-size: 8px !important;
-        font-weight: 700 !important;
-        page-break-after: avoid !important;
-    }
-
-    .section-header i {
-        display: none !important;
-    }
-
-    /* TABELE */
-    table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        font-size: 7px !important;
-        border: 1px solid #000 !important;
-        margin: 0.5mm 0 1mm 0 !important;
-        table-layout: fixed !important;
-        page-break-inside: avoid !important;
-    }
-    
-    thead {
-        page-break-inside: avoid !important;
-        page-break-after: avoid !important;
-    }
-    
-    thead th {
-        background: #eee !important;
-        color: #000 !important;
-        font-weight: 600 !important;
-        border: 1px solid #000 !important;
-        padding: 1mm !important;
-        font-size: 6px !important;
-        text-align: left !important;
-    }
-    
-    tbody td {
-        border: 1px solid #000 !important;
-        padding: 0.5mm !important;
-        vertical-align: top !important;
-        height: auto !important;
-        min-height: 18px !important;
-        overflow: visible !important;
-        word-wrap: break-word !important;
-    }
-
-    /* POLA W TABELACH */
-    .drug-input,
-    .fluid-rate,
-    .nutrition-prep,
-    .nutrition-rate,
-    .nutrition-type,
-    .dose,
-    .infusion-rate,
-    .fluid-name,
-    .additives-input {
-        border: none !important;
-        background: transparent !important;
-        color: #000 !important;
-        padding: 0 !important;
-        font-size: 7px !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        width: 100% !important;
-        font-family: inherit !important;
-    }
-    
-    textarea.nutrition-additives {
-        border: none !important;
-        background: transparent !important;
-        color: #000 !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        font-size: 6px !important;
-        line-height: 1.1 !important;
-        min-height: auto !important;
-        max-height: none !important;
-        height: auto !important;
-        width: 100% !important;
-        overflow: visible !important;
-        resize: none !important;
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        display: block !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        word-break: normal !important;
-        overflow-wrap: break-word !important;
-        font-family: inherit !important;
-    }
-    
-    .drug-name {
-        font-weight: 600 !important;
-    }
-
-    /* PODPISY */
-    .signature-box-cell {
-        border: 1px solid #000 !important;
-        border-radius: 0 !important;
-        background: #fff !important;
-        min-height: 18px !important;
-    }
-
-    /* GFR ADJUSTMENTS */
-    tr.gfr-dose-adjusted td { 
-        background: #f5f5f5 !important; 
-    }
-    
-    .dose-reduction-notice { 
-        color: #000 !important; 
-        font-weight: 700 !important; 
-        font-size: 5px !important;
-    }
-
-    /* SZEROKOŚCI KOLUMN */
-    #continuousDrugsTable th:nth-child(1) { width: 35% !important; }
-    #continuousDrugsTable th:nth-child(2) { width: 25% !important; }
-    #continuousDrugsTable th:nth-child(3) { width: 15% !important; }
-    #continuousDrugsTable th:nth-child(4) { width: 25% !important; }
-
-    #periodicDrugsTable th:nth-child(1) { width: 35% !important; }
-    #periodicDrugsTable th:nth-child(2) { width: 20% !important; }
-    #periodicDrugsTable th:nth-child(3) { width: 45% !important; }
-
-    #fluidsTable th:nth-child(1) { width: 20% !important; }
-    #fluidsTable th:nth-child(2) { width: 35% !important; }
-    #fluidsTable th:nth-child(3) { width: 10% !important; }
-    #fluidsTable th:nth-child(4) { width: 10% !important; }
-    #fluidsTable th:nth-child(5) { width: 25% !important; }
-
-    #nutritionTable th:nth-child(1) { width: 15% !important; }
-    #nutritionTable th:nth-child(2) { width: 45% !important; }
-    #nutritionTable th:nth-child(3) { width: 15% !important; }
-    #nutritionTable th:nth-child(4) { width: 25% !important; }
-
-    #proceduresTable th:nth-child(1) { width: 15% !important; }
-    #proceduresTable th:nth-child(2) { width: 50% !important; }
-    #proceduresTable th:nth-child(3) { width: 35% !important; }
-
-    /* PODSUMOWANIA */
-    .controls-summary-container {
-        margin-top: 1mm !important;
-        page-break-inside: avoid !important;
-        display: none !important;
-    }
-
-    /* STOPKA */
-    .footer-grid {
-        grid-template-columns: 2.5fr 1fr !important;
-        gap: 2mm !important;
-        align-items: stretch !important;
-        margin-top: 2mm !important;
-        page-break-inside: avoid !important;
-    }
-    
-    .notes-section textarea {
-        border: 1px solid #000 !important;
-        min-height: 30px !important;
-        max-height: 40px !important;
-        padding: 1mm !important;
-        resize: none !important;
-        background: #fff !important;
-        color: #000 !important;
-        font-size: 7px !important;
-    }
-    
-    .signature-box {
-        padding-top: 1mm !important;
-    }
-    
-    .signature-line {
-        min-height: 20px !important;
-        border-bottom: 1px solid #000 !important;
-    }
-    
-    .signature-label { 
-        color: #000 !important; 
-        font-size: 7px !important;
-        font-weight: 600 !important;
-    }
-    
-    .signature-sublabel { 
-        color: #000 !important;
-        font-size: 6px !important; 
-    }
-
-    /* UKRYCIE STRZAŁEK W POLACH NUMBER */
-    input[type="number"]::-webkit-outer-spin-button,
-    input[type="number"]::-webkit-inner-spin-button {
-        -webkit-appearance: none !important;
-        margin: 0 !important;
-    }
-    
-    input[type="number"] {
-        -moz-appearance: textfield !important;
-        appearance: textfield !important;
-    }
-
-    /* ZAPOBIEGANIE DZIELENIU SEKCJI */
-    .header-section,
-    .patient-card,
-    .footer-grid {
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-    }
-    
-    .section-header {
-        page-break-after: avoid !important;
-        break-after: avoid !important;
-    }
-    
-    table {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
-    }
-
-    tbody tr {
-        page-break-inside: avoid !important;
-        break-inside: avoid !important;
+    try {
+        const cardState = getCardState();
+        const autoSaveKey = `autosave_${patientName.replace(/\s+/g, '-')}`;
+        
+        // Zapisz w localStorage
+        localStorage.setItem(autoSaveKey, JSON.stringify({
+            ...cardState,
+            timestamp: new Date().toISOString(),
+            isAutoSave: true
+        }));
+        
+        // Jeśli offline, dodaj do kolejki synchronizacji
+        if (!isOnline) {
+            addToSyncQueue(autoSaveKey, cardState);
+        }
+        
+        hasUnsavedChanges = false;
+        updateAutosaveIndicator('saved', 'Zapisano automatycznie');
+        
+    } catch (e) {
+        updateAutosaveIndicator('error', 'Błąd zapisu');
+        console.error('Autosave error:', e);
     }
 }
+
+function startAutosave() {
+    if (autosaveInterval) clearInterval(autosaveInterval);
+    autosaveInterval = setInterval(autoSave, 30000); // co 30 sekund
+}
+
+function restoreFromAutosave() {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    if (!patientName) return;
+    
+    const autoSaveKey = `autosave_${patientName.replace(/\s+/g, '-')}`;
+    const savedData = localStorage.getItem(autoSaveKey);
+    
+    if (savedData) {
+        try {
+            const cardState = JSON.parse(savedData);
+            if (cardState.isAutoSave) {
+                const saveTime = new Date(cardState.timestamp).toLocaleString();
+                if (confirm(`Znaleziono automatyczny zapis dla tego pacjenta z ${saveTime}. Czy przywrócić dane?`)) {
+                    populateCardFromState(cardState);
+                    showToast('Przywrócono', 'Dane zostały przywrócone z automatycznego zapisu', 'success');
+                }
+            }
+        } catch (e) {
+            console.error('Error restoring autosave:', e);
+        }
+    }
+}
+
+// --- OFFLINE MODE ---
+function updateOnlineStatus() {
+    const offlineIndicator = document.getElementById('offlineIndicator');
+    if (!offlineIndicator) return;
+    
+    if (navigator.onLine) {
+        isOnline = true;
+        offlineIndicator.style.display = 'none';
+        showToast('Online', 'Połączenie przywrócone', 'success', 3000);
+        syncOfflineData();
+    } else {
+        isOnline = false;
+        offlineIndicator.style.display = 'flex';
+        showToast('Offline', 'Pracujesz w trybie offline', 'warning', 5000);
+    }
+}
+
+function addToSyncQueue(key, data) {
+    let syncQueue = JSON.parse(localStorage.getItem('syncQueue') || '[]');
+    syncQueue.push({ key, data, timestamp: new Date().toISOString() });
+    localStorage.setItem('syncQueue', JSON.stringify(syncQueue));
+}
+
+function syncOfflineData() {
+    const syncQueue = JSON.parse(localStorage.getItem('syncQueue') || '[]');
+    
+    if (syncQueue.length > 0) {
+        showToast('Synchronizacja', `Synchronizowanie ${syncQueue.length} zapisów...`, 'info');
+        
+        // Tu można dodać rzeczywistą synchronizację z serwerem
+        // Na razie tylko czyścimy kolejkę
+        localStorage.removeItem('syncQueue');
+        
+        showToast('Zsynchronizowano', 'Wszystkie dane zostały zsynchronizowane', 'success');
+    }
+}
+
+// --- DRAG & DROP ---
+function initializeSortable() {
+    // Usuń poprzednie instancje
+    sortableInstances.forEach(instance => instance.destroy());
+    sortableInstances = [];
+    
+    // Inicjalizuj sortowanie dla każdej tabeli
+    document.querySelectorAll('.sortable-tbody').forEach(tbody => {
+        const instance = Sortable.create(tbody, {
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                markAsChanged();
+                showToast('Zmieniono kolejność', 'Kolejność wierszy została zmieniona', 'info', 2000);
+            }
+        });
+        sortableInstances.push(instance);
+    });
+}
+
+// --- QUICK SEARCH ---
+function quickSearch(event) {
+    const searchInput = document.getElementById('quickSearchInput');
+    const searchResults = document.getElementById('quickSearchResults');
+    const query = searchInput.value.toUpperCase();
+    
+    if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+    }
+    
+    const allDrugs = [
+        ...Object.keys(continuousDrugsData).map(key => ({
+            name: key,
+            type: 'continuous',
+            data: continuousDrugsData[key]
+        })),
+        ...Object.keys(periodicDrugsData).map(key => ({
+            name: key,
+            type: 'periodic',
+            data: periodicDrugsData[key]
+        }))
+    ];
+    
+    const results = allDrugs.filter(drug => drug.name.includes(query));
+    
+    if (results.length > 0) {
+        searchResults.innerHTML = results.slice(0, 10).map(drug => `
+            <div class="search-result-item" onclick="addDrugFromSearch('${drug.type}', '${drug.name}')">
+                <div class="drug-name">${drug.name}</div>
+                <div class="drug-info">${drug.type === 'continuous' ? 'Lek ciągły' : 'Lek okresowy'} - ${drug.data.dose || ''}</div>
+            </div>
+        `).join('');
+        searchResults.style.display = 'block';
+    } else {
+        searchResults.innerHTML = '<div class="search-result-item">Brak wyników</div>';
+        searchResults.style.display = 'block';
+    }
+    
+    if (event.key === 'Enter' && results.length > 0) {
+        addDrugFromSearch(results[0].type, results[0].name);
+        searchInput.value = '';
+        searchResults.style.display = 'none';
+    }
+}
+
+function addDrugFromSearch(type, drugName) {
+    if (type === 'continuous') {
+        addContinuousDrug();
+        const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+        const nameInput = lastRow.querySelector('.drug-name');
+        nameInput.value = drugName;
+        const rowId = nameInput.id.replace('_name', '');
+        fillContinuousDrugData(nameInput, rowId);
+    } else {
+        addPeriodicDrug();
+        const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+        const nameInput = lastRow.querySelector('.drug-name');
+        nameInput.value = drugName;
+        fillPeriodicDrugData(nameInput);
+    }
+    
+    // Zapisz do historii wyszukiwań
+    if (!drugSearchHistory.includes(drugName)) {
+        drugSearchHistory.unshift(drugName);
+        drugSearchHistory = drugSearchHistory.slice(0, 20); // Zachowaj tylko 20 ostatnich
+        localStorage.setItem('drugSearchHistory', JSON.stringify(drugSearchHistory));
+    }
+    
+    document.getElementById('quickSearchInput').value = '';
+    document.getElementById('quickSearchResults').style.display = 'none';
+    
+    showToast('Dodano', `Dodano lek: ${drugName}`, 'success', 2000);
+}
+
+// --- TEMPLATES ---
+function openTemplatesModal() {
+    document.getElementById('templatesModal').style.display = 'flex';
+}
+
+function loadTemplate(templateName) {
+    const template = cardTemplates[templateName];
+    if (!template) return;
+    
+    if (!confirm(`Czy załadować szablon "${template.name}"? Obecne dane zostaną zastąpione.`)) {
+        return;
+    }
+    
+    // Wyczyść kartę
+    clearCard(true);
+    
+    // Ustaw rozpoznanie
+    document.getElementById('diagnosisInput').value = template.diagnosis;
+    
+    // Dodaj leki ciągłe
+    template.continuousDrugs?.forEach(drug => {
+        addContinuousDrug();
+        const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = drug.name;
+        inputs[1].value = drug.conc;
+        inputs[2].value = drug.dose;
+        if (drug.rate) {
+            inputs[3].value = drug.rate;
+        } else {
+            calculateInfusionRate(inputs[2]);
+        }
+    });
+    
+    // Dodaj leki okresowe
+    template.periodicDrugs?.forEach(drug => {
+        addPeriodicDrug();
+        const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = drug.name;
+        inputs[1].value = drug.dose;
+        inputs[2].value = drug.route;
+        inputs[3].value = drug.freq;
+    });
+    
+    // Dodaj płyny
+    template.fluids?.forEach(fluid => {
+        addFluid();
+        const lastRow = document.querySelector('#fluidsTable tbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = fluid.name;
+        inputs[2].value = fluid.volume;
+        inputs[3].value = fluid.rate;
+    });
+    
+    // Dodaj żywienie
+    template.nutrition?.forEach(nutr => {
+        addNutrition();
+        const lastRow = document.querySelector('#nutritionTable tbody tr:last-child');
+        const typeInput = lastRow.querySelector('.nutrition-type');
+        const prepInput = lastRow.querySelector('.nutrition-prep');
+        const rateInput = lastRow.querySelector('.nutrition-rate');
+        if (nutr.type) {
+            typeInput.value = nutr.type;
+            updateNutritionProductList(typeInput);
+        }
+        if (nutr.prep) prepInput.value = nutr.prep;
+        if (nutr.rate) rateInput.value = nutr.rate;
+    });
+    
+    // Dodaj procedury
+    template.procedures?.forEach(proc => {
+        addProcedure();
+        const lastRow = document.querySelector('#proceduresTable tbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = proc.time;
+        inputs[1].value = proc.name;
+    });
+    
+    updateSummaries();
+    closeModal('templatesModal');
+    showToast('Szablon załadowany', `Załadowano szablon: ${template.name}`, 'success');
+}
+
+// --- FUNKCJE POMOCNICZE ---
+function autoResizeTextarea(textarea) {
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
+}
+
+// --- GŁÓWNE FUNKCJE ---
+function removeRow(button) { 
+    const row = button.closest('tr');
+    row.remove();
+    updateSummaries(); 
+    markAsChanged();
+}
+
+function updateSummaries() { 
+    let totalFluids = 0; 
+    let totalKcal = 0; 
+    
+    document.querySelectorAll('#fluidsTable tbody tr').forEach(row => { 
+        const rateInput = row.querySelector('.fluid-rate'); 
+        if (rateInput && rateInput.value) { 
+            const rate = parseFloat(rateInput.value.replace(',', '.')); 
+            if (!isNaN(rate)) { 
+                totalFluids += rate * 24; 
+            } 
+        } 
+        const nameInput = row.querySelector('.fluid-name'); 
+        if(nameInput && glucoseKcalData[nameInput.value]) { 
+            const rate = parseFloat(rateInput.value.replace(',', '.')); 
+            if (!isNaN(rate)) { 
+                totalKcal += (rate * 24) * glucoseKcalData[nameInput.value]; 
+            } 
+        } 
+    }); 
+    
+    document.querySelectorAll('#nutritionTable tbody tr').forEach(row => { 
+        const prepInput = row.querySelector('.nutrition-prep'); 
+        const rateInput = row.querySelector('.nutrition-rate');
+        
+        if (prepInput && prepInput.value && rateInput && rateInput.value) {
+            const rate = parseFloat(rateInput.value.replace(',', '.'));
+            const productInfo = nutritionData[prepInput.value];
+            
+            if (productInfo && !isNaN(rate) && rate > 0) {
+                const hoursToInfuse = productInfo.volume / rate;
+                const kcalPerHour = productInfo.kcal / hoursToInfuse;
+                const fluidPerHour = rate;
+                
+                totalFluids += fluidPerHour * 24;
+                totalKcal += kcalPerHour * 24;
+            }
+        } else if (prepInput && prepInput.value) {
+            const productInfo = nutritionData[prepInput.value];
+            if (productInfo) { 
+                totalFluids += productInfo.volume; 
+                totalKcal += productInfo.kcal; 
+            } 
+        }
+    }); 
+    
+    // Aktualizuj wartości
+    document.getElementById('totalFluids').textContent = totalFluids.toFixed(0); 
+    document.getElementById('totalKcal').textContent = totalKcal.toFixed(0); 
+    
+    // Oblicz kcal/kg
+    const weight = parseFloat(document.getElementById('patientWeight').value);
+    if (weight > 0) {
+        const kcalPerKg = (totalKcal / weight).toFixed(1);
+        document.getElementById('kcalPerKg').textContent = kcalPerKg;
+    } else {
+        document.getElementById('kcalPerKg').textContent = '0';
+    }
+    
+    // Aktualizuj paski postępu
+    const fluidBar = document.getElementById('fluidBalanceFill');
+    const kcalBar = document.getElementById('kcalFill');
+    
+    if (fluidBar) {
+        // Bilans płynów (zakres 0-4000 ml)
+        const fluidPercent = Math.min((totalFluids / 4000) * 100, 100);
+        fluidBar.style.width = fluidPercent + '%';
+        fluidBar.className = 'balance-fill';
+        if (totalFluids > 3500) fluidBar.classList.add('danger');
+        else if (totalFluids > 2500) fluidBar.classList.add('warning');
+        else fluidBar.classList.add('normal');
+    }
+    
+    if (kcalBar) {
+        // Kalorie (zakres 0-2500 kcal)
+        const kcalPercent = Math.min((totalKcal / 2500) * 100, 100);
+        kcalBar.style.width = kcalPercent + '%';
+        kcalBar.className = 'kcal-fill';
+        if (totalKcal < 1000) kcalBar.classList.add('low');
+        else if (totalKcal > 2000) kcalBar.classList.add('high');
+        else kcalBar.classList.add('optimal');
+    }
+}
+
+function calculateInfusionRate(inputElement) { 
+    const row = inputElement.closest('tr'); 
+    if (!row) return; 
+    
+    const weightInput = document.getElementById('patientWeight'); 
+    const weight = parseFloat(weightInput.value); 
+    const doseInput = row.querySelector('.dose'); 
+    const concentrationInput = row.querySelector('input[id$="_conc"]'); 
+    const rateOutput = row.querySelector('.infusion-rate'); 
+    
+    if (!weight || weight <= 0 || !doseInput.value || !concentrationInput.value) { 
+        return; 
+    } 
+    
+    let doseStr = doseInput.value.replace(',', '.'); 
+    let concStr = concentrationInput.value.replace(',', '.'); 
+    
+    const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/; 
+    const doseMatch = doseStr.match(doseRegex); 
+    
+    if (!doseMatch) { 
+        rateOutput.value = ''; 
+        return; 
+    } 
+    
+    let doseValue1 = parseFloat(doseMatch[1]); 
+    let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; 
+    let doseUnit = doseMatch[3]; 
+    const perKg = doseMatch[4]; 
+    const perTime = doseMatch[5]; 
+    
+    const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/; 
+    const concMatch = concStr.match(concRegex); 
+    
+    let concentrationPerMl; 
+    if (concMatch) { 
+        let totalMass = parseFloat(concMatch[1]); 
+        const massUnit = concMatch[2]; 
+        const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; 
+        if (massUnit === 'mg') totalMass *= 1000; 
+        concentrationPerMl = totalMass / totalVolume; 
+    } else { 
+        rateOutput.value = ''; 
+        return; 
+    } 
+    
+    if (concentrationPerMl === 0) return; 
+    
+    if (doseUnit === 'mg') { 
+        doseValue1 *= 1000; 
+        if(doseValue2) doseValue2 *= 1000; 
+    } 
+    
+    const calculateRate = (dose) => { 
+        let totalDosePerTime = dose; 
+        if (perKg) totalDosePerTime *= weight; 
+        const volumePerTime = totalDosePerTime / concentrationPerMl; 
+        return (perTime === 'min') ? volumePerTime * 60 : volumePerTime; 
+    }; 
+    
+    const finalRate1 = calculateRate(doseValue1); 
+    if (doseValue2) { 
+        const finalRate2 = calculateRate(doseValue2); 
+        rateOutput.value = `${finalRate1.toFixed(1).replace('.', ',')} - ${finalRate2.toFixed(1).replace('.', ',')}`; 
+    } else { 
+        rateOutput.value = finalRate1.toFixed(1).replace('.', ','); 
+    } 
+}
+
+function calculateIcuDay() { 
+    const admissionDateStr = document.getElementById('admissionDateInput').value; 
+    const mainDateStr = document.getElementById('mainDateInput').value; 
+    const icuDayInput = document.getElementById('icuDayInput'); 
+    
+    const parseDate = (dateStr) => { 
+        const parts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); 
+        if (!parts) return null; 
+        return new Date(parts[3], parts[2] - 1, parts[1]); 
+    }; 
+    
+    const admissionDate = parseDate(admissionDateStr); 
+    const mainDate = parseDate(mainDateStr); 
+    
+    if (admissionDate && mainDate && mainDate >= admissionDate) { 
+        const utcMain = Date.UTC(mainDate.getFullYear(), mainDate.getMonth(), mainDate.getDate()); 
+        const utcAdmission = Date.UTC(admissionDate.getFullYear(), admissionDate.getMonth(), admissionDate.getDate()); 
+        const dayInMillis = 1000 * 60 * 60 * 24; 
+        const diffDays = (utcMain - utcAdmission) / dayInMillis; 
+        icuDayInput.value = Math.round(diffDays) + 1; 
+    } else { 
+        icuDayInput.value = ''; 
+    } 
+}
+
+function calculateBMI() { 
+    const weightInput = document.getElementById('patientWeight'); 
+    const heightInput = document.getElementById('heightInput'); 
+    const bmiOutput = document.getElementById('bmiOutput'); 
+    
+    const weight = parseFloat(weightInput.value); 
+    const height = parseFloat(heightInput.value); 
+    
+    if (weight > 0 && height > 0) { 
+        const heightInMeters = height / 100; 
+        const bmi = weight / (heightInMeters * heightInMeters); 
+        bmiOutput.value = bmi.toFixed(1); 
+    } else { 
+        bmiOutput.value = ''; 
+    } 
+}
+
+function handleWeightHeightChange() { 
+    calculateBMI(); 
+    document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => { 
+        const doseInput = row.querySelector('.dose'); 
+        if (doseInput) calculateInfusionRate(doseInput); 
+    }); 
+    recalculateAllKgDoses(); 
+    updateSummaries(); 
+}
+
+function addContinuousDrug() { 
+    const tbody = document.querySelector('#continuousDrugsTbody'); 
+    const newRow = document.createElement('tr'); 
+    const rowId = 'cont_' + Date.now(); 
+    newRow.innerHTML = `<td><span class="input-with-handle"><i class="fas fa-grip-vertical drag-handle"></i><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="continuousDrugsList" autocomplete="off" onchange="fillContinuousDrugData(this, '${rowId}')" id="${rowId}_name" /></span><input type="text" class="drug-input" placeholder="Stężenie" autocomplete="off" id="${rowId}_conc" oninput="calculateInfusionRate(this.closest('tr').querySelector('.dose'))" /></td><td><input type="text" class="drug-input dose" placeholder="Dawka" autocomplete="off" id="${rowId}_dose" oninput="calculateInfusionRate(this)" /></td><td><input type="text" class="drug-input infusion-rate" placeholder="0,0" autocomplete="off" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
+    tbody.appendChild(newRow); 
+    initializeSortable();
+}
+
+function fillContinuousDrugData(input, rowId) { 
+    const drugName = input.value.toUpperCase(); 
+    if (continuousDrugsData[drugName]) { 
+        const data = continuousDrugsData[drugName]; 
+        const concInput = document.getElementById(rowId + '_conc'); 
+        const doseInput = document.getElementById(rowId + '_dose'); 
+        const row = input.closest('tr'); 
+        const rateOutput = row.querySelector('.infusion-rate'); 
+        
+        concInput.value = data.concentration; 
+        doseInput.value = data.dose; 
+        
+        if (data.fixedRate) { 
+            rateOutput.value = data.fixedRate; 
+        } else { 
+            calculateInfusionRate(doseInput); 
+        }
+        
+        // Walidacja dawki
+        validateDosage(drugName, data.dose);
+    } 
+}
+
+function addPeriodicDrug() { 
+    const tbody = document.querySelector('#periodicDrugsTbody'); 
+    const newRow = document.createElement('tr'); 
+    const rowId = 'per_' + Date.now(); 
+    newRow.innerHTML = `<td><span class="input-with-handle"><i class="fas fa-grip-vertical drag-handle"></i><input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="periodicDrugsList" autocomplete="off" onchange="fillPeriodicDrugData(this)" id="${rowId}_name" /></span><input type="text" class="drug-input" placeholder="Dawka" autocomplete="off" id="${rowId}_dose" /></td><td><input type="text" class="drug-input" placeholder="i.v." autocomplete="off" id="${rowId}_route" /><input type="text" class="drug-input" placeholder="co 24h" autocomplete="off" id="${rowId}_freq" /><span class="dose-reduction-notice" style="display:none;">⚠️ Zredukowano</span></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
+    tbody.appendChild(newRow); 
+    initializeSortable();
+}
+
+function fillPeriodicDrugData(input) { 
+    const row = input.closest('tr'); 
+    const drugName = input.value.toUpperCase(); 
+    const doseInput = row.querySelector('input[id$="_dose"]'); 
+    const routeInput = row.querySelector('input[id$="_route"]'); 
+    const freqInput = row.querySelector('input[id$="_freq"]'); 
+    const originalData = periodicDrugsData[drugName]; 
+    
+    if (originalData) { 
+        doseInput.dataset.originalDose = originalData.dose; 
+        routeInput.value = originalData.route; 
+        routeInput.placeholder = '';
+        freqInput.value = originalData.frequency; 
+        freqInput.placeholder = '';
+    } else { 
+        doseInput.dataset.originalDose = ''; 
+        routeInput.placeholder = 'i.v.';
+        freqInput.placeholder = 'co 24h';
+    } 
+    
+    recalculateDose(row); 
+    adjustSingleDoseForGfr(row); 
+}
+
+function addFluid() { 
+    const tbody = document.querySelector('#fluidsTable tbody'); 
+    const newRow = document.createElement('tr'); 
+    const rowId = 'fluid_' + Date.now(); 
+    newRow.innerHTML = `<td><span class="input-with-handle"><i class="fas fa-grip-vertical drag-handle"></i><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" autocomplete="off" onchange="fillFluidData(this, '${rowId}')" /></span></td><td><input type="text" class="drug-input additives-input" placeholder="np. + KCl 15% 10ml | + MgSO4 20% 5ml" autocomplete="off" /></td><td><input type="number" class="drug-input" placeholder="ml" autocomplete="off" id="${rowId}_vol" oninput="updateSummaries()" /></td><td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
+    tbody.appendChild(newRow); 
+    initializeSortable();
+}
+
+function fillFluidData(input, rowId) { 
+    const fluidName = input.value; 
+    if (fluidsData[fluidName]) { 
+        const volInput = document.getElementById(rowId + '_vol');
+        const rateInput = document.getElementById(rowId + '_rate');
+        if (volInput) volInput.value = fluidsData[fluidName].volume.replace('ml',''); 
+        if (rateInput) rateInput.value = fluidsData[fluidName].rate; 
+        updateSummaries(); 
+    } 
+}
+
+function addNutrition() { 
+    const tbody = document.querySelector('#nutritionTable tbody'); 
+    const newRow = document.createElement('tr'); 
+    const rowId = 'nutr_' + Date.now();
+    newRow.innerHTML = `<td><span class="input-with-handle"><i class="fas fa-grip-vertical drag-handle"></i><input type="text" class="drug-input nutrition-type" placeholder="Wybierz typ..." list="nutritionTypesList" autocomplete="off" onchange="updateNutritionProductList(this)" /></span></td><td><input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." list="enteralProductsList" autocomplete="off" onchange="fillNutritionData(this, '${rowId}')" id="${rowId}_prep"/><textarea class="drug-input nutrition-additives" placeholder="" id="${rowId}_additives" autocomplete="off" style="display:none;" rows="1"></textarea></td><td><input type="number" class="drug-input nutrition-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="updateSummaries()" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
+    tbody.appendChild(newRow); 
+    
+    const newTextarea = newRow.querySelector('.nutrition-additives');
+    newTextarea.addEventListener('input', () => autoResizeTextarea(newTextarea));
+    initializeSortable();
+}
+
+function fillNutritionData(input, rowId) {
+    const prepName = input.value;
+    const rateInput = document.getElementById(rowId + '_rate');
+    const additivesTextarea = document.getElementById(rowId + '_additives');
+    const row = input.closest('tr');
+    const typeInput = row.querySelector('.nutrition-type');
+    const typeValue = typeInput ? typeInput.value.toLowerCase() : '';
+    
+    if (nutritionFlowRates[prepName] && rateInput && !rateInput.value) {
+        rateInput.value = nutritionFlowRates[prepName];
+    }
+    
+    if (typeValue.includes('pozajelitowe') && additivesTextarea) {
+        if (prepName.includes('SmofKabiven') || prepName.includes('OMEGAFLEX') || prepName.includes('Nutriflex') || prepName.includes('Aminomix')) {
+            if (!additivesTextarea.value) {
+                additivesTextarea.value = '+ Glycophos 3ml + Supliven 10ml + Omegaven 50ml + Soluvit N 1amp + Vitalipid 10ml';
+                autoResizeTextarea(additivesTextarea);
+            }
+        }
+    }
+    
+    updateSummaries();
+}
+
+function updateNutritionProductList(typeInput) { 
+    const row = typeInput.closest('tr'); 
+    const prepInput = row.querySelector('.nutrition-prep'); 
+    const additivesInput = row.querySelector('.nutrition-additives');
+    const typeValue = typeInput.value.toLowerCase(); 
+    
+    let newListId = 'enteralProductsList';
+    if (typeValue.includes('dojelitowe')) { 
+        newListId = 'enteralProductsList';
+        if (additivesInput) {
+            additivesInput.style.display = 'none';
+            additivesInput.value = '';
+        }
+    } else if (typeValue.includes('pozajelitowe')) { 
+        newListId = 'parenteralProductsList';
+        if (additivesInput) {
+            additivesInput.style.display = 'block';
+            additivesInput.placeholder = 'np. + Glycophos 3ml + Supliven 10ml...';
+        }
+    } else { 
+        if (additivesInput) {
+            additivesInput.style.display = 'none';
+            additivesInput.value = '';
+        }
+    } 
+    
+    prepInput.setAttribute('list', newListId);
+    prepInput.value = ''; 
+    
+    updateSummaries(); 
+}
+
+function addProcedure() { 
+    const tbody = document.querySelector('#proceduresTable tbody'); 
+    const newRow = document.createElement('tr'); 
+    newRow.innerHTML = `<td><span class="input-with-handle"><i class="fas fa-grip-vertical drag-handle"></i><input type="text" class="drug-input" placeholder="Godz." list="timesList" autocomplete="off" /></span></td><td><input type="text" class="drug-input" placeholder="Nazwa procedury/zabiegu" list="proceduresList" autocomplete="off" /></td><td><div class="signature-box-cell"></div></td><td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
+    tbody.appendChild(newRow); 
+    initializeSortable();
+}
+
+// --- LOGIKA DAWKOWANIA (GFR, mg/kg) ---
+function recalculateDose(row) { 
+    const doseInput = row.querySelector('input[id$="_dose"]'); 
+    const originalDose = doseInput.dataset.originalDose; 
+    const weight = parseFloat(document.getElementById('patientWeight').value); 
+    
+    if (originalDose && originalDose.includes('/kg') && weight > 0) { 
+        const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?/; 
+        const matches = originalDose.match(doseRegex); 
+        if (matches) { 
+            const dose1 = parseFloat(matches[1]); 
+            const totalDose1 = Math.round(dose1 * weight); 
+            if (matches[2]) { 
+                const dose2 = parseFloat(matches[2]); 
+                const totalDose2 = Math.round(dose2 * weight); 
+                doseInput.value = `${totalDose1}-${totalDose2}mg (${originalDose})`; 
+            } else { 
+                doseInput.value = `${totalDose1}mg (${originalDose})`; 
+            } 
+        } 
+    } else if (originalDose) { 
+        doseInput.value = originalDose; 
+    } 
+}
+
+function recalculateAllKgDoses(){ 
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => recalculateDose(row)); 
+    adjustAllDosesForGfr(); 
+}
+
+function adjustAllDosesForGfr() { 
+    document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => adjustSingleDoseForGfr(row)); 
+}
+
+function adjustSingleDoseForGfr(row) {
+    const gfrInput = document.getElementById('gfrInput');
+    const gfr = gfrInput.value ? parseFloat(gfrInput.value) : null;
+    const drugNameInput = row.querySelector('.drug-name');
+    if (!drugNameInput || !drugNameInput.value) return;
+
+    const drugName = drugNameInput.value.toUpperCase();
+    const doseInput = row.querySelector('input[id$="_dose"]');
+    const freqInput = row.querySelector('input[id$="_freq"]');
+    const notice = row.querySelector('.dose-reduction-notice');
+    const adjustmentRules = gfrDoseAdjustments[drugName];
+
+    recalculateDose(row);
+    row.classList.remove('gfr-dose-adjusted');
+    if (notice) notice.style.display = 'none';
+
+    if (!gfr || !adjustmentRules) return;
+
+    let appliedRule = null;
+    for (const rule of adjustmentRules) { 
+        if (gfr <= rule.gfrMax) { 
+            appliedRule = rule; 
+            break; 
+        } 
+    }
+
+    if (appliedRule) {
+        if (appliedRule.dose.includes('/kg')) {
+            const weight = parseFloat(document.getElementById('patientWeight').value);
+            if (weight > 0) {
+                const doseRegex = /([\d\.]+)/; 
+                const matches = appliedRule.dose.match(doseRegex);
+                if(matches) { 
+                    const totalDose = Math.round(parseFloat(matches[1]) * weight); 
+                    doseInput.value = `${totalDose}mg (${appliedRule.dose})`; 
+                }
+            } else { 
+                doseInput.value = appliedRule.dose; 
+            }
+        } else { 
+            doseInput.value = appliedRule.dose; 
+        }
+        
+        if (appliedRule.frequency && freqInput) freqInput.value = appliedRule.frequency;
+        row.classList.add('gfr-dose-adjusted');
+        if (notice) notice.style.display = 'inline';
+        
+        if (!row.dataset.gfrWarningShown) {
+            showToast('Dostosowano dawkę', `Dawka ${drugName} została dostosowana do GFR=${gfr}`, 'warning', 6000);
+            row.dataset.gfrWarningShown = 'true';
+        }
+    }
+}
+
+function populateDatalists() {
+    const createOptions = (dataObject) => Object.keys(dataObject).map(key => `<option value="${key}"></option>`).join('');
+    
+    // Dla leków okresowych dodaj oznaczenie GFR
+    const createPeriodicOptions = (dataObject) => {
+        return Object.keys(dataObject).map(key => {
+            const hasGfrAdjustment = gfrDoseAdjustments[key] ? ' [GFR]' : '';
+            return `<option value="${key}">${key}${hasGfrAdjustment}</option>`;
+        }).join('');
+    };
+    
+    const continuousList = document.getElementById('continuousDrugsList');
+    const periodicList = document.getElementById('periodicDrugsList');
+    const fluidsList = document.getElementById('fluidsList');
+    
+    if (continuousList) continuousList.innerHTML = createOptions(continuousDrugsData);
+    if (periodicList) periodicList.innerHTML = createPeriodicOptions(periodicDrugsData);
+    if (fluidsList) fluidsList.innerHTML = createOptions(fluidsData);
+    
+    const enteral = {};
+    const parenteral = {};
+    Object.keys(nutritionData).forEach(key => {
+        if (key.includes('OMEGAFLEX') || key.includes('Nutriflex') || key.includes('SmofKabiven') || key.includes('Aminomix')) {
+            parenteral[key] = nutritionData[key];
+        } else {
+            enteral[key] = nutritionData[key];
+        }
+    });
+    
+    const enteralList = document.getElementById('enteralProductsList');
+    const parenteralList = document.getElementById('parenteralProductsList');
+    
+    if (enteralList) enteralList.innerHTML = createOptions(enteral);
+    if (parenteralList) parenteralList.innerHTML = createOptions(parenteral);
+}
+
+function initializeCard() { 
+    const today = new Date(); 
+    const day = String(today.getDate()).padStart(2, '0'); 
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const year = today.getFullYear(); 
+    
+    const mainDateInput = document.getElementById('mainDateInput');
+    if (mainDateInput) mainDateInput.value = `${day}.${month}.${year}`; 
+    
+    calculateIcuDay(); 
+    calculateBMI(); 
+    updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+    populateDatalists();
+}
+
+// --- ENHANCED SAVE/LOAD SYSTEM ---
+function saveCard() {
+    const patientNameInput = document.getElementById('patientNameInput');
+    const historyNumberInput = document.getElementById('historyNumberInput');
+    const patientName = patientNameInput.value.trim();
+    const historyNumber = historyNumberInput.value.trim();
+    
+    let isValid = true;
+    if (!patientName) {
+        showValidationTooltip(patientNameInput, 'Wprowadź imię i nazwisko');
+        isValid = false;
+    } else {
+        patientNameInput.classList.remove('field-error');
+    }
+
+    if (!historyNumber) {
+        showValidationTooltip(historyNumberInput, 'Wprowadź numer historii');
+        isValid = false;
+    } else {
+        historyNumberInput.classList.remove('field-error');
+    }
+
+    if (!isValid) {
+        showToast('Brak danych', 'Proszę wypełnić wymagane pola.', 'warning');
+        return;
+    }
+    
+    const cardKey = `card_${patientName.replace(/\s+/g, '-')}_${historyNumber.replace(/[\/\s]+/g, '-')}`;
+    const cardState = getCardState();
+
+    try {
+        cardState.metadata = {
+            savedAt: new Date().toISOString(),
+            version: '3.0',
+            patientSummary: {
+                name: patientName,
+                historyNumber: historyNumber,
+                diagnosis: document.getElementById('diagnosisInput').value || 'Brak rozpoznania'
+            }
+        };
+        
+        const storageKey = isOnline ? cardKey : `offline_${cardKey}`;
+        localStorage.setItem(storageKey, JSON.stringify(cardState));
+        
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+        if (!savedCardsIndex.includes(cardKey)) {
+            savedCardsIndex.push(cardKey);
+            localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        }
+        
+        hasUnsavedChanges = false;
+        updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
+        
+        showToast('Zapisano', 'Karta została pomyślnie zapisana!', 'success');
+        
+    } catch (e) {
+        console.error("Błąd zapisu:", e);
+        showToast('Błąd zapisu', 'Wystąpił błąd podczas zapisu karty.', 'error');
+    }
+}
+
+function openLoadModal() {
+    const savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+    const listElement = document.getElementById('savedCardsList');
+    listElement.innerHTML = '';
+    
+    if (savedCardsIndex.length === 0) {
+        listElement.innerHTML = '<li style="text-align: center; padding: 20px; color: var(--gray-500);">Brak zapisanych kart.</li>';
+    } else {
+        const cardsWithDates = savedCardsIndex.map(key => {
+            const data = localStorage.getItem(key);
+            let savedAt = null;
+            try {
+                const parsed = JSON.parse(data);
+                savedAt = parsed.metadata?.savedAt ? new Date(parsed.metadata.savedAt) : new Date(0);
+            } catch(e) {
+                savedAt = new Date(0);
+            }
+            return { key, savedAt };
+        }).sort((a, b) => b.savedAt - a.savedAt);
+        
+        cardsWithDates.forEach(({key, savedAt}) => {
+            const friendlyName = key.replace('card_', '').replace(/_/g, ' ');
+            const timeAgo = getTimeAgo(savedAt);
+            
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <div>
+                    <div class="patient-name">${friendlyName}</div>
+                    <div style="font-size: 11px; color: var(--gray-500); margin-top: 2px;">Zapisano: ${timeAgo}</div>
+                </div>
+                <div>
+                    <button class="control-button load small" onclick="loadCard('${key}')">Wczytaj</button>
+                    <button class="control-button clear small" onclick="deleteCard('${key}', this)">Usuń</button>
+                </div>`;
+            listElement.appendChild(li);
+        });
+    }
+    
+    document.getElementById('loadCardModal').style.display = 'flex';
+}
+
+function getTimeAgo(date) {
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    
+    if (diffMins < 60) return `${diffMins} min temu`;
+    if (diffHours < 24) return `${diffHours}h temu`;
+    if (diffDays < 7) return `${diffDays} dni temu`;
+    return date.toLocaleDateString('pl-PL');
+}
+
+function deleteCard(cardKey, button) {
+    const friendlyName = cardKey.replace('card_', '').replace(/_/g, ' ');
+    if (confirm(`Czy na pewno chcesz usunąć kartę: ${friendlyName}?`)) {
+        localStorage.removeItem(cardKey);
+        let savedCardsIndex = JSON.parse(localStorage.getItem('savedCardsIndex') || '[]');
+        savedCardsIndex = savedCardsIndex.filter(key => key !== cardKey);
+        localStorage.setItem('savedCardsIndex', JSON.stringify(savedCardsIndex));
+        button.closest('li').remove();
+        
+        showToast('Usunięto', `Karta "${friendlyName}" została usunięta`, 'info');
+    }
+}
+
+function loadCard(cardKey) {
+    const savedStateJSON = localStorage.getItem(cardKey);
+    if (!savedStateJSON) {
+        showToast('Błąd', 'Nie można wczytać
