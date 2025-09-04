@@ -653,12 +653,9 @@ function autoResizeTextarea(textarea) {
 // --- GŁÓWNE FUNKCJE ---
 function removeRow(button) { 
     const row = button.closest('tr');
-    row.classList.add('removing');
-    setTimeout(() => {
-        row.remove();
-        updateSummaries(); 
-        markAsChanged();
-    }, 200);
+    row.remove();
+    updateSummaries(); 
+    markAsChanged();
 }
 
 function updateSummaries() { 
@@ -1362,112 +1359,4 @@ function clearCard(force = false) {
     }
 }
 
-function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
-}
-
-function generatePDF() {
-    const element = document.getElementById('card-container');
-    const patientName = document.getElementById('patientNameInput').value.trim() || 'karta-zleceń';
-    const date = document.getElementById('mainDateInput').value.replace(/\./g, '-');
-    const opt = {
-        margin:       0.5,
-        filename:     `${patientName}_${date}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf().from(element).set(opt).save();
-}
-
-function saveCardToFile() {
-    const cardState = getCardState();
-    const patientName = document.getElementById('patientNameInput').value.trim() || 'karta';
-    const date = document.getElementById('mainDateInput').value.replace(/\./g, '-');
-    const filename = `${patientName}_${date}.json`;
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cardState, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", filename);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    showToast('Zapisano do pliku', `Pomyślnie zapisano plik: ${filename}`, 'success');
-}
-
-function loadCardFromFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const cardState = JSON.parse(e.target.result);
-            populateCardFromState(cardState);
-            showToast('Wczytano z pliku', `Pomyślnie wczytano plik: ${file.name}`, 'success');
-        } catch (error) {
-            showToast('Błąd odczytu pliku', 'Nieprawidłowy format pliku.', 'error');
-            console.error("Błąd wczytywania pliku:", error);
-        }
-    };
-    reader.readAsText(file);
-    event.target.value = null;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    initializeCard();
-    initializeSortable();
-    startAutosave();
-    
-    // Obsługa zmian w polach
-    document.body.addEventListener('input', (e) => {
-        if(e.target.matches('input, textarea')) {
-            markAsChanged();
-        }
-    });
-
-    // Dark Mode
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const htmlEl = document.documentElement;
-    if (localStorage.getItem('darkMode') === 'true') {
-        htmlEl.classList.add('dark-mode');
-        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
-    }
-    darkModeToggle.addEventListener('click', () => {
-        htmlEl.classList.toggle('dark-mode');
-        const isDarkMode = htmlEl.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDarkMode);
-        darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    });
-
-    // Skróty klawiszowe
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key.toLowerCase() === 's') {
-            e.preventDefault();
-            saveCard();
-        }
-        if (e.ctrlKey && e.key.toLowerCase() === 'p') {
-            e.preventDefault();
-            window.print();
-        }
-        if (e.ctrlKey && e.key.toLowerCase() === 'n') {
-            e.preventDefault();
-            clearCard();
-        }
-    });
-    
-    // Synchronizacja pola Sala/Łóżko
-    const roomInput = document.getElementById('roomInput');
-    const roomInputPrint = document.getElementById('roomInputPrint');
-    roomInput.addEventListener('input', () => {
-        roomInputPrint.value = roomInput.value;
-    });
-
-    // Offline/Online status
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
-    updateOnlineStatus();
-
-    // Przywracanie z autosave po wpisaniu nazwy pacjenta
-    document.getElementById('patientNameInput').addEventListener('blur', restoreFromAutosave);
-});
+function closeModal
