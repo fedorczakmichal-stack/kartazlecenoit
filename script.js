@@ -1118,12 +1118,20 @@ function adjustSingleDoseForGfr(row) {
 function populateDatalists() {
     const createOptions = (dataObject) => Object.keys(dataObject).map(key => `<option value="${key}"></option>`).join('');
     
+    // Dla leków okresowych dodaj oznaczenie GFR
+    const createPeriodicOptions = (dataObject) => {
+        return Object.keys(dataObject).map(key => {
+            const hasGfrAdjustment = gfrDoseAdjustments[key] ? ' [GFR]' : '';
+            return `<option value="${key}">${key}${hasGfrAdjustment}</option>`;
+        }).join('');
+    };
+    
     const continuousList = document.getElementById('continuousDrugsList');
     const periodicList = document.getElementById('periodicDrugsList');
     const fluidsList = document.getElementById('fluidsList');
     
     if (continuousList) continuousList.innerHTML = createOptions(continuousDrugsData);
-    if (periodicList) periodicList.innerHTML = createOptions(periodicDrugsData);
+    if (periodicList) periodicList.innerHTML = createPeriodicOptions(periodicDrugsData);
     if (fluidsList) fluidsList.innerHTML = createOptions(fluidsData);
     
     const enteral = {};
