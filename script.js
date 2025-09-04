@@ -1349,9 +1349,4 @@ function deleteCard(cardKey, button) {
         
         showToast('Usunięto', `Karta "${friendlyName}" została usunięta`, 'info');
     }
-}
 
-function loadCard(cardKey) {
-    const savedStateJSON = localStorage.getItem(cardKey);
-    if (!savedStateJSON) {
-        showToast('Błąd', 'Nie można wczytać
