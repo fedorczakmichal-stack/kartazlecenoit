@@ -361,17 +361,10 @@ tbody tr:hover {
 /* GFR Dose Adjustment Styling */
 tr.gfr-dose-adjusted td { 
     background-color: var(--warning-light) !important;
-    position: relative;
 }
 
-tr.gfr-dose-adjusted::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--warning);
+tr.gfr-dose-adjusted {
+    border-left: 3px solid var(--warning);
 }
 
 .dose-reduction-notice { 
