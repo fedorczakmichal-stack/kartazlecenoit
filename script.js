@@ -367,6 +367,7 @@ function validateDosage(drugName, dose) {
 // --- ENHANCED AUTOSAVE SYSTEM ---
 function updateAutosaveIndicator(status, message) {
     const indicator = document.getElementById('autosaveIndicator');
+    if (!indicator) return;
     indicator.className = `autosave-indicator ${status}`;
     indicator.querySelector('span').textContent = message;
     
@@ -448,6 +449,7 @@ function restoreFromAutosave() {
 // --- OFFLINE MODE ---
 function updateOnlineStatus() {
     const offlineIndicator = document.getElementById('offlineIndicator');
+    if (!offlineIndicator) return;
     
     if (navigator.onLine) {
         isOnline = true;
@@ -556,7 +558,8 @@ function addDrugFromSearch(type, drugName) {
         const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
         const nameInput = lastRow.querySelector('.drug-name');
         nameInput.value = drugName;
-        fillContinuousDrugData(nameInput, lastRow.querySelector('input').id.split('_')[0] + '_' + lastRow.querySelector('input').id.split('_')[1]);
+        const rowId = nameInput.id.replace('_name', '');
+        fillContinuousDrugData(nameInput, rowId);
     } else {
         addPeriodicDrug();
         const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
@@ -713,13 +716,6 @@ function updateSummaries() {
     if (weight > 0) {
         const kcalPerKg = (totalKcal / weight).toFixed(1);
         document.getElementById('kcalPerKg').textContent = kcalPerKg;
-        
-        // Ostrzeżenia o nieprawidłowych wartościach
-        if (kcalPerKg < 20) {
-            showToast('Uwaga', 'Zbyt mała podaż kalorii (<20 kcal/kg)', 'warning', 5000);
-        } else if (kcalPerKg > 35) {
-            showToast('Uwaga', 'Zbyt duża podaż kalorii (>35 kcal/kg)', 'warning', 5000);
-        }
     } else {
         document.getElementById('kcalPerKg').textContent = '0';
     }
@@ -728,30 +724,147 @@ function updateSummaries() {
     const fluidBar = document.getElementById('fluidBalanceFill');
     const kcalBar = document.getElementById('kcalFill');
     
-    // Bilans płynów (zakres 0-4000 ml)
-    const fluidPercent = Math.min((totalFluids / 4000) * 100, 100);
-    fluidBar.style.width = fluidPercent + '%';
-    fluidBar.className = 'balance-fill';
-    if (totalFluids > 3500) fluidBar.classList.add('danger');
-    else if (totalFluids > 2500) fluidBar.classList.add('warning');
-    else fluidBar.classList.add('normal');
+    if (fluidBar) {
+        // Bilans płynów (zakres 0-4000 ml)
+        const fluidPercent = Math.min((totalFluids / 4000) * 100, 100);
+        fluidBar.style.width = fluidPercent + '%';
+        fluidBar.className = 'balance-fill';
+        if (totalFluids > 3500) fluidBar.classList.add('danger');
+        else if (totalFluids > 2500) fluidBar.classList.add('warning');
+        else fluidBar.classList.add('normal');
+    }
     
-    // Kalorie (zakres 0-2500 kcal)
-    const kcalPercent = Math.min((totalKcal / 2500) * 100, 100);
-    kcalBar.style.width = kcalPercent + '%';
-    kcalBar.className = 'kcal-fill';
-    if (totalKcal < 1000) kcalBar.classList.add('low');
-    else if (totalKcal > 2000) kcalBar.classList.add('high');
-    else kcalBar.classList.add('optimal');
+    if (kcalBar) {
+        // Kalorie (zakres 0-2500 kcal)
+        const kcalPercent = Math.min((totalKcal / 2500) * 100, 100);
+        kcalBar.style.width = kcalPercent + '%';
+        kcalBar.className = 'kcal-fill';
+        if (totalKcal < 1000) kcalBar.classList.add('low');
+        else if (totalKcal > 2000) kcalBar.classList.add('high');
+        else kcalBar.classList.add('optimal');
+    }
 }
 
-function calculateInfusionRate(inputElement) { const row = inputElement.closest('tr'); if (!row) return; const weightInput = document.getElementById('patientWeight'); const weight = parseFloat(weightInput.value); const doseInput = row.querySelector('.dose'); const concentrationInput = row.querySelector('input[id$="_conc"]'); const rateOutput = row.querySelector('.infusion-rate'); if (!weight || weight <= 0 || !doseInput.value || !concentrationInput.value) { return; } let doseStr = doseInput.value.replace(',', '.'); let concStr = concentrationInput.value.replace(',', '.'); const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/; const doseMatch = doseStr.match(doseRegex); if (!doseMatch) { rateOutput.value = ''; return; } let doseValue1 = parseFloat(doseMatch[1]); let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; let doseUnit = doseMatch[3]; const perKg = doseMatch[4]; const perTime = doseMatch[5]; const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/; const concMatch = concStr.match(concRegex); let concentrationPerMl; if (concMatch) { let totalMass = parseFloat(concMatch[1]); const massUnit = concMatch[2]; const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; if (massUnit === 'mg') totalMass *= 1000; concentrationPerMl = totalMass / totalVolume; } else { rateOutput.value = ''; return; } if (concentrationPerMl === 0) return; if (doseUnit === 'mg') { doseValue1 *= 1000; if(doseValue2) doseValue2 *= 1000; } const calculateRate = (dose) => { let totalDosePerTime = dose; if (perKg) totalDosePerTime *= weight; const volumePerTime = totalDosePerTime / concentrationPerMl; return (perTime === 'min') ? volumePerTime * 60 : volumePerTime; }; const finalRate1 = calculateRate(doseValue1); if (doseValue2) { const finalRate2 = calculateRate(doseValue2); rateOutput.value = `${finalRate1.toFixed(1).replace('.', ',')} - ${finalRate2.toFixed(1).replace('.', ',')}`; } else { rateOutput.value = finalRate1.toFixed(1).replace('.', ','); } }
+function calculateInfusionRate(inputElement) { 
+    const row = inputElement.closest('tr'); 
+    if (!row) return; 
+    
+    const weightInput = document.getElementById('patientWeight'); 
+    const weight = parseFloat(weightInput.value); 
+    const doseInput = row.querySelector('.dose'); 
+    const concentrationInput = row.querySelector('input[id$="_conc"]'); 
+    const rateOutput = row.querySelector('.infusion-rate'); 
+    
+    if (!weight || weight <= 0 || !doseInput.value || !concentrationInput.value) { 
+        return; 
+    } 
+    
+    let doseStr = doseInput.value.replace(',', '.'); 
+    let concStr = concentrationInput.value.replace(',', '.'); 
+    
+    const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/; 
+    const doseMatch = doseStr.match(doseRegex); 
+    
+    if (!doseMatch) { 
+        rateOutput.value = ''; 
+        return; 
+    } 
+    
+    let doseValue1 = parseFloat(doseMatch[1]); 
+    let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; 
+    let doseUnit = doseMatch[3]; 
+    const perKg = doseMatch[4]; 
+    const perTime = doseMatch[5]; 
+    
+    const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/; 
+    const concMatch = concStr.match(concRegex); 
+    
+    let concentrationPerMl; 
+    if (concMatch) { 
+        let totalMass = parseFloat(concMatch[1]); 
+        const massUnit = concMatch[2]; 
+        const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; 
+        if (massUnit === 'mg') totalMass *= 1000; 
+        concentrationPerMl = totalMass / totalVolume; 
+    } else { 
+        rateOutput.value = ''; 
+        return; 
+    } 
+    
+    if (concentrationPerMl === 0) return; 
+    
+    if (doseUnit === 'mg') { 
+        doseValue1 *= 1000; 
+        if(doseValue2) doseValue2 *= 1000; 
+    } 
+    
+    const calculateRate = (dose) => { 
+        let totalDosePerTime = dose; 
+        if (perKg) totalDosePerTime *= weight; 
+        const volumePerTime = totalDosePerTime / concentrationPerMl; 
+        return (perTime === 'min') ? volumePerTime * 60 : volumePerTime; 
+    }; 
+    
+    const finalRate1 = calculateRate(doseValue1); 
+    if (doseValue2) { 
+        const finalRate2 = calculateRate(doseValue2); 
+        rateOutput.value = `${finalRate1.toFixed(1).replace('.', ',')} - ${finalRate2.toFixed(1).replace('.', ',')}`; 
+    } else { 
+        rateOutput.value = finalRate1.toFixed(1).replace('.', ','); 
+    } 
+}
 
-function calculateIcuDay() { const admissionDateStr = document.getElementById('admissionDateInput').value; const mainDateStr = document.getElementById('mainDateInput').value; const icuDayInput = document.getElementById('icuDayInput'); const parseDate = (dateStr) => { const parts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); if (!parts) return null; return new Date(parts[3], parts[2] - 1, parts[1]); }; const admissionDate = parseDate(admissionDateStr); const mainDate = parseDate(mainDateStr); if (admissionDate && mainDate && mainDate >= admissionDate) { const utcMain = Date.UTC(mainDate.getFullYear(), mainDate.getMonth(), mainDate.getDate()); const utcAdmission = Date.UTC(admissionDate.getFullYear(), admissionDate.getMonth(), admissionDate.getDate()); const dayInMillis = 1000 * 60 * 60 * 24; const diffDays = (utcMain - utcAdmission) / dayInMillis; icuDayInput.value = Math.round(diffDays) + 1; } else { icuDayInput.value = ''; } }
+function calculateIcuDay() { 
+    const admissionDateStr = document.getElementById('admissionDateInput').value; 
+    const mainDateStr = document.getElementById('mainDateInput').value; 
+    const icuDayInput = document.getElementById('icuDayInput'); 
+    
+    const parseDate = (dateStr) => { 
+        const parts = dateStr.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); 
+        if (!parts) return null; 
+        return new Date(parts[3], parts[2] - 1, parts[1]); 
+    }; 
+    
+    const admissionDate = parseDate(admissionDateStr); 
+    const mainDate = parseDate(mainDateStr); 
+    
+    if (admissionDate && mainDate && mainDate >= admissionDate) { 
+        const utcMain = Date.UTC(mainDate.getFullYear(), mainDate.getMonth(), mainDate.getDate()); 
+        const utcAdmission = Date.UTC(admissionDate.getFullYear(), admissionDate.getMonth(), admissionDate.getDate()); 
+        const dayInMillis = 1000 * 60 * 60 * 24; 
+        const diffDays = (utcMain - utcAdmission) / dayInMillis; 
+        icuDayInput.value = Math.round(diffDays) + 1; 
+    } else { 
+        icuDayInput.value = ''; 
+    } 
+}
 
-function calculateBMI() { const weightInput = document.getElementById('patientWeight'); const heightInput = document.getElementById('heightInput'); const bmiOutput = document.getElementById('bmiOutput'); const weight = parseFloat(weightInput.value); const height = parseFloat(heightInput.value); if (weight > 0 && height > 0) { const heightInMeters = height / 100; const bmi = weight / (heightInMeters * heightInMeters); bmiOutput.value = bmi.toFixed(1); } else { bmiOutput.value = ''; } }
+function calculateBMI() { 
+    const weightInput = document.getElementById('patientWeight'); 
+    const heightInput = document.getElementById('heightInput'); 
+    const bmiOutput = document.getElementById('bmiOutput'); 
+    
+    const weight = parseFloat(weightInput.value); 
+    const height = parseFloat(heightInput.value); 
+    
+    if (weight > 0 && height > 0) { 
+        const heightInMeters = height / 100; 
+        const bmi = weight / (heightInMeters * heightInMeters); 
+        bmiOutput.value = bmi.toFixed(1); 
+    } else { 
+        bmiOutput.value = ''; 
+    } 
+}
 
-function handleWeightHeightChange() { calculateBMI(); document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => { const doseInput = row.querySelector('.dose'); if (doseInput) calculateInfusionRate(doseInput); }); recalculateAllKgDoses(); updateSummaries(); }
+function handleWeightHeightChange() { 
+    calculateBMI(); 
+    document.querySelectorAll('#continuousDrugsTbody tr').forEach(row => { 
+        const doseInput = row.querySelector('.dose'); 
+        if (doseInput) calculateInfusionRate(doseInput); 
+    }); 
+    recalculateAllKgDoses(); 
+    updateSummaries(); 
+}
 
 function addContinuousDrug() { 
     const tbody = document.querySelector('#continuousDrugsTbody'); 
@@ -770,8 +883,10 @@ function fillContinuousDrugData(input, rowId) {
         const doseInput = document.getElementById(rowId + '_dose'); 
         const row = input.closest('tr'); 
         const rateOutput = row.querySelector('.infusion-rate'); 
+        
         concInput.value = data.concentration; 
         doseInput.value = data.dose; 
+        
         if (data.fixedRate) { 
             rateOutput.value = data.fixedRate; 
         } else { 
@@ -799,6 +914,7 @@ function fillPeriodicDrugData(input) {
     const routeInput = row.querySelector('input[id$="_route"]'); 
     const freqInput = row.querySelector('input[id$="_freq"]'); 
     const originalData = periodicDrugsData[drugName]; 
+    
     if (originalData) { 
         doseInput.dataset.originalDose = originalData.dose; 
         routeInput.value = originalData.route; 
@@ -810,6 +926,7 @@ function fillPeriodicDrugData(input) {
         routeInput.placeholder = 'i.v.';
         freqInput.placeholder = 'co 24h';
     } 
+    
     recalculateDose(row); 
     adjustSingleDoseForGfr(row); 
 }
@@ -826,8 +943,10 @@ function addFluid() {
 function fillFluidData(input, rowId) { 
     const fluidName = input.value; 
     if (fluidsData[fluidName]) { 
-        document.getElementById(rowId + '_vol').value = fluidsData[fluidName].volume.replace('ml',''); 
-        document.getElementById(rowId + '_rate').value = fluidsData[fluidName].rate; 
+        const volInput = document.getElementById(rowId + '_vol');
+        const rateInput = document.getElementById(rowId + '_rate');
+        if (volInput) volInput.value = fluidsData[fluidName].volume.replace('ml',''); 
+        if (rateInput) rateInput.value = fluidsData[fluidName].rate; 
         updateSummaries(); 
     } 
 }
@@ -852,7 +971,7 @@ function fillNutritionData(input, rowId) {
     const typeInput = row.querySelector('.nutrition-type');
     const typeValue = typeInput ? typeInput.value.toLowerCase() : '';
     
-    if (nutritionFlowRates[prepName] && !rateInput.value) {
+    if (nutritionFlowRates[prepName] && rateInput && !rateInput.value) {
         rateInput.value = nutritionFlowRates[prepName];
     }
     
@@ -998,9 +1117,14 @@ function adjustSingleDoseForGfr(row) {
 
 function populateDatalists() {
     const createOptions = (dataObject) => Object.keys(dataObject).map(key => `<option value="${key}"></option>`).join('');
-    document.getElementById('continuousDrugsList').innerHTML = createOptions(continuousDrugsData);
-    document.getElementById('periodicDrugsList').innerHTML = createOptions(periodicDrugsData);
-    document.getElementById('fluidsList').innerHTML = createOptions(fluidsData);
+    
+    const continuousList = document.getElementById('continuousDrugsList');
+    const periodicList = document.getElementById('periodicDrugsList');
+    const fluidsList = document.getElementById('fluidsList');
+    
+    if (continuousList) continuousList.innerHTML = createOptions(continuousDrugsData);
+    if (periodicList) periodicList.innerHTML = createOptions(periodicDrugsData);
+    if (fluidsList) fluidsList.innerHTML = createOptions(fluidsData);
     
     const enteral = {};
     const parenteral = {};
@@ -1012,8 +1136,11 @@ function populateDatalists() {
         }
     });
     
-    document.getElementById('enteralProductsList').innerHTML = createOptions(enteral);
-    document.getElementById('parenteralProductsList').innerHTML = createOptions(parenteral);
+    const enteralList = document.getElementById('enteralProductsList');
+    const parenteralList = document.getElementById('parenteralProductsList');
+    
+    if (enteralList) enteralList.innerHTML = createOptions(enteral);
+    if (parenteralList) parenteralList.innerHTML = createOptions(parenteral);
 }
 
 function initializeCard() { 
@@ -1021,7 +1148,10 @@ function initializeCard() {
     const day = String(today.getDate()).padStart(2, '0'); 
     const month = String(today.getMonth() + 1).padStart(2, '0'); 
     const year = today.getFullYear(); 
-    document.getElementById('mainDateInput').value = `${day}.${month}.${year}`; 
+    
+    const mainDateInput = document.getElementById('mainDateInput');
+    if (mainDateInput) mainDateInput.value = `${day}.${month}.${year}`; 
+    
     calculateIcuDay(); 
     calculateBMI(); 
     updateAutosaveIndicator('saved', 'Wszystkie zmiany zapisane');
@@ -1252,7 +1382,8 @@ function populateCardFromState(cardState) {
     });
     
     if (cardState.notes) {
-        document.querySelector('.notes-section textarea').value = cardState.notes;
+        const notesTextarea = document.querySelector('.notes-section textarea');
+        if (notesTextarea) notesTextarea.value = cardState.notes;
     }
     
     handleWeightHeightChange();
@@ -1327,7 +1458,9 @@ function getCardState() {
         });
     });
     
-    cardState.notes = document.querySelector('.notes-section textarea').value;
+    const notesTextarea = document.querySelector('.notes-section textarea');
+    if (notesTextarea) cardState.notes = notesTextarea.value;
+    
     return cardState;
 }
 
@@ -1359,4 +1492,133 @@ function clearCard(force = false) {
     }
 }
 
-function closeModal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function generatePDF() {
+    const element = document.getElementById('card-container');
+    const patientName = document.getElementById('patientNameInput').value.trim() || 'karta-zleceń';
+    const date = document.getElementById('mainDateInput').value.replace(/\./g, '-');
+    const opt = {
+        margin:       0.5,
+        filename:     `${patientName}_${date}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().from(element).set(opt).save();
+}
+
+function saveCardToFile() {
+    const cardState = getCardState();
+    const patientName = document.getElementById('patientNameInput').value.trim() || 'karta';
+    const date = document.getElementById('mainDateInput').value.replace(/\./g, '-');
+    const filename = `${patientName}_${date}.json`;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(cardState, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    showToast('Zapisano do pliku', `Pomyślnie zapisano plik: ${filename}`, 'success');
+}
+
+function loadCardFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const cardState = JSON.parse(e.target.result);
+            populateCardFromState(cardState);
+            showToast('Wczytano z pliku', `Pomyślnie wczytano plik: ${file.name}`, 'success');
+        } catch (error) {
+            showToast('Błąd odczytu pliku', 'Nieprawidłowy format pliku.', 'error');
+            console.error("Błąd wczytywania pliku:", error);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    try {
+        initializeCard();
+        initializeSortable();
+        startAutosave();
+        
+        // Obsługa zmian w polach
+        document.body.addEventListener('input', (e) => {
+            if(e.target.matches('input, textarea')) {
+                markAsChanged();
+            }
+        });
+
+        // Dark Mode
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const htmlEl = document.documentElement;
+        if (localStorage.getItem('darkMode') === 'true') {
+            htmlEl.classList.add('dark-mode');
+            darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        darkModeToggle.addEventListener('click', () => {
+            htmlEl.classList.toggle('dark-mode');
+            const isDarkMode = htmlEl.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+            darkModeToggle.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        });
+
+        // Skróty klawiszowe
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                saveCard();
+            }
+            if (e.ctrlKey && e.key.toLowerCase() === 'p') {
+                e.preventDefault();
+                window.print();
+            }
+            if (e.ctrlKey && e.key.toLowerCase() === 'n') {
+                e.preventDefault();
+                clearCard();
+            }
+        });
+        
+        // Synchronizacja pola Sala/Łóżko
+        const roomInput = document.getElementById('roomInput');
+        const roomInputPrint = document.getElementById('roomInputPrint');
+        if (roomInput && roomInputPrint) {
+            roomInput.addEventListener('input', () => {
+                roomInputPrint.value = roomInput.value;
+            });
+        }
+
+        // Offline/Online status
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        updateOnlineStatus();
+
+        // Przywracanie z autosave po wpisaniu nazwy pacjenta
+        const patientNameInput = document.getElementById('patientNameInput');
+        if (patientNameInput) {
+            patientNameInput.addEventListener('blur', restoreFromAutosave);
+        }
+        
+        // Ukrywanie wyników wyszukiwania po kliknięciu poza obszarem
+        document.addEventListener('click', (e) => {
+            const searchResults = document.getElementById('quickSearchResults');
+            if (searchResults && !e.target.closest('.quick-search-bar')) {
+                searchResults.style.display = 'none';
+            }
+        });
+        
+        console.log('🏥 Medical Card System v3.0 - Aplikacja załadowana pomyślnie');
+        
+    } catch (error) {
+        console.error('Błąd inicjalizacji:', error);
+        alert('Wystąpił błąd podczas ładowania aplikacji. Sprawdź konsolę przeglądarki.');
+    }
+});
