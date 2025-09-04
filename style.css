@@ -364,7 +364,7 @@ tr.gfr-dose-adjusted td {
 }
 
 tr.gfr-dose-adjusted {
-    border-left: 3px solid var(--warning);
+    box-shadow: inset 3px 0 0 var(--warning);
 }
 
 .dose-reduction-notice { 
