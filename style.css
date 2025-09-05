@@ -829,6 +829,89 @@ html.dark-mode .nutrition-additives {
     color: var(--text-color);
 }
 
+/* Custom templates styling */
+.template-button.custom-template {
+    position: relative;
+    background: linear-gradient(135deg, var(--success-light), var(--success));
+    border-color: var(--success);
+}
+
+.template-button.custom-template:hover {
+    background: linear-gradient(135deg, var(--success), var(--success-dark));
+}
+
+.template-button.custom-template i {
+    color: var(--success-dark);
+}
+
+.template-button.save-custom {
+    background: linear-gradient(135deg, var(--warning-light), var(--warning));
+    border-color: var(--warning);
+}
+
+.template-button.save-custom:hover {
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
+}
+
+.template-button.save-custom i {
+    color: var(--warning-dark);
+}
+
+.delete-template-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: var(--danger);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.template-button.custom-template:hover .delete-template-btn {
+    opacity: 1;
+}
+
+.delete-template-btn:hover {
+    background: var(--danger-dark);
+    transform: scale(1.1);
+}
+
+/* Dark mode support for custom templates */
+html.dark-mode .template-button.custom-template {
+    background: linear-gradient(135deg, #052e16, var(--success-dark));
+    color: var(--success-light);
+}
+
+html.dark-mode .template-button.custom-template:hover {
+    background: linear-gradient(135deg, var(--success-dark), var(--success));
+}
+
+html.dark-mode .template-button.custom-template i {
+    color: var(--success-light);
+}
+
+html.dark-mode .template-button.save-custom {
+    background: linear-gradient(135deg, #422006, var(--warning-dark));
+    color: var(--warning-light);
+}
+
+html.dark-mode .template-button.save-custom:hover {
+    background: linear-gradient(135deg, var(--warning-dark), var(--warning));
+}
+
+html.dark-mode .template-button.save-custom i {
+    color: var(--warning-light);
+}
+
 .template-button-wrapper {
     position: relative;
 }
