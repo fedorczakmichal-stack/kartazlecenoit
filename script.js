@@ -125,7 +125,9 @@ const cardTemplates = {
             { time: "co 2h", name: "Zmiany ułożenia" },
             { time: "ciągłe", name: "Monitorowanie hemodynamiczne" },
             { time: "co 4h", name: "Kontrola zalegań" },
-            { time: "codziennie", name: "Kinezyterapia" }
+            { time: "codziennie", name: "Kinezyterapia" },
+            { time: "co 12h", name: "IAP" },
+            { time: "co 12h", name: "OCŻ" }
         ]
     },
     cardiac: {
@@ -611,115 +613,91 @@ function addDrugFromSearch(type, drugName) {
 }
 
 // --- TEMPLATES ---
-function openTemplatesModal() {     // Załaduj niestandardowe szablony z localStorage     const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');     Object.keys(customTemplates).forEach(key => {         cardTemplates[key] = customTemplates[key];     });          document.getElementById('templatesModal').style.display = 'flex';     updateTemplatesModal(); }
+function openTemplatesModal() {
+    // Załaduj niestandardowe szablony z localStorage
+    const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+    Object.keys(customTemplates).forEach(key => {
+        cardTemplates[key] = customTemplates[key];
+    });
+    
     document.getElementById('templatesModal').style.display = 'flex';
-}
-
-function saveTemplate(templateName) {
-    const cardState = getCardState();
-    const templateKey = `template_${templateName}`;
-    try {
-        localStorage.setItem(templateKey, JSON.stringify(cardState));
-        showToast('Szablon zapisany', `Szablon "${templateName}" został zapisany.`, 'success');
-    } catch (e) {
-        console.error("Błąd zapisu szablonu:", e);
-        showToast('Błąd zapisu', 'Wystąpił błąd podczas zapisu szablonu.', 'error');
-    }
+    updateTemplatesModal();
 }
 
 function loadTemplate(templateName) {
-    const customTemplateKey = `template_${templateName}`;
-    const customTemplateData = localStorage.getItem(customTemplateKey);
-
-    let template;
-    let templateSource = "domyślny";
-
-    if (customTemplateData) {
-        try {
-            const parsedData = JSON.parse(customTemplateData);
-            // Sprawdzamy, czy wczytane dane mają strukturę karty
-            if (parsedData.header && parsedData.tables) {
-                template = parsedData;
-                templateSource = "zapisany";
-            } else {
-                template = cardTemplates[templateName];
-            }
-        } catch (e) {
-            console.error("Błąd parsowania szablonu, wczytuję domyślny:", e);
-            template = cardTemplates[templateName];
-        }
-    } else {
-        template = cardTemplates[templateName];
-    }
-
+    const template = cardTemplates[templateName];
     if (!template) return;
     
-    const templateDisplayName = template.name || (template.header ? (template.header.diagnosisInput || templateName) : templateName);
-
-    if (!confirm(`Czy załadować ${templateSource} szablon "${templateDisplayName}"? Obecne dane zostaną zastąpione.`)) {
+    if (!confirm(`Czy załadować szablon "${template.name}"? Obecne dane zostaną zastąpione.`)) {
         return;
     }
     
+    // Wyczyść kartę
     clearCard(true);
     
-    if (templateSource === "zapisany") {
-        populateCardFromState(template);
-    } else {
-        document.getElementById('diagnosisInput').value = template.diagnosis || '';
+    // Ustaw rozpoznanie
+    document.getElementById('diagnosisInput').value = template.diagnosis;
+    
+    // Dodaj leki ciągłe
+    template.continuousDrugs?.forEach(drug => {
+        addContinuousDrug();
+        const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = drug.name;
+        inputs[1].value = drug.conc;
+        inputs[2].value = drug.dose;
+        calculateInfusionRate(inputs[2]);
+    });
+    
+    // Dodaj leki okresowe
+    template.periodicDrugs?.forEach(drug => {
+        addPeriodicDrug();
+        const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = drug.name;
+        inputs[1].value = drug.dose;
+        inputs[2].value = drug.route;
+        inputs[3].value = drug.freq;
+    });
+    
+    // Dodaj płyny
+    template.fluids?.forEach(fluid => {
+        addFluid();
+        const lastRow = document.querySelector('#fluidsTable tbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = fluid.name;
+        inputs[2].value = fluid.volume;
+        inputs[3].value = fluid.rate;
+    });
+    
+    // Dodaj żywienie
+    template.nutrition?.forEach(nutrition => {
+        addNutrition();
+        const lastRow = document.querySelector('#nutritionTable tbody tr:last-child');
+        const typeInput = lastRow.querySelector('.nutrition-type');
+        const prepInput = lastRow.querySelector('.nutrition-prep');
+        const rateInput = lastRow.querySelector('.nutrition-rate');
         
-        template.continuousDrugs?.forEach(drug => {
-            addContinuousDrug();
-            const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
-            const inputs = lastRow.querySelectorAll('input');
-            inputs[0].value = drug.name;
-            inputs[1].value = drug.conc;
-            inputs[2].value = drug.dose;
-            calculateInfusionRate(inputs[2]);
-        });
-        
-        template.periodicDrugs?.forEach(drug => {
-            addPeriodicDrug();
-            const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
-            const inputs = lastRow.querySelectorAll('input');
-            inputs[0].value = drug.name;
-            inputs[1].value = drug.dose;
-            inputs[2].value = drug.route;
-            inputs[3].value = drug.freq;
-        });
-        
-        template.fluids?.forEach(fluid => {
-            addFluid();
-            const lastRow = document.querySelector('#fluidsTable tbody tr:last-child');
-            const inputs = lastRow.querySelectorAll('input');
-            inputs[0].value = fluid.name;
-            inputs[2].value = fluid.volume;
-            inputs[3].value = fluid.rate;
-        });
-        
-        template.nutrition?.forEach(nutrition => {
-            addNutrition();
-            const lastRow = document.querySelector('#nutritionTable tbody tr:last-child');
-            const typeInput = lastRow.querySelector('.nutrition-type');
-            const prepInput = lastRow.querySelector('.nutrition-prep');
-            const rateInput = lastRow.querySelector('.nutrition-rate');
-            if(nutrition.type) typeInput.value = nutrition.type;
+        if (nutrition.type) {
+            typeInput.value = nutrition.type;
             updateNutritionProductList(typeInput);
-            if(nutrition.prep) prepInput.value = nutrition.prep;
-            if(nutrition.rate) rateInput.value = nutrition.rate;
-        });
-        
-        template.procedures?.forEach(proc => {
-            addProcedure();
-            const lastRow = document.querySelector('#proceduresTable tbody tr:last-child');
-            const inputs = lastRow.querySelectorAll('input');
-            inputs[0].value = proc.time;
-            inputs[1].value = proc.name;
-        });
-    }
-
+        }
+        if (nutrition.prep) prepInput.value = nutrition.prep;
+        if (nutrition.rate) rateInput.value = nutrition.rate;
+    });
+    
+    // Dodaj procedury
+    template.procedures?.forEach(proc => {
+        addProcedure();
+        const lastRow = document.querySelector('#proceduresTable tbody tr:last-child');
+        const inputs = lastRow.querySelectorAll('input');
+        inputs[0].value = proc.time;
+        inputs[1].value = proc.name;
+    });
+    
     updateSummaries();
-closeModal('templatesModal');
-showToast('Szablon załadowany', `Załadowano szablon: ${template.name}`, 'success');
+    closeModal('templatesModal');
+    showToast('Szablon załadowany', `Załadowano szablon: ${template.name}`, 'success');
 }
 
 // --- CUSTOM TEMPLATE SAVING ---
@@ -822,9 +800,7 @@ function deleteCustomTemplate(templateKey) {
     if (button) button.remove();
     
     showToast('Szablon usunięty', 'Szablon został usunięty', 'info');
-}    showToast('Szablon załadowany', `Załadowano ${templateSource} szablon: ${templateDisplayName}`, 'success');
 }
-
 
 // --- MODALS ---
 function closeModal(modalId) {
