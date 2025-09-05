@@ -29,7 +29,7 @@
             <span></span>
         </div>
         <div id="offlineIndicator" class="offline-indicator" style="display: none;">
-            <i class="fas fa-plane"></i>
+            <i class="fas fa-wifi-slash"></i>
             <span>Tryb offline</span>
         </div>
     </div>
@@ -253,17 +253,14 @@
             <div class="modal-body">
                 <p>Wybierz szablon dla typowego przypadku:</p>
                 <div class="templates-grid">
-                    <div class="template-button-wrapper">
-                        <button class="template-button" onclick="loadTemplate('universal')"><i class="fas fa-hospital"></i><span>Uniwersalny OIT</span></button>
-                        <button class="template-save-button" onclick="saveTemplate('universal')" title="Zapisz bieżącą kartę jako ten szablon"><i class="fas fa-save"></i></button>
-                    </div>
+                    <button class="template-button" onclick="loadTemplate('universal')"><i class="fas fa-hospital"></i><span>Uniwersalny OIT</span></button>
                     <button class="template-button" onclick="loadTemplate('cardiac')"><i class="fas fa-heartbeat"></i><span>Pacjent kardiochirurgiczny</span></button>
                     <button class="template-button" onclick="loadTemplate('trauma')"><i class="fas fa-user-injured"></i><span>Uraz wielonarządowy</span></button>
                     <button class="template-button" onclick="loadTemplate('sepsis')"><i class="fas fa-virus"></i><span>Sepsa</span></button>
                     <button class="template-button" onclick="loadTemplate('respiratory')"><i class="fas fa-lungs"></i><span>Niewydolność oddechowa</span></button>
                     <button class="template-button" onclick="loadTemplate('neurological')"><i class="fas fa-brain"></i><span>Pacjent neurologiczny</span></button>
-                    <button class="template-button" onclick="loadTemplate('renal')"><i class="fas fa-kidneys"></i><span>CRRT</span></button>
-                    <button class="template-button save-custom" onclick="saveCurrentAsTemplate()"><i class="fas fa-plus-square"></i><span>Zapisz jako szablon</span></button>
+                    <button class="template-button" onclick="loadTemplate('renal')"><i class="fas fa-filter"></i><span>CRRT</span></button>
+                    <button class="template-button save-custom" onclick="saveCurrentAsTemplate()"><i class="fas fa-save"></i><span>Zapisz jako szablon</span></button>
                 </div>
             </div>
         </div>
@@ -310,13 +307,13 @@
         <option value="CT głowy"></option>
         <option value="CT klatki piersiowej"></option>
         <option value="CT jamy brzusznej"></option>
-        <option value="Glikemia"></option>
+        <option value="Glikemia 4xd"></option>
         <option value="Zmiany ułożenia"></option>
         <option value="Monitorowanie hemodynamiczne"></option>
         <option value="Kontrola zalegań"></option>
         <option value="Kinezyterapia"></option>
-        <option value="IAP"></option>
-        <option value="OCŻ"></option>
+        <option value="IAP 2xd"></option>
+        <option value="OCŻ 2xdz"></option>
     </datalist>
     <datalist id="diagnosisList">
         <option value="Zapalenie płuc"></option>
