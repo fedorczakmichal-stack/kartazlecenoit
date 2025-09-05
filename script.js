@@ -121,13 +121,13 @@ const cardTemplates = {
             { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
         ],
         procedures: [
-            { time: "co 6h", name: "Glikemia 4xd" },
+            { time: "co 6h", name: "Glikemia" },
             { time: "co 2h", name: "Zmiany ułożenia" },
             { time: "ciągłe", name: "Monitorowanie hemodynamiczne" },
             { time: "co 4h", name: "Kontrola zalegań" },
             { time: "codziennie", name: "Kinezyterapia" },
-            { time: "co 12h", name: "IAP 2xd" },
-            { time: "co 12h", name: "OCŻ 2xdz" }
+            { time: "co 12h", name: "IAP" },
+            { time: "co 12h", name: "OCŻ" }
         ]
     },
     cardiac: {
@@ -613,7 +613,7 @@ function addDrugFromSearch(type, drugName) {
 }
 
 // --- TEMPLATES ---
-function openTemplatesModal() {
+function openTemplatesModal() {     // Załaduj niestandardowe szablony z localStorage     const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');     Object.keys(customTemplates).forEach(key => {         cardTemplates[key] = customTemplates[key];     });          document.getElementById('templatesModal').style.display = 'flex';     updateTemplatesModal(); }
     document.getElementById('templatesModal').style.display = 'flex';
 }
 
@@ -720,8 +720,111 @@ function loadTemplate(templateName) {
     }
 
     updateSummaries();
-    closeModal('templatesModal');
-    showToast('Szablon załadowany', `Załadowano ${templateSource} szablon: ${templateDisplayName}`, 'success');
+closeModal('templatesModal');
+showToast('Szablon załadowany', `Załadowano szablon: ${template.name}`, 'success');
+}
+
+// --- CUSTOM TEMPLATE SAVING ---
+function saveCurrentAsTemplate() {
+    const patientName = document.getElementById('patientNameInput').value.trim();
+    const diagnosis = document.getElementById('diagnosisInput').value.trim();
+    
+    if (!diagnosis) {
+        showToast('Brak rozpoznania', 'Wprowadź rozpoznanie, aby zapisać szablon', 'warning');
+        return;
+    }
+    
+    const templateName = prompt('Wprowadź nazwę szablonu:', diagnosis || 'Mój szablon');
+    if (!templateName) return;
+    
+    const currentState = getCardState();
+    const newTemplate = {
+        name: templateName,
+        diagnosis: diagnosis,
+        continuousDrugs: currentState.tables.continuous.filter(drug => drug.name).map(drug => ({
+            name: drug.name,
+            conc: drug.conc,
+            dose: drug.dose
+        })),
+        periodicDrugs: currentState.tables.periodic.filter(drug => drug.name).map(drug => ({
+            name: drug.name,
+            dose: drug.dose,
+            route: drug.route,
+            freq: drug.freq
+        })),
+        fluids: currentState.tables.fluids.filter(fluid => fluid.name).map(fluid => ({
+            name: fluid.name,
+            volume: fluid.volume,
+            rate: fluid.rate
+        })),
+        nutrition: currentState.tables.nutrition.filter(nutrition => nutrition.type).map(nutrition => ({
+            type: nutrition.type,
+            prep: nutrition.prep,
+            rate: nutrition.rate
+        })),
+        procedures: currentState.tables.procedures.filter(proc => proc.name).map(proc => ({
+            time: proc.time,
+            name: proc.name
+        }))
+    };
+    
+    // Zapisz szablon w localStorage
+    let customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+    const templateKey = templateName.toLowerCase().replace(/[^a-z0-9]/g, '');
+    customTemplates[templateKey] = newTemplate;
+    localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+    
+    // Dodaj do globalnych szablonów
+    cardTemplates[templateKey] = newTemplate;
+    
+    // Odśwież modal z szablonami
+    updateTemplatesModal();
+    
+    showToast('Szablon zapisany', `Szablon "${templateName}" został zapisany`, 'success');
+}
+
+function updateTemplatesModal() {
+    const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+    const templatesGrid = document.querySelector('.templates-grid');
+    
+    // Dodaj niestandardowe szablony do siatki
+    Object.keys(customTemplates).forEach(key => {
+        const template = customTemplates[key];
+        const existingButton = templatesGrid.querySelector(`[onclick="loadTemplate('${key}')"]`);
+        
+        if (!existingButton) {
+            const button = document.createElement('button');
+            button.className = 'template-button custom-template';
+            button.onclick = () => loadTemplate(key);
+            button.innerHTML = `
+                <i class="fas fa-user-md"></i>
+                <span>${template.name}</span>
+                <button class="delete-template-btn" onclick="event.stopPropagation(); deleteCustomTemplate('${key}')" title="Usuń szablon">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            // Wstaw przed przyciskiem "Zapisz jako szablon"
+            const saveButton = templatesGrid.querySelector('.save-custom');
+            templatesGrid.insertBefore(button, saveButton);
+        }
+    });
+}
+
+function deleteCustomTemplate(templateKey) {
+    if (!confirm('Czy na pewno chcesz usunąć ten szablon?')) return;
+    
+    let customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+    delete customTemplates[templateKey];
+    delete cardTemplates[templateKey];
+    localStorage.setItem('customTemplates', JSON.stringify(customTemplates));
+    
+    // Usuń przycisk z interfejsu
+    const button = document.querySelector(`[onclick*="loadTemplate('${templateKey}')"]`);
+    if (button) button.remove();
+    
+    showToast('Szablon usunięty', 'Szablon został usunięty', 'info');
+}    showToast('Szablon załadowany', `Załadowano ${templateSource} szablon: ${templateDisplayName}`, 'success');
 }
 
 
@@ -1538,6 +1641,12 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeCard();
     initializeSortable();
     startAutosave();
+    
+    // Załaduj niestandardowe szablony
+    const customTemplates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+    Object.keys(customTemplates).forEach(key => {
+        cardTemplates[key] = customTemplates[key];
+    });
     
     // Dark mode
     const savedDarkMode = localStorage.getItem('darkMode') === 'true';
