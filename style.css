@@ -848,7 +848,7 @@ html.dark-mode .nutrition-additives {
     text-align: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    opacity: 0.8; /* Make it visible by default */
+    opacity: 0.8; 
     transform: scale(1);
 }
 
