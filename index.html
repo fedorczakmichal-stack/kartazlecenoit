@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edytowalna Karta Zleceń OIT - Enhanced</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2563eb">
@@ -18,8 +16,8 @@
     <div class="top-controls no-print">
         <button onclick="window.print()" class="control-button print" title="Drukuj (Ctrl+P)"><i class="fas fa-print"></i> Drukuj</button>
         <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
-        <button onclick="saveCard()" class="control-button save" title="Zapisz (Ctrl+S)"><i class="fas fa-save"></i> Zapisz</button>
-        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj</button>
+        <button onclick="saveCard()" class="control-button save" title="Zapisz (Ctrl+S)"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
+        <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
         <button onclick="openTemplatesModal()" class="control-button templates" title="Szablony kart"><i class="fas fa-clipboard-list"></i> Szablony</button>
         <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
         <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
@@ -31,7 +29,7 @@
             <span></span>
         </div>
         <div id="offlineIndicator" class="offline-indicator" style="display: none;">
-            <i class="fas fa-wifi"></i>
+            <i class="fas fa-wifi-slash"></i>
             <span>Tryb offline</span>
         </div>
     </div>
@@ -49,7 +47,7 @@
                 <div class="header-right-info">
                     <div class="field-group">
                         <span class="field-label">Data</span>
-                        <input type="text" id="mainDateInput" class="field-value small header-input" autocomplete="off" onchange="calculateIcuDay()" oninput="validateDate(this)"/>
+                        <input type="text" id="mainDateInput" class="field-value small header-input" autocomplete="off" onchange="calculateIcuDay()"/>
                     </div>
                     <div class="field-group">
                         <span class="field-label">Doba w OIT</span>
@@ -115,7 +113,7 @@
 
         <div class="quick-search-bar no-print">
             <i class="fas fa-search"></i>
-            <input type="text" id="quickSearchInput" placeholder="Szybkie wyszukiwanie i dodawanie leku (Ctrl+F)..." onkeyup="quickSearch(event)">
+            <input type="text" id="quickSearchInput" placeholder="Szybkie wyszukiwanie leku..." onkeyup="quickSearch(event)">
             <div id="quickSearchResults" class="search-results"></div>
         </div>
 
@@ -123,7 +121,7 @@
         <table id="continuousDrugsTable">
             <thead>
                 <tr>
-                    <th class="drag-handle-header no-print"></th>
+                    <th class="drag-column no-print"></th>
                     <th style="width: 35%;">Lek / Stężenie</th>
                     <th style="width: 25%;">Dawka</th>
                     <th style="width: 15%;">Prędkość [ml/h]</th>
@@ -141,7 +139,7 @@
         <table id="periodicDrugsTable">
             <thead>
                 <tr>
-                    <th class="drag-handle-header no-print"></th>
+                    <th class="drag-column no-print"></th>
                     <th style="width: 30%;">Lek / Dawka</th>
                     <th style="width: 15%;">Droga / Częstość</th>
                     <th style="width: 55%;">Podpis pielęgniarki</th>
@@ -158,7 +156,7 @@
         <table id="fluidsTable">
              <thead>
                 <tr>
-                    <th class="drag-handle-header no-print"></th>
+                    <th class="drag-column no-print"></th>
                     <th style="width: 20%;">Płyn</th>
                     <th style="width: 35%;">Dodatki</th>
                     <th style="width: 10%;">Objętość [ml]</th>
@@ -167,12 +165,12 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="fluidsTbody" class="sortable-tbody"></tbody>
+            <tbody class="sortable-tbody"></tbody>
         </table>
         <table id="nutritionTable">
             <thead>
                 <tr>
-                    <th class="drag-handle-header no-print"></th>
+                    <th class="drag-column no-print"></th>
                     <th style="width: 25%;">Typ żywienia</th>
                     <th style="width: 35%;">Preparat / Dawka</th>
                     <th style="width: 15%;">Prędkość [ml/h]</th>
@@ -180,7 +178,7 @@
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="nutritionTbody" class="sortable-tbody"></tbody>
+            <tbody class="sortable-tbody"></tbody>
         </table>
         <div class="controls-summary-container">
              <div class="button-container no-print">
@@ -207,14 +205,14 @@
         <table id="proceduresTable">
             <thead>
                 <tr>
-                    <th class="drag-handle-header no-print"></th>
+                    <th class="drag-column no-print"></th>
                     <th style="width: 15%;">Godzina</th>
                     <th style="width: 50%;">Procedura</th>
                     <th style="width: 35%;">Wykonano (podpis)</th>
                     <th class="action-column no-print"></th>
                 </tr>
             </thead>
-            <tbody id="proceduresTbody" class="sortable-tbody"></tbody>
+            <tbody class="sortable-tbody"></tbody>
         </table>
         <div class="button-container no-print">
             <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
@@ -255,34 +253,13 @@
             <div class="modal-body">
                 <p>Wybierz szablon dla typowego przypadku:</p>
                 <div class="templates-grid">
-                    <button class="template-button" onclick="loadTemplate('universal')">
-                        <i class="fas fa-star"></i>
-                        <span>Uniwersalny (OIT)</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('cardiac')">
-                        <i class="fas fa-heartbeat"></i>
-                        <span>Kardiochirurgia</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('trauma')">
-                        <i class="fas fa-user-injured"></i>
-                        <span>Uraz</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('sepsis')">
-                        <i class="fas fa-virus"></i>
-                        <span>Sepsa</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('respiratory')">
-                        <i class="fas fa-lungs"></i>
-                        <span>Niewydolność oddechowa</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('neurological')">
-                        <i class="fas fa-brain"></i>
-                        <span>Neurologia</span>
-                    </button>
-                    <button class="template-button" onclick="loadTemplate('renal')">
-                        <i class="fas fa-kidneys"></i>
-                        <span>CRRT</span>
-                    </button>
+                    <button class="template-button" onclick="loadTemplate('universal')"><i class="fas fa-hospital"></i><span>Uniwersalny OIT</span></button>
+                    <button class="template-button" onclick="loadTemplate('cardiac')"><i class="fas fa-heartbeat"></i><span>Pacjent kardiochirurgiczny</span></button>
+                    <button class="template-button" onclick="loadTemplate('trauma')"><i class="fas fa-user-injured"></i><span>Uraz wielonarządowy</span></button>
+                    <button class="template-button" onclick="loadTemplate('sepsis')"><i class="fas fa-virus"></i><span>Sepsa</span></button>
+                    <button class="template-button" onclick="loadTemplate('respiratory')"><i class="fas fa-lungs"></i><span>Niewydolność oddechowa</span></button>
+                    <button class="template-button" onclick="loadTemplate('neurological')"><i class="fas fa-brain"></i><span>Pacjent neurologiczny</span></button>
+                    <button class="template-button" onclick="loadTemplate('renal')"><i class="fas fa-kidneys"></i><span>CRRT</span></button>
                 </div>
             </div>
         </div>
@@ -299,25 +276,43 @@
         <option value="Dieta doustna"></option>
     </datalist>
     <datalist id="proceduresList">
-        <option value="Glikemia"></option>
-        <option value="Zmiany ułożenia ciała"></option>
-        <option value="Monitorowanie hemodynamiczne"></option>
-        <option value="Kontrola zalegań żołądkowych"></option>
-        <option value="Kinezyterapia"></option>
-        <option value="IAP"></option>
-        <option value="OCŻ"></option>
         <option value="Toaleta drzewa oskrzelowego"></option>
         <option value="RTG klatki piersiowej przyłóżkowe"></option>
         <option value="Zmiana opatrunku CVC"></option>
-    </datalist>
-    <datalist id="timesList">
-        <option value="4 x dz"></option>
-        <option value="2 x dz"></option>
-        <option value="co 4h"></option>
-        <option value="08:00"></option>
-        <option value="12:00"></option>
-        <option value="18:00"></option>
-        <option value="doraźnie"></option>
+        <option value="Zmiana pozycji ciała"></option>
+        <option value="Profilaktyka odleżyn"></option>
+        <option value="USG płuc"></option>
+        <option value="USG jamy brzusznej"></option>
+        <option value="Bronchoskopia"></option>
+        <option value="Wymiana rurki intubacyjnej"></option>
+        <option value="Wymiana rurki tracheostomijnej"></option>
+        <option value="Założenie CVC"></option>
+        <option value="Założenie cewnika tętniczego"></option>
+        <option value="Założenie cewnika Foleya"></option>
+        <option value="Punkcja lędźwiowa"></option>
+        <option value="Nakłucie jamy opłucnej"></option>
+        <option value="Drenaż jamy opłucnej"></option>
+        <option value="CRRT - rozpoczęcie"></option>
+        <option value="CRRT - wymiana zestawu"></option>
+        <option value="Hemodializa"></option>
+        <option value="Plazmafereza"></option>
+        <option value="Fizjoterapia"></option>
+        <option value="Rehabilitacja oddechowa"></option>
+        <option value="Pionizacja"></option>
+        <option value="EKG"></option>
+        <option value="ECHO serca"></option>
+        <option value="Gastroskopia"></option>
+        <option value="Kolonoskopia"></option>
+        <option value="CT głowy"></option>
+        <option value="CT klatki piersiowej"></option>
+        <option value="CT jamy brzusznej"></option>
+        <option value="Glikemia 4xd"></option>
+        <option value="Zmiany ułożenia"></option>
+        <option value="Monitorowanie hemodynamiczne"></option>
+        <option value="Kontrola zalegań"></option>
+        <option value="Kinezyterapia"></option>
+        <option value="IAP 2xd"></option>
+        <option value="OCŻ 2xdz"></option>
     </datalist>
     <datalist id="diagnosisList">
         <option value="Zapalenie płuc"></option>
@@ -336,16 +331,43 @@
         <option value="Niewydolność nerek"></option>
         <option value="Niewydolność wątroby"></option>
     </datalist>
+    <datalist id="timesList">
+        <option value="06:00"></option>
+        <option value="07:00"></option>
+        <option value="08:00"></option>
+        <option value="09:00"></option>
+        <option value="10:00"></option>
+        <option value="11:00"></option>
+        <option value="12:00"></option>
+        <option value="13:00"></option>
+        <option value="14:00"></option>
+        <option value="15:00"></option>
+        <option value="16:00"></option>
+        <option value="17:00"></option>
+        <option value="18:00"></option>
+        <option value="19:00"></option>
+        <option value="20:00"></option>
+        <option value="21:00"></option>
+        <option value="22:00"></option>
+        <option value="23:00"></option>
+        <option value="00:00"></option>
+        <option value="01:00"></option>
+        <option value="02:00"></option>
+        <option value="03:00"></option>
+        <option value="04:00"></option>
+        <option value="05:00"></option>
+        <option value="co 1h"></option>
+        <option value="co 2h"></option>
+        <option value="co 4h"></option>
+        <option value="co 6h"></option>
+        <option value="co 8h"></option>
+        <option value="co 12h"></option>
+        <option value="co 24h"></option>
+        <option value="doraźnie"></option>
+    </datalist>
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <script src="script.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(registration => console.log('ServiceWorker registration successful: ', registration.scope))
-                    .catch(error => console.log('ServiceWorker registration failed: ', error));
-            });
-        }
-    </script>
 </body>
 </html>
