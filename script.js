@@ -125,9 +125,7 @@ const cardTemplates = {
             { time: "co 2h", name: "Zmiany ułożenia" },
             { time: "ciągłe", name: "Monitorowanie hemodynamiczne" },
             { time: "co 4h", name: "Kontrola zalegań" },
-            { time: "codziennie", name: "Kinezyterapia" },
-            { time: "co 12h", name: "IAP" },
-            { time: "co 12h", name: "OCŻ" }
+            { time: "codziennie", name: "Kinezyterapia" }
         ]
     },
     cardiac: {
