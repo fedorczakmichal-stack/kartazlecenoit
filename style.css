@@ -25,9 +25,6 @@
     --purple-dark: #6d28d9;
     --amber: #d97706;
     --teal: #0d9488;
-    
-    --gemini-grad: linear-gradient(135deg, #4285F4, #9B59B6, #F4B400, #0F9D58);
-
 
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
@@ -172,18 +169,6 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-.control-button.gemini-button {
-    background: var(--gemini-grad);
-    background-size: 200% 200%;
-    animation: gemini-animation 3s ease infinite;
-}
-
-@keyframes gemini-animation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
 /* Header */
 .header-section {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -268,42 +253,6 @@ h1 { font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px; te
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     outline: none;
 }
-
-.input-with-gemini {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-.input-with-gemini .field-value {
-    padding-right: 30px;
-}
-
-.gemini-icon-button {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    color: var(--gray-400);
-    cursor: pointer;
-    font-size: 14px;
-    padding: 4px;
-    transition: all 0.2s ease;
-}
-.gemini-icon-button:hover {
-    color: var(--purple);
-}
-.gemini-icon-button i.fa-sparkles {
-    display: block;
-    animation: gemini-animation 3s ease infinite;
-    background: var(--gemini-grad);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-
 .field-value.alert-field { 
     background: #fef2f2; 
     border-color: var(--danger); 
@@ -424,7 +373,6 @@ table {
     border-collapse: collapse; 
     margin-bottom: 8px;
     animation: fadeIn 0.5s ease;
-    table-layout: fixed; /* POPRAWKA: Ustawia stały układ tabeli */
 }
 th { 
     background: var(--gray-100); 
@@ -441,7 +389,6 @@ td {
     vertical-align: middle; 
     height: 28px;
     position: relative;
-    word-wrap: break-word; /* Zapewnia zawijanie tekstu w komórkach */
 }
 
 tr {
@@ -479,7 +426,7 @@ tbody tr:hover {
 .drag-column {
     width: 25px;
     text-align: center;
-    padding: 2px !important;
+    padding: 2px;
 }
 
 .sortable-ghost {
@@ -524,40 +471,13 @@ tr.gfr-dose-adjusted::before {
     background: var(--warning);
 }
 
-/* --- NAPRAWA UKŁADU GFR --- */
-#periodicDrugsTbody td:nth-child(3) { /* Komórka: Droga / Częstość */
-    vertical-align: top;
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.periodic-inputs-container {
-    display: flex;
-    gap: 4px; /* Odstęp między inputami Droga i Częstość */
-}
-
-.periodic-inputs-container .route {
-    flex: 0 0 40px; /* Stała szerokość dla pola Droga */
-}
-
-.periodic-inputs-container .frequency {
-    flex: 1 1 auto; /* Pole Częstość zajmuje resztę miejsca */
-}
-
 .dose-reduction-notice { 
     font-size: 10px; 
     color: var(--warning-dark); 
     font-weight: 500; 
-    margin-top: 3px; /* Odstęp od góry */
-    display: none; /* Domyślnie ukryty, pokazywany przez JS */
+    margin-left: 5px;
     animation: blink 1s infinite;
 }
-
-tr.gfr-dose-adjusted .dose-reduction-notice {
-    display: block; /* Pokaż w nowej linii po aktywacji GFR */
-}
-/* --- Koniec naprawy układu GFR --- */
-
 
 @keyframes blink {
     0%, 100% { opacity: 1; }
@@ -582,10 +502,6 @@ html.dark-mode .dose-reduction-notice { color: #facc15; }
     background: var(--primary-light);
     border-radius: 3px;
 }
-#periodicDrugsTbody td:nth-child(2) input { /* Lek / Dawka inputs stack vertically */
-    margin-bottom: 2px;
-}
-
 .drug-name { font-weight: 500; }
 .infusion-rate { font-weight: 600; color: var(--success-dark); }
 html.dark-mode .infusion-rate { color: #4ade80; }
@@ -872,41 +788,6 @@ html.dark-mode .nutrition-additives {
     overflow-y: auto;
 }
 
-/* Gemini Modal Styles */
-.gemini-modal-content {
-    max-width: 700px;
-}
-#geminiResponseContent {
-    font-size: 13px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-#geminiResponseContent h2, #geminiResponseContent h3 {
-    margin-top: 1em;
-    margin-bottom: 0.5em;
-    font-weight: 600;
-}
-#geminiResponseContent ul {
-    padding-left: 20px;
-}
-#geminiResponseContent li {
-    margin-bottom: 0.5em;
-}
-.gemini-loader {
-    border: 4px solid var(--gray-200);
-    border-top: 4px solid var(--primary);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 20px auto;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
 /* Templates Grid */
 .templates-grid {
     display: grid;
@@ -945,11 +826,6 @@ html.dark-mode .nutrition-additives {
     font-weight: 500;
     text-align: center;
     color: var(--text-color);
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0 4px;
 }
 
 /* Custom templates styling */
@@ -978,18 +854,6 @@ html.dark-mode .nutrition-additives {
 
 .template-button.save-custom i {
     color: var(--warning-dark);
-}
-
-/* Styl dla przycisku szablonu testowego */
-.template-button.test-template {
-    background: linear-gradient(135deg, var(--info-light), var(--info));
-    border-color: var(--info);
-}
-.template-button.test-template:hover {
-    background: linear-gradient(135deg, var(--info), var(--info-dark));
-}
-.template-button.test-template i {
-    color: var(--info-dark);
 }
 
 .delete-template-btn {
@@ -1045,17 +909,6 @@ html.dark-mode .template-button.save-custom:hover {
 
 html.dark-mode .template-button.save-custom i {
     color: var(--warning-light);
-}
-
-html.dark-mode .template-button.test-template {
-    background: linear-gradient(135deg, #083344, var(--info-dark));
-    color: var(--info-light);
-}
-html.dark-mode .template-button.test-template:hover {
-    background: linear-gradient(135deg, var(--info-dark), var(--info));
-}
-html.dark-mode .template-button.test-template i {
-    color: var(--info-light);
 }
 
 /* Saved cards list in modal */
@@ -1463,25 +1316,26 @@ html.dark-mode .offline-indicator {
     }
 
     /* Optymalizacja szerokości kolumn dla wydruku */
-    #continuousDrugsTable th:nth-child(2) { width: 30% !important; }
-    #continuousDrugsTable th:nth-child(3) { width: 35% !important; }
-    #continuousDrugsTable th:nth-child(4) { width: 10% !important; }
-    #continuousDrugsTable th:nth-child(5) { width: 25% !important; }
+    #continuousDrugsTable th:nth-child(1) { width: 35% !important; }
+    #continuousDrugsTable th:nth-child(2) { width: 25% !important; }
+    #continuousDrugsTable th:nth-child(3) { width: 15% !important; }
+    #continuousDrugsTable th:nth-child(4) { width: 25% !important; }
 
-    #periodicDrugsTable th:nth-child(2) { width: 30% !important; }
-    #periodicDrugsTable th:nth-child(3) { width: 15% !important; }
-    #periodicDrugsTable th:nth-child(4) { width: 55% !important; }
+    #periodicDrugsTable th:nth-child(1) { width: 35% !important; }
+    #periodicDrugsTable th:nth-child(2) { width: 20% !important; }
+    #periodicDrugsTable th:nth-child(3) { width: 45% !important; }
 
-    #fluidsTable th:nth-child(2) { width: 22% !important; }
-    #fluidsTable th:nth-child(3) { width: 33% !important; }
+    #fluidsTable th:nth-child(1) { width: 22% !important; }
+    #fluidsTable th:nth-child(2) { width: 33% !important; }
+    #fluidsTable th:nth-child(3) { width: 12% !important; }
     #fluidsTable th:nth-child(4) { width: 12% !important; }
-    #fluidsTable th:nth-child(5) { width: 12% !important; }
-    #fluidsTable th:nth-child(6) { width: 21% !important; }
+    #fluidsTable th:nth-child(5) { width: 21% !important; }
 
-    #nutritionTable th:nth-child(2) { width: 25% !important; }
-    #nutritionTable th:nth-child(3) { width: 40% !important; }
-    #nutritionTable th:nth-child(4) { width: 10% !important; }
-    #nutritionTable th:nth-child(5) { width: 25% !important; }
+    /* ZMIENIONE PROPORCJE KOLUMN DLA ŻYWIENIA */
+    #nutritionTable th:nth-child(1) { width: 15% !important; }
+    #nutritionTable th:nth-child(2) { width: 45% !important; }
+    #nutritionTable th:nth-child(3) { width: 15% !important; }
+    #nutritionTable th:nth-child(4) { width: 25% !important; }
 
     /* Pola wewnątrz tabel */
     .drug-input,
@@ -1553,9 +1407,7 @@ html.dark-mode .offline-indicator {
     #totalKcal,
     #kcalPerKg,
     #fluidBalanceFill,
-    #kcalFill,
-    .summary-container,
-    .controls-summary-container {
+    #kcalFill {
         display: none !important;
         visibility: hidden !important;
     }
@@ -1566,7 +1418,6 @@ html.dark-mode .offline-indicator {
     }
     
     .dose-reduction-notice { 
-        display: block !important; /* Pokaż na wydruku, jeśli aktywne */
         color: #000 !important; 
         font-weight: 700 !important; 
         font-size: 6px !important;
@@ -1630,4 +1481,3 @@ html.dark-mode .offline-indicator {
         break-inside: avoid !important;
     }
 }
-
