@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edytowalna Karta Zleceń OIT - Enhanced</title>
+    <title>Karta Zleceń OIT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
@@ -15,8 +15,11 @@
 
     <div class="top-controls no-print">
         <button onclick="window.print()" class="control-button print" title="Drukuj (Ctrl+P)"><i class="fas fa-print"></i> Drukuj</button>
-        <button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
-        <button onclick="saveCard()" class="control-button save" title="Zapisz (Ctrl+S)"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
+<button onclick="generatePDF()" class="control-button pdf"><i class="fas fa-file-pdf"></i> PDF</button>
+<button onclick="suggestAndFillTreatmentWithAI()" class="control-button gemini-button" title="Zaproponuj leki na podstawie rozpoznania">
+    <i class="fas fa-magic"></i> Zaproponuj Leczenie ✨
+</button>
+<button onclick="saveCard()" class="control-button save" title="Zapisz (Ctrl+S)"><i class="fas fa-save"></i> Zapisz w przeglądarce</button>
         <button onclick="openLoadModal()" class="control-button load"><i class="fas fa-folder-open"></i> Wczytaj z przeglądarki</button>
         <button onclick="openTemplatesModal()" class="control-button templates" title="Szablony kart"><i class="fas fa-clipboard-list"></i> Szablony</button>
         <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
@@ -78,15 +81,15 @@
                 </div>
                 <div class="field-group">
                     <span class="field-label">Data przyjęcia</span>
-                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value header-input" autocomplete="off" onchange="calculateIcuDay()" oninput="validateDate(this)"/>
+                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value header-input" autocomplete="off" onchange="calculateIcuDay(); validateDate(this);"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Waga (kg)</span>
-                    <input type="number" id="patientWeight" class="field-value header-input" autocomplete="off" oninput="handleWeightHeightChange()"/>
+                    <input type="number" id="patientWeight" class="field-value header-input" autocomplete="off" onchange="handleWeightHeightChange()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">Wzrost (cm)</span>
-                    <input type="number" id="heightInput" class="field-value header-input" autocomplete="off" oninput="handleWeightHeightChange()"/>
+                    <input type="number" id="heightInput" class="field-value header-input" autocomplete="off" onchange="handleWeightHeightChange()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">BMI</span>
@@ -94,11 +97,13 @@
                 </div>
                 <div class="field-group" style="grid-column: span 2;">
                     <span class="field-label">Rozpoznanie</span>
-                    <input type="text" id="diagnosisInput" class="field-value header-input" autocomplete="off" list="diagnosisList"/>
+                    <div class="input-with-gemini">
+                        <input type="text" id="diagnosisInput" class="field-value header-input" autocomplete="off" list="diagnosisList"/>
+                    </div>
                 </div>
                 <div class="field-group">
                     <span class="field-label">GFR (ml/min)</span>
-                    <input type="number" id="gfrInput" class="field-value gfr-input header-input" autocomplete="off" oninput="adjustAllDosesForGfr()"/>
+                    <input type="number" id="gfrInput" class="field-value gfr-input header-input" autocomplete="off" onchange="adjustAllDosesForGfr()"/>
                 </div>
                  <div class="field-group">
                     <span class="field-label">Sala/Łóżko</span>
@@ -119,16 +124,16 @@
 
         <div class="section-header"><i class="fas fa-syringe"></i> LEKI CIĄGŁE - POMPY INFUZYJNE</div>
         <table id="continuousDrugsTable">
-            <thead>
-                <tr>
-                    <th class="drag-column no-print"></th>
-                    <th style="width: 35%;">Lek / Stężenie</th>
-                    <th style="width: 25%;">Dawka</th>
-                    <th style="width: 15%;">Prędkość [ml/h]</th>
-                    <th style="width: 25%;">Podpis pielęgniarki</th>
-                    <th class="action-column no-print"></th>
-                </tr>
-            </thead>
+<thead>
+    <tr>
+        <th class="drag-column no-print" style="width: 25px;"></th>
+        <th style="width: 30%;">Lek / Stężenie</th>
+        <th style="width: 35%;">Dawka</th>
+        <th style="width: 10%;">Prędkość [ml/h]</th>
+        <th style="width: 25%;">Podpis pielęgniarki</th>
+        <th class="action-column no-print" style="width: 30px;"></th>
+    </tr>
+</thead>
             <tbody id="continuousDrugsTbody" class="sortable-tbody"></tbody>
         </table>
         <div class="button-container no-print">
@@ -136,18 +141,16 @@
         </div>
 
         <div class="section-header green"><i class="fas fa-pills"></i> LEKI OKRESOWE</div>
-        <table id="periodicDrugsTable">
-            <thead>
-                <tr>
-                    <th class="drag-column no-print"></th>
-                    <th style="width: 30%;">Lek / Dawka</th>
-                    <th style="width: 15%;">Droga / Częstość</th>
-                    <th style="width: 55%;">Podpis pielęgniarki</th>
-                    <th class="action-column no-print"></th>
-                </tr>
-            </thead>
-            <tbody id="periodicDrugsTbody" class="sortable-tbody"></tbody>
-        </table>
+<table id="periodicDrugsTable">
+    <thead>
+        <tr>
+            <th class="drag-column no-print" style="width: 25px;"></th>
+            <th style="width: 30%;">Lek / Dawka</th>
+            <th style="width: 10%;">Droga</th> <th style="width: 15%;">Częstość</th> <th style="width: 45%;">Podpis pielęgniarki</th> <th class="action-column no-print" style="width: 30px;"></th>
+        </tr>
+    </thead>
+    <tbody id="periodicDrugsTbody" class="sortable-tbody"></tbody>
+</table>
         <div class="button-container no-print">
             <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
         </div>
@@ -156,13 +159,13 @@
         <table id="fluidsTable">
              <thead>
                 <tr>
-                    <th class="drag-column no-print"></th>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
                     <th style="width: 20%;">Płyn</th>
                     <th style="width: 35%;">Dodatki</th>
                     <th style="width: 10%;">Objętość [ml]</th>
                     <th style="width: 10%;">Prędkość [ml/h]</th>
                     <th style="width: 25%;">Podpis pielęgniarki</th>
-                    <th class="action-column no-print"></th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
                 </tr>
             </thead>
             <tbody class="sortable-tbody"></tbody>
@@ -170,12 +173,12 @@
         <table id="nutritionTable">
             <thead>
                 <tr>
-                    <th class="drag-column no-print"></th>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
                     <th style="width: 25%;">Typ żywienia</th>
-                    <th style="width: 35%;">Preparat / Dawka</th>
+                    <th style="width: 35%;">Preparat / Dodatki</th>
                     <th style="width: 15%;">Prędkość [ml/h]</th>
                     <th style="width: 25%;">Podpis pielęgniarki</th>
-                    <th class="action-column no-print"></th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
                 </tr>
             </thead>
             <tbody class="sortable-tbody"></tbody>
@@ -205,11 +208,11 @@
         <table id="proceduresTable">
             <thead>
                 <tr>
-                    <th class="drag-column no-print"></th>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
                     <th style="width: 15%;">Godzina</th>
                     <th style="width: 50%;">Procedura</th>
                     <th style="width: 35%;">Wykonano (podpis)</th>
-                    <th class="action-column no-print"></th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
                 </tr>
             </thead>
             <tbody class="sortable-tbody"></tbody>
@@ -254,17 +257,32 @@
                 <p>Wybierz szablon dla typowego przypadku:</p>
                 <div class="templates-grid">
                     <button class="template-button" onclick="loadTemplate('universal')"><i class="fas fa-hospital"></i><span>Uniwersalny OIT</span></button>
-                    <button class="template-button" onclick="loadTemplate('cardiac')"><i class="fas fa-heartbeat"></i><span>Pacjent kardiochirurgiczny</span></button>
+                    <button class="template-button" onclick="loadTemplate('cardiac')"><i class="fas fa-heartbeat"></i><span>Kardiochirurgia</span></button>
                     <button class="template-button" onclick="loadTemplate('trauma')"><i class="fas fa-user-injured"></i><span>Uraz wielonarządowy</span></button>
                     <button class="template-button" onclick="loadTemplate('sepsis')"><i class="fas fa-virus"></i><span>Sepsa</span></button>
                     <button class="template-button" onclick="loadTemplate('respiratory')"><i class="fas fa-lungs"></i><span>Niewydolność oddechowa</span></button>
-                    <button class="template-button" onclick="loadTemplate('neurological')"><i class="fas fa-brain"></i><span>Pacjent neurologiczny</span></button>
+                    <button class="template-button" onclick="loadTemplate('neurological')"><i class="fas fa-brain"></i><span>Neurologia</span></button>
                     <button class="template-button" onclick="loadTemplate('renal')"><i class="fas fa-filter"></i><span>CRRT</span></button>
+                    <button class="template-button test-template" onclick="loadTemplate('test')"><i class="fas fa-vial"></i><span>Test Pełne Dane</span></button>
                     <button class="template-button save-custom" onclick="saveCurrentAsTemplate()"><i class="fas fa-save"></i><span>Zapisz jako szablon</span></button>
                 </div>
             </div>
         </div>
     </div>
+    
+    <div id="geminiResponseModal" class="modal no-print" style="display: none;">
+        <div class="modal-content gemini-modal-content">
+            <div class="modal-header">
+                <h3 id="geminiModalTitle">Analiza AI</h3>
+                <span class="close" onclick="closeModal('geminiResponseModal')">&times;</span>
+            </div>
+            <div class="modal-body" id="geminiModalBody">
+                <div class="gemini-loader"></div>
+                <div id="geminiResponseContent" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
 
     <datalist id="continuousDrugsList"></datalist>
     <datalist id="periodicDrugsList"></datalist>
