@@ -262,7 +262,6 @@ const cardTemplates = {
             { type: "Żywienie dojelitowe", prep: "Nutricomp Standard 500ml (1 kcal/ml)", rate: "50" },
             { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
         ],
-        ],
         procedures: [
             { time: "co 6h", name: "Glikemia" },
             { time: "co 2h", name: "Zmiany ułożenia" },
