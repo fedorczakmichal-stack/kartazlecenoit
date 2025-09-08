@@ -245,21 +245,23 @@ const cardTemplates = {
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
             { name: "FENTANYL", conc: "500μg/50ml", dose: "25-75 μg/h" },
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" },
-            { name: "INSULINA", conc: "50j/50ml", dose: "wlew dotętniczy" },
+            { name: "INSULINA", conc: "50j/50ml", dose: "według glikemii iv" },
             { name: "HEPARYNA", conc: "1j/ml", dose: "wlew dotętniczy" }
         ],
         periodicDrugs: [
             { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" },
             { name: "OMEPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
             { name: "IBUPROFEN", dose: "400mg", route: "i.v.", freq: "na zlecenie" },
-            { name: "PYRALGINA", dose: "1-2amp", route: "i.v.", freq: "na zlecenie" },
+            { name: "PYRALGINA", dose: "1g", route: "i.v.", freq: "na zlecenie" },
             { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "na zlecenie" }
         ],
         fluids: [
             { name: "Optilyte", volume: "500", rate: "50" }
         ],
-        nutrition: [
+        nnutrition: [
+            { type: "Żywienie dojelitowe", prep: "Nutricomp Standard 500ml (1 kcal/ml)", rate: "50" },
             { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
+        ],
         ],
         procedures: [
             { time: "co 6h", name: "Glikemia" },
