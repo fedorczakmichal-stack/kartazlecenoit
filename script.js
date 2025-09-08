@@ -565,7 +565,6 @@ async function suggestAndFillTreatmentWithAI() {
     const currentPeriodicDrugs = Array.from(document.querySelectorAll('#periodicDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
 
     // 2. Przygotuj prompt dla AI
-    // ZMIANA: Dodano regułę nr 5 dotyczącą formatu dawkowania (bez opisów)
     const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia (leki ciągłe i okresowe) dla pacjenta na podstawie podanej diagnozy. 
     Kluczowe wytyczne:
     1.  **Kontekst:** Skup się na lekach standardowo stosowanych w polskich OIT.
@@ -1451,13 +1450,11 @@ function fillContinuousDrugData(input, rowId) {
     } 
 }
 
-// ZMIANA: Modyfikacja struktury HTML dodawanego wiersza - rozdzielenie komórek dla Drogi i Częstości
 function addPeriodicDrug() { 
     const tbody = document.querySelector('#periodicDrugsTbody'); 
     const newRow = document.createElement('tr'); 
     const rowId = 'per_' + Date.now(); 
     
-    // ZMIANA: Rozdzielenie inputów .route i .frequency do oddzielnych komórek <td>
     newRow.innerHTML = `
         <td class="drag-column no-print"><div class="drag-handle"><i class="fas fa-grip-vertical"></i></div></td>
         <td> <input type="text" class="drug-input drug-name" placeholder="Nazwa leku" list="periodicDrugsList" autocomplete="off" onchange="fillPeriodicDrugData(this)" id="${rowId}_name" />
@@ -1518,8 +1515,8 @@ function addFluid() {
         <td class="drag-column no-print"><div class="drag-handle"><i class="fas fa-grip-vertical"></i></div></td>
         <td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" autocomplete="off" onchange="fillFluidData(this, '${rowId}')" /></td>
         <td><input type="text" class="drug-input additives-input" placeholder="np. + KCl 15% 10ml | + MgSO4 20% 5ml" autocomplete="off" oninput="markAsChanged()" /></td>
-        <td><input type="number" class="drug-input" placeholder="ml" autocomplete="off" id="${rowId}_vol" oninput="updateSummaries()" /></td>
-        <td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" /></td>
+        <td><input type="number" class="drug-input" placeholder="ml" autocomplete="off" id="${rowId}_vol" oninput="markAsChanged()" onchange="updateSummaries()" /></td>
+        <td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" onchange="updateSummaries()" /></td>
         <td><div class="signature-box-cell"></div></td>
         <td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
     tbody.appendChild(newRow); 
@@ -1550,7 +1547,7 @@ function addNutrition() {
             <input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." list="enteralProductsList" autocomplete="off" onchange="fillNutritionData(this, '${rowId}')" id="${rowId}_prep"/>
             <textarea class="drug-input nutrition-additives" placeholder="" id="${rowId}_additives" autocomplete="off" style="display:none;" rows="1"></textarea>
         </td>
-        <td><input type="number" class="drug-input nutrition-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" /></td>
+        <td><input type="number" class="drug-input nutrition-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" onchange="updateSummaries()" /></td>
         <td><div class="signature-box-cell"></div></td>
         <td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
     tbody.appendChild(newRow); 
@@ -1679,12 +1676,20 @@ function adjustSingleDoseForGfr(row) {
     const adjustmentRules = gfrDoseAdjustments[drugName];
 
     // --- RESET STYLU PRZED OCENĄ ---
-    recalculateDose(row); // Ustawia dawkę domyślną/przeliczoną
+    // Nie resetuj dawki, jeśli GFR jest puste, ale wiersz był już dostosowany wcześniej.
+    // Resetuj tylko, gdy GFR jest obecne i powyżej progu, lub gdy lek się zmienia.
+    const currentDose = doseInput.value;
     row.classList.remove('gfr-dose-adjusted');
     if (notice) notice.style.display = 'none';
+    recalculateDose(row); // Najpierw ustaw dawkę domyślną/przeliczoną wagowo.
+    const baseDose = doseInput.value; // Zapamiętaj dawkę bazową po przeliczeniu wagowym.
+
     // --- KONIEC RESETU ---
 
-    if (!gfr || !adjustmentRules) return; // Brak GFR lub brak reguł dla leku
+    if (!gfr || !adjustmentRules) {
+        doseInput.value = baseDose; // Upewnij się, że dawka jest bazowa, jeśli GFR nie dotyczy.
+        return; // Brak GFR lub brak reguł dla leku
+    }
 
     let appliedRule = null;
     for (const rule of adjustmentRules) { 
@@ -1712,13 +1717,20 @@ function adjustSingleDoseForGfr(row) {
         if (appliedRule.frequency && freqInput) freqInput.value = appliedRule.frequency;
         
         row.classList.add('gfr-dose-adjusted');
-        if (notice) notice.style.display = 'inline-block'; // Użyj 'inline-block' dla lepszego dopasowania
+        if (notice) notice.style.display = 'inline-block'; 
         
-        if (!row.dataset.gfrWarningShown) {
+        // ZMIANA: Sprawdzenie, czy faktycznie doszło do zmiany dawki lub częstości, zanim pokażemy toast.
+        // Porównujemy dawkę bazową (po przeliczeniu wagowym) z nową dawką GFR.
+        const originalFreq = periodicDrugsData[drugName]?.frequency || '';
+        const frequencyChanged = appliedRule.frequency && appliedRule.frequency !== originalFreq;
+        const doseChanged = finalDose !== baseDose;
+
+        if (!row.dataset.gfrWarningShown && (doseChanged || frequencyChanged)) {
             showToast('Dostosowano dawkę', `Dawka ${drugName} została dostosowana do GFR=${gfr}`, 'warning', 6000);
             row.dataset.gfrWarningShown = 'true';
         }
     } else {
+        doseInput.value = baseDose; // Upewnij się, że dawka jest bazowa, jeśli GFR jest powyżej progu.
         row.dataset.gfrWarningShown = ''; // Reset flagi ostrzeżenia jeśli GFR jest powyżej progu
     }
 }
@@ -2022,7 +2034,6 @@ function getCardState() {
         });
     });
     
-    // ZMIANA: Pobieranie danych z rozdzielonych kolumn .route i .frequency
     document.querySelectorAll('#periodicDrugsTbody tr').forEach(row => {
         cardState.tables.periodic.push({
             name: row.querySelector('.drug-name')?.value || '',
@@ -2199,18 +2210,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.closest('#card-container')) {
             markAsChanged();
         }
-        if (e.target.matches('#patientWeight') || e.target.matches('#heightInput')) {
-            handleWeightHeightChange();
-        }
+
+        // ZMIANA 1: Przeniesiono logikę wagi/wzrostu do zdarzenia 'change' poniżej.
         
-        // ZMIANA: Przeniesiono GFR i .nutrition-rate do zdarzenia 'change', aby uniknąć walidacji podczas pisania.
-        // Pozostawiono .fluid-rate dla natychmiastowej aktualizacji bilansu płynów (mniej krytyczne).
-        if (e.target.matches('.fluid-rate') || e.target.matches('.fluid-name')) {
-            updateSummaries();
+        // Logika dla natychmiastowej aktualizacji (bez ostrzeżeń)
+        if (e.target.matches('.fluid-rate')) {
+            updateSummaries(); // Szybka aktualizacja paska płynów jest pożądana.
         }
-        
         if(e.target.matches('.dose') && e.target.closest('#continuousDrugsTbody')) {
-            calculateInfusionRate(e.target);
+            calculateInfusionRate(e.target); // Obliczanie przepływu pompy na bieżąco.
         }
     });
 
@@ -2224,14 +2232,20 @@ document.addEventListener('DOMContentLoaded', function() {
         if(e.target.matches('#admissionDateInput')) {
             validateDate(e.target);
         }
+
+        // ZMIANA 2: Główne przeliczenia i walidacje są teraz tutaj (zdarzenie 'change').
+        // Wykonuje się po zakończeniu edycji pola wagi lub wzrostu.
+        if (e.target.matches('#patientWeight') || e.target.matches('#heightInput')) {
+            handleWeightHeightChange();
+        }
         
-        // ZMIANA: Wywołanie adjustAllDosesForGfr po zakończeniu edycji pola GFR (zdarzenie change)
+        // Wywołanie adjustAllDosesForGfr po zakończeniu edycji pola GFR.
         if (e.target.matches('#gfrInput')) {
             adjustAllDosesForGfr();
         }
 
-        // ZMIANA: Wywołanie updateSummaries (dla obliczeń kalorii) po zakończeniu edycji pola nutrition-rate (zdarzenie change)
-        if (e.target.matches('.nutrition-rate') || e.target.matches('.fluid-rate')) {
+        // Wywołanie updateSummaries (dla obliczeń kalorii i finalnego bilansu płynów) po zakończeniu edycji pól rate.
+        if (e.target.matches('.nutrition-rate') || e.target.matches('.fluid-rate') || e.target.matches('.fluid-name')) {
             updateSummaries();
         }
     });
