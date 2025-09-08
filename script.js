@@ -1519,7 +1519,7 @@ function addFluid() {
         <td><input type="text" class="drug-input fluid-name" placeholder="Płyn" list="fluidsList" autocomplete="off" onchange="fillFluidData(this, '${rowId}')" /></td>
         <td><input type="text" class="drug-input additives-input" placeholder="np. + KCl 15% 10ml | + MgSO4 20% 5ml" autocomplete="off" oninput="markAsChanged()" /></td>
         <td><input type="number" class="drug-input" placeholder="ml" autocomplete="off" id="${rowId}_vol" oninput="updateSummaries()" /></td>
-        <td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="updateSummaries()" /></td>
+        <td><input type="number" class="drug-input fluid-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" /></td>
         <td><div class="signature-box-cell"></div></td>
         <td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
     tbody.appendChild(newRow); 
@@ -1550,7 +1550,7 @@ function addNutrition() {
             <input type="text" class="drug-input nutrition-prep" placeholder="Wybierz preparat..." list="enteralProductsList" autocomplete="off" onchange="fillNutritionData(this, '${rowId}')" id="${rowId}_prep"/>
             <textarea class="drug-input nutrition-additives" placeholder="" id="${rowId}_additives" autocomplete="off" style="display:none;" rows="1"></textarea>
         </td>
-        <td><input type="number" class="drug-input nutrition-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="updateSummaries()" /></td>
+        <td><input type="number" class="drug-input nutrition-rate" placeholder="ml/h" autocomplete="off" id="${rowId}_rate" oninput="markAsChanged()" /></td>
         <td><div class="signature-box-cell"></div></td>
         <td class="action-column no-print"><button onclick="removeRow(this)" class="remove-button"><i class="fas fa-times-circle"></i></button></td>`; 
     tbody.appendChild(newRow); 
@@ -2202,12 +2202,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.matches('#patientWeight') || e.target.matches('#heightInput')) {
             handleWeightHeightChange();
         }
-        if (e.target.matches('#gfrInput')) {
-            adjustAllDosesForGfr();
-        }
-        if (e.target.matches('.fluid-rate') || e.target.matches('.nutrition-rate') || e.target.matches('.fluid-name')) {
+        
+        // ZMIANA: Przeniesiono GFR i .nutrition-rate do zdarzenia 'change', aby uniknąć walidacji podczas pisania.
+        // Pozostawiono .fluid-rate dla natychmiastowej aktualizacji bilansu płynów (mniej krytyczne).
+        if (e.target.matches('.fluid-rate') || e.target.matches('.fluid-name')) {
             updateSummaries();
         }
+        
         if(e.target.matches('.dose') && e.target.closest('#continuousDrugsTbody')) {
             calculateInfusionRate(e.target);
         }
@@ -2222,6 +2223,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if(e.target.matches('#admissionDateInput')) {
             validateDate(e.target);
+        }
+        
+        // ZMIANA: Wywołanie adjustAllDosesForGfr po zakończeniu edycji pola GFR (zdarzenie change)
+        if (e.target.matches('#gfrInput')) {
+            adjustAllDosesForGfr();
+        }
+
+        // ZMIANA: Wywołanie updateSummaries (dla obliczeń kalorii) po zakończeniu edycji pola nutrition-rate (zdarzenie change)
+        if (e.target.matches('.nutrition-rate') || e.target.matches('.fluid-rate')) {
+            updateSummaries();
         }
     });
     
