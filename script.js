@@ -258,7 +258,7 @@ const cardTemplates = {
         fluids: [
             { name: "Optilyte", volume: "500", rate: "50" }
         ],
-        nnutrition: [
+        nutrition: [
             { type: "Żywienie dojelitowe", prep: "Nutricomp Standard 500ml (1 kcal/ml)", rate: "50" },
             { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
         ],
