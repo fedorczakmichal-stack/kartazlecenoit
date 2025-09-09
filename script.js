@@ -1,4 +1,4 @@
-/// --- ENHANCED MEDICAL CARD SYSTEM v3.5 ---
+// --- ENHANCED MEDICAL CARD SYSTEM v3.5 ---
 
 // --- BAZY DANYCH I KONFIGURACJA ---
 const continuousDrugsData = {
