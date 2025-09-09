@@ -438,7 +438,7 @@ const cardTemplates = {
 // --- GLOBALNE ZMIENNE ---
 let autosaveInterval = null;
 let hasUnsavedChanges = false;
-let isOnline = navigator.onLine;
+let isOnline = navigator.OnLine;
 let sortableInstances = [];
 let drugSearchHistory = [];
 let lastCalorieWarning = 0;
@@ -567,7 +567,7 @@ async function suggestAndFillTreatmentWithAI() {
 
     if (!diagnosis) {
         showValidationTooltip(diagnosisInput, 'Wprowadź rozpoznanie, aby zaproponować leczenie.');
-        showToast('Brak rozpoznania', 'Wprowadź rozpoznanie, aby otrzymać sugestje leczenia.', 'warning');
+        showToast('Brak rozpoznania', 'Wprowadź rozpoznanie, aby otrzymać sugestie leczenia.', 'warning');
         return;
     }
 
@@ -1088,10 +1088,14 @@ function loadTemplate(templateName) {
         const doseInput = lastRow.querySelector('.dose');
         const routeInput = lastRow.querySelector('.route');
         const freqInput = lastRow.querySelector('.frequency');
-        if(doseInput) doseInput.value = drug.dose;
-        if(routeInput) routeInput.value = drug.route;
-        if(freqInput) freqInput.value = drug.freq;
-        fillPeriodicDrugData(drugNameInput); // Ważne, aby wywołać po ustawieniu wartości
+        
+        // ZMIANA: Sprawdzamy, czy wartość z szablonu istnieje, zanim ją przypiszemy
+        if (drug.name) drugNameInput.value = drug.name;
+        fillPeriodicDrugData(drugNameInput); // Ważne, aby wywołać po ustawieniu nazwy leku
+        
+        if(drug.dose) doseInput.value = drug.dose;
+        if(drug.route) routeInput.value = drug.route;
+        if(drug.freq) freqInput.value = drug.freq;
     });
     
     template.fluids?.forEach(fluid => {
@@ -2396,4 +2400,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     showToast('System gotowy', 'Karta zleceń OIT została załadowana', 'success', 3000);
 });
-
