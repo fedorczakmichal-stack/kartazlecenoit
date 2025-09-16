@@ -491,6 +491,35 @@ tr.removing {
     }
 }
 
+/* AI Suggested Row Styling */
+tr.ai-suggested {
+    background-color: rgba(220, 252, 231, 0.5); /* Lekki jasnozielony */
+}
+
+tr.ai-suggested td:last-child::before {
+    content: 'AI';
+    position: absolute;
+    right: 35px; /* Pozycja obok przycisku usuwania */
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--gray-200);
+    color: var(--gray-500);
+    font-size: 9px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+html.dark-mode tr.ai-suggested {
+    background-color: rgba(5, 46, 22, 0.7);
+}
+
+html.dark-mode tr.ai-suggested td:last-child::before {
+    background: var(--gray-600);
+    color: var(--gray-300);
+}
+
+
 /* GFR Dose Adjustment Styling */
 tr.gfr-dose-adjusted td { 
     background-color: var(--warning-light) !important;
@@ -1278,6 +1307,14 @@ html.dark-mode .offline-indicator {
     input[type="number"] {
         -moz-appearance: textfield !important;
         appearance: textfield !important;
+    }
+
+    /* Ukrywanie stylów AI na wydruku */
+    tr.ai-suggested {
+        background-color: transparent !important;
+    }
+    tr.ai-suggested td:last-child::before {
+        display: none !important;
     }
 
     /* Nagłówek ultra kompaktowy */
