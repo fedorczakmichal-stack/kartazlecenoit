@@ -2,20 +2,20 @@
 
 // --- BAZY DANYCH I KONFIGURACJA ---
 const continuousDrugsData = {
-    'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-1.0 μg/kg/min' },
-    'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 μg/kg/min' },
-    'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 μg/kg/min' },
-    'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 μg/kg/min' },
+    'NORADRENALINA': { concentration: '8mg/50ml', dose: '0.1-1.0 mcg/kg/min' },
+    'ADRENALINA': { concentration: '1mg/50ml', dose: '0.01-0.1 mcg/kg/min' },
+    'DOPAMINA': { concentration: '200mg/50ml', dose: '2-20 mcg/kg/min' },
+    'DOBUTAMINA': { concentration: '250mg/50ml', dose: '2-20 mcg/kg/min' },
     'WAZOPRESYNA': { concentration: '20j/20ml', dose: '0.01-0.04 j/min' },
-    'LEVOSIMENDAN': { concentration: '12.5mg/5ml (w 500ml 5% Glc)', dose: '0.05-0.2 μg/kg/min' },
+    'LEVOSIMENDAN': { concentration: '12.5mg/5ml (w 500ml 5% Glc)', dose: '0.05-0.2 mcg/kg/min' },
     'EPOPROSTENOL': { concentration: '1.5mg/50ml', dose: '2-10 ng/kg/min' },
-    'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 μg/kg/min' },
+    'MILRINON': { concentration: '10mg/50ml', dose: '0.375-0.75 mcg/kg/min' },
     'PROPOFOL 1%': { concentration: '10mg/ml', dose: '1-4 mg/kg/h' },
     'PROPOFOL 2%': { concentration: '20mg/ml', dose: '1-4 mg/kg/h' },
     'MIDAZOLAM': { concentration: '50mg/50ml', dose: '1-15 mg/h' },
-    'DEKSMEDETOMIDYNA': { concentration: '400μg/100ml', dose: '0.2-1.4 μg/kg/h' },
-    'FENTANYL': { concentration: '500μg/50ml', dose: '25-100 μg/h' },
-    'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 μg/kg/min' },
+    'DEKSMEDETOMIDYNA': { concentration: '400mcg/100ml', dose: '0.2-1.4 mcg/kg/h' },
+    'FENTANYL': { concentration: '500mcg/50ml', dose: '25-100 mcg/h' },
+    'REMIFENTANYL': { concentration: '2mg/40ml', dose: '0.05-0.2 mcg/kg/min' },
     'MORFINA': { concentration: '20mg/20ml', dose: '1-5 mg/h' },
     'LIGNOCAINA 1%': { concentration: '500mg/50ml', dose: '1-2 mg/min' },
     'OKSYKODON': { concentration: '20mg/20ml', dose: '1-2 mg/h' },
@@ -27,21 +27,24 @@ const continuousDrugsData = {
     'HEPARYNA (1ml/1j)': { concentration: '1ml/1j', dose: 'wlew dotętniczy 1ml/godz', fixedRate: '1' },
     'FUROSEMID': { concentration: '100mg/50ml', dose: '5-20 mg/h' },
     'AMIODARON': { concentration: '300mg/50ml 5% Glc', dose: '20-50 mg/h' },
-    'NITROGLICERYNA': { concentration: '25mg/50ml', dose: '5-200 μg/min' },
+    'NITROGLICERYNA': { concentration: '25mg/50ml', dose: '5-200 mcg/min' },
     'PIPERACYLINA/TAZOBAKTAM': { concentration: '18g/100ml', dose: 'wlew 24h', fixedRate: '4.2' },
     'PANTOPRAZOL': { concentration: '80mg/100ml', dose: '4.2 ml/h', fixedRate: '4.2' },
     'METOPROLOL': { concentration: '10mg/50ml', dose: '1-5 mg/h' },
-    'SALBUTAMOL': { concentration: '5mg/50ml', dose: '3-20 μg/min' },
+    'SALBUTAMOL': { concentration: '5mg/50ml', dose: '3-20 mcg/min' },
     'DIAZEPAM': { concentration: '50mg/50ml', dose: '2-10 mg/h' },
-    'NITROPRUSYDEK SODU': { concentration: '50mg/50ml', dose: '0.5-8 Î¼g/kg/min' },
-    'KLONIDYNA': { concentration: '150Î¼g/50ml', dose: '0.5-2 Î¼g/kg/h' },
+    'NITROPRUSYDEK SODU': { concentration: '50mg/50ml', dose: '0.5-8 mcg/kg/min' },
+    'KLONIDYNA': { concentration: '150mcg/50ml', dose: '0.5-2 mcg/kg/h' },
     'LABETALOL': { concentration: '100mg/50ml', dose: '0.5-2 mg/min' },
-    'ESMOLOL': { concentration: '2500mg/50ml', dose: '50-200 Î¼g/kg/min' },
+    'ESMOLOL': { concentration: '2500mg/50ml', dose: '50-200 mcg/kg/min' },
     'DILTIAZEM': { concentration: '125mg/50ml', dose: '5-15 mg/h' },
     'MAGNEZ': { concentration: '2g/20ml', dose: '1-2 g/h' },
     'BIKARBONIAN SODU': { concentration: '100ml 8.4%', dose: '20-50 ml/h' },
-    'OKTREOTYD': { concentration: '500Î¼g/50ml', dose: '25-50 Î¼g/h' },
-    'ATROPINA (WLEW CIĄGŁY)': { concentration: '20mg/20ml', dose: '0.01-0.02 mg/kg/h' }
+    'OKTREOTYD': { concentration: '500mcg/50ml', dose: '25-50 mcg/h' },
+    'ATROPINA (WLEW CIĄGŁY)': { concentration: '20mg/20ml', dose: '0.01-0.02 mg/kg/h' },
+    'CHLOREK WAPNIA 10%': { concentration: '100mg/ml', dose: 'wg protokołu CRRT' },
+    'Prismocitrate 18/0': { concentration: '18/0 mmol/l', dose: 'wg protokołu CRRT' },
+    'Phoxillum': { concentration: 'Płyn dializacyjny', dose: 'wg protokołu CRRT' }
  };
 
 const periodicDrugsData = {
@@ -84,7 +87,7 @@ const periodicDrugsData = {
     'OMEPRAZOL': { dose: '40mg', route: 'i.v.', frequency: 'co 24h' },
     'HALOPERIDOL': { dose: '2.5-5mg', route: 'i.v./i.m.', frequency: 'wg zlecenia' },
     'CHLORPROMAZYNA': { dose: '25-50mg', route: 'i.m.', frequency: 'doraźnie' },
-    'DESMOPRESYNA': { dose: '1-4μg', route: 'i.v./s.c.', frequency: 'co 12-24h' },
+    'DESMOPRESYNA': { dose: '1-4mcg', route: 'i.v./s.c.', frequency: 'co 12-24h' },
     'WAPŃ': { dose: '10-20ml 10%', route: 'i.v. wlew', frequency: 'co 6h' },
     'WINPOCETYNA': { dose: '10mg', route: 'i.v. wlew', frequency: 'co 12h' },
     'CEREBROLIZYNA': { dose: '10-30ml', route: 'i.v. wlew', frequency: 'co 24h' },
@@ -122,7 +125,7 @@ const periodicDrugsData = {
     'SUGAMMADEKS': { dose: '2-4mg/kg', route: 'i.v.', frequency: 'jednorazowo' },
     'NEOSTYGMINA': { dose: '2.5mg', route: 'i.v.', frequency: 'jednorazowo' },
     'ATROPINA': { dose: '0.5-1mg', route: 'i.v.', frequency: 'doraźnie' },
-    'FENTANYL': { dose: '50-100Î¼g', route: 'i.v.', frequency: 'na zlecenie' },
+    'FENTANYL': { dose: '50-100mcg', route: 'i.v.', frequency: 'na zlecenie' },
     'KETAMINA': { dose: '0.5mg/kg', route: 'i.v.', frequency: 'na zlecenie' },
     'TRANEKSAM': { dose: '1g', route: 'i.v.', frequency: 'co 8h' },
     'PROTAMINA': { dose: '1mg/100j heparyny', route: 'i.v. wolno', frequency: 'jednorazowo' },
@@ -130,7 +133,7 @@ const periodicDrugsData = {
     'TIAMINA': { dose: '100mg', route: 'i.v.', frequency: 'co 24h' },
     'PIRYDOKSYNA': { dose: '50mg', route: 'i.v.', frequency: 'co 24h' },
     'KWAS FOLIOWY': { dose: '5mg', route: 'p.o.', frequency: 'co 24h' },
-    'BIOTYNA': { dose: '300Î¼g', route: 'p.o.', frequency: 'co 24h' }
+    'BIOTYNA': { dose: '300mcg', route: 'p.o.', frequency: 'co 24h' }
 };
 
 const fluidsData = { 'NaCl 0.9%': { volume: '500', rate: '50' }, 'Plasmalyte': { volume: '500', rate: '50' }, 'Optilyte': { volume: '500', rate: '50' }, 'Płyn Ringera': { volume: '500', rate: '50' }, 'Glukoza 5%': { volume: '500', rate: '40' }, 'Glukoza 10%': { volume: '500', rate: '30' }, 'Gelofusine': { volume: '500', rate: '100' }, 'Albuminy 20%': { volume: '100', rate: '50' }, 'Albuminy 5%': { volume: '250', rate: '100' }, 'Mannitol 15%': { volume: '250', rate: '125' }, 'NaHCO3 8.4%': { volume: '100', rate: '50' } };
@@ -256,8 +259,8 @@ const cardTemplates = {
         diagnosis: "Intensywna terapia",
         continuousDrugs: [
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-75 μg/h" },
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-75 mcg/h" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
             { name: "INSULINA", conc: "50j/50ml", dose: "według glikemii iv" },
             { name: "HEPARYNA", conc: "1j/ml", dose: "wlew dotętniczy" }
         ],
@@ -289,10 +292,10 @@ const cardTemplates = {
         name: "Pacjent kardiochirurgiczny",
         diagnosis: "Stan po zabiegach kardiochirurgicznych",
         continuousDrugs: [
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" },
-            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "2-10 μg/kg/min" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
+            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "2-10 mcg/kg/min" },
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-50 μg/h" }
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-50 mcg/h" }
         ],
         periodicDrugs: [
             { name: "CEFUROKSYM", dose: "1.5g", route: "i.v.", freq: "co 8h" },
@@ -309,9 +312,9 @@ const cardTemplates = {
         name: "Uraz wielonarządowy",
         diagnosis: "Uraz wielonarządowy",
         continuousDrugs: [
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2-1.0 μg/kg/min" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2-1.0 mcg/kg/min" },
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-4 mg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "50-100 μg/h" }
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" }
         ],
         periodicDrugs: [
             { name: "AMOKSYCYLINA/KWAS KLAWULANOWY", dose: "1.2g", route: "i.v.", freq: "co 8h" },
@@ -329,10 +332,10 @@ const cardTemplates = {
         name: "Sepsa",
         diagnosis: "Wstrząs septyczny",
         continuousDrugs: [
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.3-1.5 μg/kg/min" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.3-1.5 mcg/kg/min" },
             { name: "WAZOPRESYNA", conc: "20j/20ml", dose: "0.01-0.04 j/min" },
-            { name: "DEKSMEDETOMIDYNA", conc: "200μg/50ml", dose: "0.2-0.7 μg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "25-75 μg/h" }
+            { name: "DEKSMEDETOMIDYNA", conc: "200mcg/50ml", dose: "0.2-0.7 mcg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-75 mcg/h" }
         ],
         periodicDrugs: [
             { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 8h" },
@@ -350,8 +353,8 @@ const cardTemplates = {
         diagnosis: "ARDS",
         continuousDrugs: [
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
-            { name: "DEKSMEDETOMIDYNA", conc: "200μg/50ml", dose: "0.4-1.0 μg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "50-100 μg/h" },
+            { name: "DEKSMEDETOMIDYNA", conc: "200mcg/50ml", dose: "0.4-1.0 mcg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" },
             { name: "CISATRAKURIUM", conc: "20mg/10ml", dose: "0.06-0.18 mg/kg/h" }
         ],
         periodicDrugs: [
@@ -366,8 +369,8 @@ const cardTemplates = {
         diagnosis: "Udar mózgu",
         continuousDrugs: [
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-2 mg/kg/h" },
-            { name: "REMIFENTANYL", conc: "2mg/40ml", dose: "0.05-0.1 μg/kg/min" },
-            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "5-50 μg/min" }
+            { name: "REMIFENTANYL", conc: "2mg/40ml", dose: "0.05-0.1 mcg/kg/min" },
+            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "5-50 mcg/min" }
         ],
         periodicDrugs: [
             { name: "MANNITOL 15%", dose: "100ml", route: "wlew i.v. 30min", freq: "co 6h" },
@@ -377,21 +380,24 @@ const cardTemplates = {
         ]
     },
     renal: {
-        name: "CRRT",
-        diagnosis: "Niewydolność nerek - CRRT",
+        name: "CRRT (Antykoagulacja cytrynianowa)",
+        diagnosis: "Niewydolność nerek - CRRT CVVHD (cytryniany)",
         continuousDrugs: [
-            { name: "HEPARYNA", conc: "25000j/50ml", dose: "500-1000 j/h" },
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 μg/kg/min" }
+            { name: "Prismocitrate 18/0", conc: "18/0 mmol/l", dose: "wg protokołu CRRT" },
+            { name: "Phoxillum", conc: "Płyn dializacyjny", dose: "wg protokołu CRRT" },
+            { name: "CHLOREK WAPNIA 10%", conc: "100mg/ml", dose: "wg protokołu CRRT" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
+            { name: "HEPARYNA", conc: "1j/ml", dose: "wlew dotętniczy" }
         ],
         periodicDrugs: [
-            { name: "FUROSEMID", dose: "40mg", route: "i.v.", freq: "co 8h" },
-            { name: "WAPŃ", dose: "10ml 10%", route: "i.v. wlew", freq: "co 6h" },
-            { name: "KALIUM POLISTYRENOSULFONIAN", dose: "15g", route: "p.o. (sonda)", freq: "co 8h" }
+            { name: "MEROPENEM", dose: "0.5g", route: "i.v.", freq: "co 24h" },
+            { name: "ENOKSAPARYNA", dose: "20mg", route: "s.c.", freq: "co 24h" }
         ],
         procedures: [
-            { time: "06:00", name: "CRRT - kontrola parametrów" },
-            { time: "12:00", name: "CRRT - wymiana filtra" },
-            { time: "18:00", name: "CRRT - kontrola parametrów" }
+            { time: "co 4h", name: "Kontrola Ca zjonizowanego (systemowe)" },
+            { time: "co 8h", name: "Kontrola Ca zjonizowanego (zza filtra)" },
+            { time: "co 6h", name: "Gazometria tętnicza i żylna" },
+            { time: "co 12h", name: "Kontrola parametrów CRRT" }
         ]
     },
     test: {
@@ -408,9 +414,9 @@ const cardTemplates = {
             allergiesInput: "Penicylina"
         },
         continuousDrugs: [
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2 μg/kg/min" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2 mcg/kg/min" },
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2.5 mg/kg/h" },
-            { name: "FENTANYL", conc: "500μg/50ml", dose: "50 μg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50 mcg/h" },
             { name: "INSULINA", conc: "50j/50ml", dose: "2 j/h" },
             { name: "MIDAZOLAM", conc: "50mg/50ml", dose: "5 mg/h" }
         ],
@@ -585,7 +591,7 @@ async function suggestAndFillTreatmentWithAI() {
     3.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie: 
         {
           "continuousDrugs": [
-            {"name": "NazwaLekuCiaglego", "doseSuggestion": "Sugerowana dawka np. 0.1-0.5 μg/kg/min"}
+            {"name": "NazwaLekuCiaglego", "doseSuggestion": "Sugerowana dawka np. 0.1-0.5 mcg/kg/min"}
           ],
           "periodicDrugs": [
             {"name": "NazwaLekuOkresowego", "doseSuggestion": "Sugerowana dawka np. 1g", "frequencySuggestion": "Sugerowana częstość np. co 8h"}
@@ -595,7 +601,7 @@ async function suggestAndFillTreatmentWithAI() {
           ]
         }
     4.  **Weryfikacja:** Nazwy leków muszą być zgodne z lekami dostępnymi w Polsce (np. "Noradrenalina", "Meropenem", "Enoksaparyna").
-    5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 μg/kg/min', '100 mg/h'). Kategorycznie unikaj opisowych zaleceń typu 'do uzyskania efektu', 'miareczkować do MAP > 65', 'wg kontroli glikemii'.`;
+    5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '100 mg/h'). Kategorycznie unikaj opisowych zaleceń typu 'do uzyskania efektu', 'miareczkować do MAP > 65', 'wg kontroli glikemii'.`;
 
     const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
     Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
@@ -848,8 +854,8 @@ function validateDate(input) {
 
 function validateDosage(drugName, dose) {
     const dangerousDoses = {
-        'NORADRENALINA': { max: 2.0, unit: 'μg/kg/min' },
-        'ADRENALINA': { max: 0.5, unit: 'μg/kg/min' },
+        'NORADRENALINA': { max: 2.0, unit: 'mcg/kg/min' },
+        'ADRENALINA': { max: 0.5, unit: 'mcg/kg/min' },
         'INSULINA': { max: 20, unit: 'j/h' },
         'HEPARYNA': { max: 5000, unit: 'j/h' }
     };
@@ -1369,7 +1375,7 @@ function calculateInfusionRate(inputElement) {
     } 
     let doseStr = doseInput.value.replace(',', '.'); 
     let concStr = concentrationInput.value.replace(',', '.'); 
-    const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(μg|mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/i; 
+    const doseRegex = /([\d\.]+)(?:\s*-\s*([\d\.]+))?.*?(mcg|mg|j)\s*(\/kg)?\s*\/(min|h)/i; 
     const doseMatch = doseStr.match(doseRegex); 
     if (!doseMatch) { 
         rateOutput.value = ''; 
@@ -1378,21 +1384,19 @@ function calculateInfusionRate(inputElement) {
     let doseValue1 = parseFloat(doseMatch[1]); 
     let doseValue2 = doseMatch[2] ? parseFloat(doseMatch[2]) : null; 
     let doseUnit = doseMatch[3].toLowerCase(); 
-    if (doseUnit === 'mcg') doseUnit = 'μg';
     const perKg = doseMatch[4]; 
     const perTime = doseMatch[5].toLowerCase(); 
     
-    const concRegex = /([\d\.]+)\s*(mg|μg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/i; 
+    const concRegex = /([\d\.]+)\s*(mg|mcg|j)\s*\/(?:([\d\.]+)\s*)?ml/i; 
     const concMatch = concStr.match(concRegex); 
     let concentrationPerMl; 
     if (concMatch) { 
         let totalMass = parseFloat(concMatch[1]); 
         let massUnit = concMatch[2].toLowerCase(); 
-        if (massUnit === 'mcg') massUnit = 'μg';
         const totalVolume = concMatch[3] ? parseFloat(concMatch[3]) : 1; 
         
-        if (doseUnit === 'mg' && massUnit === 'μg') totalMass /= 1000;
-        if (doseUnit === 'μg' && massUnit === 'mg') totalMass *= 1000;
+        if (doseUnit === 'mg' && massUnit === 'mcg') totalMass /= 1000;
+        if (doseUnit === 'mcg' && massUnit === 'mg') totalMass *= 1000;
 
         concentrationPerMl = totalMass / totalVolume; 
     } else { 
