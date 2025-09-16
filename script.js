@@ -662,6 +662,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper) && continuousDrugsData[drugNameUpper]) {
                 addContinuousDrug();
                 const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
+                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
                 
@@ -684,6 +685,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper) && periodicDrugsData[drugNameUpper]) {
                 addPeriodicDrug();
                 const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
+                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
                 const freqInput = lastRow.querySelector('.frequency');
@@ -709,6 +711,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (fluidsData[fluid.name]) {
                 addFluid();
                 const lastRow = document.querySelector('#fluidsTable tbody tr:last-child');
+                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
                 const nameInput = lastRow.querySelector('.fluid-name');
                 const volInput = lastRow.querySelector('.fluid-volume');
                 const rateInput = lastRow.querySelector('.fluid-rate');
