@@ -1780,5 +1780,28 @@ html.dark-mode .offline-indicator {
         line-height: 1 !important;
         vertical-align: top !important;
     }
+    /* ===== UKRYCIE OZNACZEŃ GFR NA WYDRUKU ===== */
+    
+    /* 1. Ukryj specjalne tło dla leków zredukowanych ze względu na GFR */
+    tr.gfr-dose-adjusted td { 
+        background: transparent !important;
+        border: 0.5px solid #000 !important;
+    }
+    
+    /* 2. Ukryj ozdobny pasek boczny na wydruku */
+    tr.gfr-dose-adjusted::before,
+    #periodicDrugsTable tr.gfr-dose-adjusted td:first-child::before {
+        display: none !important;
+    }
+    
+    /* 3. Ukryj wszystkie powiadomienia o redukcji dawki na wydruku */
+    .dose-reduction-notice { 
+        display: none !important;
+    }
+
+    /* 4. Ukryj powiadomienie również dla wierszy z klasą .gfr-dose-adjusted */
+    tr.gfr-dose-adjusted .dose-reduction-notice { 
+        display: none !important;
+    }
 }
 
