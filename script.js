@@ -579,14 +579,17 @@ async function suggestAndFillTreatmentWithAI() {
 
     showGeminiModal("Analizowanie rozpoznania i proponowanie leczenia...");
 
+    // 1. Zbierz aktualnie podawane leki, aby uniknąć duplikatów
+    const currentContinuousDrugs = Array.from(document.querySelectorAll('#continuousDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
+    const currentPeriodicDrugs = Array.from(document.querySelectorAll('#periodicDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
+
     // 2. Przygotuj prompt dla AI
-    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej, który wspiera lekarzy w tworzeniu planów leczenia, również na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie planu leczenia na podstawie podanej diagnozy, która może dotyczyć szerokiego spektrum chorób, włączając w to schorzenia spoza typowego zakresu OIT (np. gruźlica, zapalenie opon mózgowo-rdzeniowych).
+    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia dla pacjenta na podstawie podanej diagnozy, opierając się na najnowszych wytycznych medycznych i standardach postępowania (np. Surviving Sepsis Campaign, wytyczne ERC, ESC, etc.).
 
 Kluczowe wytyczne:
-1.  **Podstawa merytoryczna:** Twoje propozycje muszą opierać się na najnowszych światowych wytycznych medycznych (np. IDSA, ESC, ERS, WHO) i standardach postępowania.
-2.  **Dobór leków:** Twoje sugestie nie są ograniczone do żadnej predefiniowanej listy. W miarę możliwości proponuj leki zarejestrowane i stosowane w Polsce, ale jeśli najnowsze globalne wytyczne wskazują na inny, skuteczniejszy lek, możesz go zasugerować.
-3.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi ("Aktualne leki") i zaproponuj tylko te, których brakuje w terapii.
-4.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola dla każdego leku.
+1.  **Podstawa merytoryczna:** Propozycje muszą być zgodne z aktualną wiedzą medyczną.
+2.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
+3.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola.
     {
       "continuousDrugs": [
         {"name": "NazwaLekuCiaglego", "concentration": "Standardowe stężenie, np. 8mg/50ml", "doseSuggestion": "Sugerowana dawka, np. 0.1-0.5 mcg/kg/min"}
@@ -598,7 +601,8 @@ Kluczowe wytyczne:
         {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
       ]
     }
-5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;    const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
+4.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
+    const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
     Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
     Aktualne leki okresowe (nie dodawaj ich ponownie): ${currentPeriodicDrugs.join(', ') || 'Brak'}.
 
