@@ -643,6 +643,8 @@ async function suggestAndFillTreatmentWithAI() {
     }
 }
 
+// Znajdź i zamień funkcję populateCardFromAISuggestions na tę wersję:
+
 /**
  * Wypełnia kartę lekami zasugerowanymi przez AI, unikając duplikatów.
  * @param {object} suggestions - Obiekt JSON z sugestiami leków od AI.
@@ -662,11 +664,18 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper) && continuousDrugsData[drugNameUpper]) {
                 addContinuousDrug();
                 const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
-                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
+                lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
                 
                 nameInput.value = drug.name;
+                
+                // Dodaj znacznik AI bezpośrednio obok inputa
+                const aiLabel = document.createElement('span');
+                aiLabel.className = 'ai-label';
+                aiLabel.textContent = 'AI';
+                nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
+                
                 fillContinuousDrugData(nameInput, nameInput.id.replace('_name', '')); 
 
                 if (drug.doseSuggestion) {
@@ -685,12 +694,19 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper) && periodicDrugsData[drugNameUpper]) {
                 addPeriodicDrug();
                 const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
-                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
+                lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
                 const freqInput = lastRow.querySelector('.frequency');
 
                 nameInput.value = drug.name;
+                
+                // Dodaj znacznik AI bezpośrednio obok inputa
+                const aiLabel = document.createElement('span');
+                aiLabel.className = 'ai-label';
+                aiLabel.textContent = 'AI';
+                nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
+                
                 fillPeriodicDrugData(nameInput); 
 
                 if (drug.doseSuggestion) {
@@ -711,7 +727,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             if (fluidsData[fluid.name]) {
                 addFluid();
                 const lastRow = document.querySelector('#fluidsTable tbody tr:last-child');
-                lastRow.classList.add('ai-suggested'); // Dodaj klasę dla stylu AI
+                lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.fluid-name');
                 const volInput = lastRow.querySelector('.fluid-volume');
                 const rateInput = lastRow.querySelector('.fluid-rate');
@@ -719,6 +735,13 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
                 const additive2Input = lastRow.querySelector('.additive-2');
 
                 nameInput.value = fluid.name;
+                
+                // Dodaj znacznik AI bezpośrednio obok inputa
+                const aiLabel = document.createElement('span');
+                aiLabel.className = 'ai-label';
+                aiLabel.textContent = 'AI';
+                nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
+                
                 if (fluid.volumeSuggestion) volInput.value = fluid.volumeSuggestion;
                 if (fluid.rateSuggestion) rateInput.value = fluid.rateSuggestion;
 
