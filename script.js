@@ -705,7 +705,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
         });
     }
     
-    // NOWA LOGIKA DLA DODATKÓW W PŁYNACH Z API GEMINI
+    // 3. Dodaj płyny
     if (suggestions.fluids) {
         suggestions.fluids.forEach(fluid => {
             if (fluidsData[fluid.name]) {
