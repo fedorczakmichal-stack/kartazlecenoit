@@ -2284,19 +2284,48 @@ function loadCardFromFile(event) {
 // --- PDF GENERATION ---
 function generatePDF() {
     const element = document.getElementById('card-container');
-    const opt = {
-        margin: 5,
-        filename: `karta_${document.getElementById('patientNameInput').value.replace(/\s+/g, '_') || 'pacjent'}_${new Date().toISOString().split('T')[0]}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
     
     showToast('Generowanie PDF', 'Trwa tworzenie dokumentu PDF...', 'info', 3000);
     
+    // Dodaj klasę do body, żeby zastosować style printowe
+    document.body.classList.add('pdf-generation');
+    
+    const opt = {
+        margin: [3, 3, 3, 3], // 3mm marginesy jak w @page
+        filename: `karta_${document.getElementById('patientNameInput').value.replace(/\s+/g, '_') || 'pacjent'}_${new Date().toISOString().split('T')[0]}.pdf`,
+        image: { 
+            type: 'jpeg', 
+            quality: 0.98 
+        },
+        html2canvas: { 
+            scale: 2, 
+            useCORS: true,
+            letterRendering: true,
+            allowTaint: false,
+            dpi: 300,
+            backgroundColor: '#ffffff'
+        },
+        jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'portrait',
+            compress: true
+        },
+        pagebreak: { 
+            mode: ['avoid-all', 'css', 'legacy'],
+            before: '.section-header',
+            after: '.footer-grid',
+            avoid: ['.patient-card', '.header-section', 'table', 'thead']
+        }
+    };
+    
     html2pdf().set(opt).from(element).save().then(() => {
-        showToast('PDF gotowy', 'Dokument PDF został wygenerowany', 'success');
+        // Usuń klasę po wygenerowaniu PDF
+        document.body.classList.remove('pdf-generation');
+        showToast('PDF gotowy', 'Dokument PDF został wygenerowany w formacie wydruku A4', 'success');
     }).catch((error) => {
+        // Usuń klasę w przypadku błędu
+        document.body.classList.remove('pdf-generation');
         showToast('Błąd PDF', 'Wystąpił problem podczas generowania PDF', 'error');
         console.error('PDF generation error:', error);
     });
