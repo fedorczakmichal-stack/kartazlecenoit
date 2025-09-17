@@ -584,24 +584,25 @@ async function suggestAndFillTreatmentWithAI() {
     const currentPeriodicDrugs = Array.from(document.querySelectorAll('#periodicDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
 
     // 2. Przygotuj prompt dla AI
-    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia (leki ciągłe i okresowe) dla pacjenta na podstawie podanej diagnozy. 
-    Kluczowe wytyczne:
-    1.  **Kontekst:** Skup się na lekach standardowo stosowanych w polskich OIT.
-    2.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
-    3.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie: 
-        {
-          "continuousDrugs": [
-            {"name": "NazwaLekuCiaglego", "doseSuggestion": "Sugerowana dawka np. 0.1-0.5 mcg/kg/min"}
-          ],
-          "periodicDrugs": [
-            {"name": "NazwaLekuOkresowego", "doseSuggestion": "Sugerowana dawka np. 1g", "frequencySuggestion": "Sugerowana częstość np. co 8h"}
-          ],
-          "fluids": [
-            {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
-          ]
-        }
-    4.  **Weryfikacja:** Nazwy leków muszą być zgodne z lekami dostępnymi w Polsce (np. "Noradrenalina", "Meropenem", "Enoksaparyna").
-    5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '100 mg/h'). Kategorycznie unikaj opisowych zaleceń typu 'do uzyskania efektu', 'miareczkować do MAP > 65', 'wg kontroli glikemii'.`;
+    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej, który wspiera lekarzy w tworzeniu planów leczenia, również na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie planu leczenia na podstawie podanej diagnozy, która może dotyczyć szerokiego spektrum chorób, włączając w to schorzenia spoza typowego zakresu OIT (np. gruźlica, zapalenie opon mózgowo-rdzeniowych).
+
+Kluczowe wytyczne:
+1.  **Podstawa merytoryczna:** Twoje propozycje muszą opierać się na najnowszych światowych wytycznych medycznych (np. IDSA, ESC, ERS, WHO) i standardach postępowania.
+2.  **Dobór leków:** Twoje sugestie nie są ograniczone do żadnej predefiniowanej listy. W miarę możliwości proponuj leki zarejestrowane i stosowane w Polsce, ale jeśli najnowsze globalne wytyczne wskazują na inny, skuteczniejszy lek, możesz go zasugerować.
+3.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi ("Aktualne leki") i zaproponuj tylko te, których brakuje w terapii.
+4.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola dla każdego leku.
+    {
+      "continuousDrugs": [
+        {"name": "NazwaLekuCiaglego", "concentration": "Standardowe stężenie, np. 8mg/50ml", "doseSuggestion": "Sugerowana dawka, np. 0.1-0.5 mcg/kg/min"}
+      ],
+      "periodicDrugs": [
+        {"name": "NazwaLekuOkresowego", "doseSuggestion": "Sugerowana dawka, np. 1g", "route": "Droga podania, np. i.v.", "frequencySuggestion": "Sugerowana częstość, np. co 8h"}
+      ],
+      "fluids": [
+        {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
+      ]
+    }
+5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
 
     const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
     Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
