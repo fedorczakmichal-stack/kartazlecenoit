@@ -1294,10 +1294,7 @@ body.pdf-generation .offline-indicator,
 body.pdf-generation .summary-container,
 body.pdf-generation .controls-summary-container,
 body.pdf-generation .gemini-icon-button,
-body.pdf-generation .input-with-gemini button,
-body.pdf-generation .ai-label,
-body.pdf-generation .drug-name-wrapper,
-body.pdf-generation .dose-reduction-notice {
+body.pdf-generation .input-with-gemini button {
     display: none !important;
 }
 
@@ -1305,11 +1302,17 @@ body.pdf-generation .dose-reduction-notice {
 body.pdf-generation tr.ai-suggested {
     background-color: transparent !important;
 }
+body.pdf-generation .ai-label,
+body.pdf-generation .drug-name-wrapper,
+body.pdf-generation .dose-reduction-notice,
+body.pdf-generation tr.gfr-dose-adjusted .dose-reduction-notice {
+    display: none !important;
+}
 body.pdf-generation tr.gfr-dose-adjusted td { 
     background: transparent !important;
 }
 
-/* Nagłówek PDF - identyczny jak wydruk */
+/* Nagłówek kompaktowy PDF */
 body.pdf-generation .header-section {
     background: none !important;
     color: #000 !important;
@@ -1317,7 +1320,6 @@ body.pdf-generation .header-section {
     padding: 2mm 0 !important;
     margin-bottom: 2mm !important;
     border-radius: 0 !important;
-    page-break-inside: avoid !important;
 }
 
 body.pdf-generation .logo-icon {
@@ -1336,24 +1338,13 @@ body.pdf-generation h1 {
     text-align: center !important;
 }
 
-/* Karta pacjenta PDF - identyczna jak wydruk */
+/* Karta pacjenta kompaktowa PDF */
 body.pdf-generation .patient-card {
     border: 1px solid #000 !important;
     background: #fff !important;
     padding: 2mm !important;
     margin-bottom: 2mm !important;
     border-radius: 0 !important;
-    page-break-inside: avoid !important;
-}
-
-body.pdf-generation .patient-grid { 
-    gap: 1.5mm !important;
-}
-
-body.pdf-generation .field-label {
-    font-size: 7px !important;
-    margin-bottom: 1px !important;
-    text-transform: uppercase !important;
 }
 
 body.pdf-generation .field-value,
@@ -1367,40 +1358,15 @@ body.pdf-generation .header-input {
     border-radius: 0 !important;
 }
 
-body.pdf-generation .alert-field {
-    font-weight: 700 !important;
-}
-
-/* Nagłówki sekcji PDF - identyczne jak wydruk */
-body.pdf-generation .section-header {
-    background: #e0e0e0 !important;
-    border: 1px solid #000 !important;
-    padding: 1mm 2mm !important;
-    border-radius: 0 !important;
-    margin: 2mm 0 1mm 0 !important;
-    font-size: 9px !important;
-    font-weight: 700 !important;
-    page-break-after: avoid !important;
-}
-
-/* Tabele PDF - identyczne jak wydruk */
+/* Tabele kompaktowe PDF */
 body.pdf-generation table {
-    width: 100% !important;
-    border-collapse: collapse !important;
     font-size: 8px !important;
     border: 1px solid #000 !important;
     margin: 1mm 0 !important;
-    page-break-inside: avoid !important;
-}
-
-body.pdf-generation thead {
-    page-break-inside: avoid !important;
-    page-break-after: avoid !important;
 }
 
 body.pdf-generation thead th {
     background: #f0f0f0 !important;
-    font-weight: 700 !important;
     color: #000 !important;
     border: 1px solid #000 !important;
     padding: 1.5mm !important;
@@ -1410,116 +1376,14 @@ body.pdf-generation thead th {
 body.pdf-generation tbody td {
     border: 1px solid #000 !important;
     padding: 1mm !important;
-    vertical-align: middle !important;
     min-height: 18px !important;
 }
 
-/* Specjalne wysokości dla różnych tabel PDF */
-body.pdf-generation #continuousDrugsTable tbody td {
-    min-height: 20px !important;
-}
-
-body.pdf-generation #periodicDrugsTable tbody td {
-    min-height: 20px !important;
-}
-
-body.pdf-generation #fluidsTable tbody td {
-    min-height: 18px !important;
-}
-
-body.pdf-generation #nutritionTable tbody td {
-    min-height: 22px !important;
-}
-
-body.pdf-generation #proceduresTable tbody td {
-    min-height: 18px !important;
-}
-
-/* Inputy w tabelach PDF - identyczne jak wydruk */
-body.pdf-generation .drug-input,
-body.pdf-generation .fluid-rate,
-body.pdf-generation .nutrition-prep,
-body.pdf-generation .nutrition-rate,
-body.pdf-generation .nutrition-type,
-body.pdf-generation .dose,
-body.pdf-generation .infusion-rate,
-body.pdf-generation .fluid-name,
-body.pdf-generation .additives-input {
+body.pdf-generation .drug-input {
     border: none !important;
     background: transparent !important;
-    padding: 0 !important;
     color: #000 !important;
     font-size: 8px !important;
-    line-height: 1.2 !important;
-}
-
-body.pdf-generation textarea.nutrition-additives {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    font-size: 7px !important;
-    line-height: 1.2 !important;
-    min-height: auto !important;
-    resize: none !important;
-    overflow: visible !important;
-}
-
-body.pdf-generation .drug-name {
-    font-weight: 600 !important;
-}
-
-body.pdf-generation .signature-box-cell {
-    border: 1px solid #000 !important;
-    background: transparent !important;
-    border-radius: 0 !important;
-    min-height: 18px !important;
-}
-
-/* Stopka PDF - identyczna jak wydruk */
-body.pdf-generation .footer-grid {
-    margin-top: 2mm !important;
-    page-break-inside: avoid !important;
-}
-
-body.pdf-generation .notes-section textarea {
-    border: 1px solid #000 !important;
-    min-height: 30px !important;
-    padding: 1.5mm !important;
-    resize: none !important;
-    font-size: 8px !important;
-    line-height: 1.2 !important;
-}
-
-body.pdf-generation .signature-line {
-    min-height: 25px !important;
-    margin-bottom: 1mm !important;
-}
-
-body.pdf-generation .signature-label { 
-    font-size: 8px !important;
-    margin: 0 !important;
-}
-
-body.pdf-generation .signature-sublabel { 
-    font-size: 7px !important; 
-    margin: 0 !important;
-}
-
-/* Ukryj placeholder PDF */
-body.pdf-generation input::placeholder, 
-body.pdf-generation textarea::placeholder { 
-    color: transparent !important; 
-}
-
-/* Ukryj number spinners PDF */
-body.pdf-generation input[type="number"]::-webkit-outer-spin-button,
-body.pdf-generation input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-}
-
-body.pdf-generation input[type="number"] {
-    -moz-appearance: textfield !important;
 }
 
 /* ======= WYDRUK KOMPAKTOWY A4 ======= */
