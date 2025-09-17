@@ -496,34 +496,33 @@ tr.ai-suggested {
     background-color: rgba(220, 252, 231, 0.5); /* Lekki jasnozielony */
 }
 
-/* Pozycjonowanie etykiety "AI" w komórce z nazwą leku */
-tr.ai-suggested td:nth-child(2) {
-    position: relative;
-}
-
-tr.ai-suggested td:nth-child(2)::after {
-    content: 'AI';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--gray-200);
-    color: var(--gray-500);
+/* Styl dla etykiety AI bezpośrednio obok inputa */
+.ai-label {
+    display: inline-block;
+    background: var(--success);
+    color: white;
     font-size: 9px;
     font-weight: 600;
     padding: 1px 4px;
     border-radius: 3px;
-    pointer-events: none; /* Zapobiega przechwytywaniu kliknięć */
+    margin-left: 4px;
+    vertical-align: middle;
+    line-height: 1;
+    position: relative;
+    top: -1px;
 }
 
 html.dark-mode tr.ai-suggested {
     background-color: rgba(5, 46, 22, 0.7);
 }
 
-html.dark-mode tr.ai-suggested td:nth-child(2)::after {
-    background: var(--gray-600);
-    color: var(--gray-300);
+html.dark-mode .ai-label {
+    background: var(--success-dark);
+    color: var(--success-light);
 }
+
+/* Usuwamy stary styl ::after */
+/* Usuń całą regułę tr.ai-suggested td:nth-child(2)::after */
 
 /* GFR Dose Adjustment Styling */
 tr.gfr-dose-adjusted td { 
@@ -1591,11 +1590,13 @@ html.dark-mode .offline-indicator {
         min-height: 15px !important;
     }
 
-    /* ===== POPRAWKA STYLU GFR DLA WYDRUKU ===== */
+/* ===== POPRAWKA STYLU GFR DLA WYDRUKU ===== */
     
     /* 1. Styl tła dla całego wiersza z modyfikacją GFR */
     tr.gfr-dose-adjusted td { 
         background: #f0f0f0 !important;
+        /* POPRAWKA: Wymuszenie takiej samej grubości border jak pozostałe komórki */
+        border: 0.5px solid #000 !important;
     }
     
     /* 2. Ukryj ozdobny pasek boczny na wydruku */
@@ -1619,6 +1620,16 @@ html.dark-mode .offline-indicator {
         padding: 0 !important;
         line-height: 1 !important;
         vertical-align: top !important;
+    }
+
+    /* Ukrywanie stylów AI na wydruku */
+    tr.ai-suggested {
+        background-color: transparent !important;
+    }
+    
+    /* Ukryj etykietę AI na wydruku */
+    .ai-label {
+        display: none !important;
     }
 
     /* ZMIANA: Aktualizacja selektora dla komórki z powiadomieniem GFR po podziale kolumn */
