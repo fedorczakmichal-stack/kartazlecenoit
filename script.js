@@ -588,7 +588,7 @@ async function suggestAndFillTreatmentWithAI() {
 
 Kluczowe wytyczne:
 1.  **Podstawa merytoryczna:** Propozycje muszą być zgodne z aktualną wiedzą medyczną.
-
+2.  **Kontekst:** Proponuj leki dostępne i stosowane w warunkach polskiego OIT.
 3.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
 4.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola.
     {
