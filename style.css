@@ -1698,4 +1698,40 @@ html.dark-mode .offline-indicator {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
     }
+        /* POPRAWKA: Wymuszenie jednolitej grubości obramowania dla wszystkich komórek */
+    tbody td,
+    tr.gfr-dose-adjusted td {
+        border: 0.5px solid #000 !important;
+    }
+    
+    /* Specyficzne style GFR dla wydruku */
+    tr.gfr-dose-adjusted td { 
+        background: #f0f0f0 !important;
+    }
+    
+    /* Ukryj ozdobny pasek boczny na wydruku */
+    #periodicDrugsTable tr.gfr-dose-adjusted td:first-child::before {
+        display: none !important;
+    }
+    
+    /* Ukryj etykietę AI na wydruku */
+    .ai-label {
+        display: none !important;
+    }
+    
+    /* Pokazuj powiadomienie GFR tylko gdy wiersz ma klasę */
+    .dose-reduction-notice { 
+        display: none !important;
+    }
+    
+    tr.gfr-dose-adjusted .dose-reduction-notice { 
+        display: inline-block !important;
+        color: #000 !important; 
+        font-weight: 700 !important; 
+        font-size: 6px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        vertical-align: top !important;
+    }
 }
