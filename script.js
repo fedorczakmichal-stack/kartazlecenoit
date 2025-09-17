@@ -588,9 +588,8 @@ async function suggestAndFillTreatmentWithAI() {
 
 Kluczowe wytyczne:
 1.  **Podstawa merytoryczna:** Propozycje muszą być zgodne z aktualną wiedzą medyczną.
-
-3.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
-4.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola.
+2.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
+3.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola.
     {
       "continuousDrugs": [
         {"name": "NazwaLekuCiaglego", "concentration": "Standardowe stężenie, np. 8mg/50ml", "doseSuggestion": "Sugerowana dawka, np. 0.1-0.5 mcg/kg/min"}
@@ -602,7 +601,7 @@ Kluczowe wytyczne:
         {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
       ]
     }
-5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
+4.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
     const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
     Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
     Aktualne leki okresowe (nie dodawaj ich ponownie): ${currentPeriodicDrugs.join(', ') || 'Brak'}.
