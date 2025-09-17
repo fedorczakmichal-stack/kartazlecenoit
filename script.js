@@ -2291,7 +2291,7 @@ function generatePDF() {
     document.body.classList.add('pdf-generation');
     
     const opt = {
-        margin: 5, // 5mm marginesy jak w @page
+        margin: 5, // 5mm marginesy
         filename: `karta_${document.getElementById('patientNameInput').value.replace(/\s+/g, '_') || 'pacjent'}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { 
             type: 'jpeg', 
@@ -2311,22 +2311,21 @@ function generatePDF() {
             orientation: 'portrait',
             compress: true
         },
+        // ZAKTUALIZOWANA KONFIGURACJA ZAPOBIEGAJĄCA ŁAMANIU STRON
         pagebreak: { 
-            mode: ['avoid-all', 'css', 'legacy'],
-            before: '.section-header',
-            after: '.footer-grid',
-            avoid: ['.patient-card', '.header-section', 'table', 'thead']
+            mode: ['css', 'legacy'],
+            avoid: ['table', '.patient-card', '.header-section', '.footer-grid', '.section-header'] 
         }
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
         // Usuń klasę po wygenerowaniu PDF
         document.body.classList.remove('pdf-generation');
-        showToast('PDF gotowy', 'Dokument PDF został wygenerowany w formacie wydruku A4', 'success');
+        showToast('PDF gotowy', 'Dokument PDF został wygenerowany.', 'success');
     }).catch((error) => {
         // Usuń klasę w przypadku błędu
         document.body.classList.remove('pdf-generation');
-        showToast('Błąd PDF', 'Wystąpił problem podczas generowania PDF', 'error');
+        showToast('Błąd PDF', 'Wystąpił problem podczas generowania PDF.', 'error');
         console.error('PDF generation error:', error);
     });
 }
