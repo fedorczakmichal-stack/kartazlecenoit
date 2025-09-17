@@ -2291,7 +2291,7 @@ function generatePDF() {
     document.body.classList.add('pdf-generation');
     
     const opt = {
-        margin: 5, // 5mm marginesy
+        margin: 5,
         filename: `karta_${document.getElementById('patientNameInput').value.replace(/\s+/g, '_') || 'pacjent'}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { 
             type: 'jpeg', 
@@ -2310,12 +2310,8 @@ function generatePDF() {
             format: 'a4', 
             orientation: 'portrait',
             compress: true
-        },
-        // ZAKTUALIZOWANA KONFIGURACJA ZAPOBIEGAJĄCA ŁAMANIU STRON
-        pagebreak: { 
-            mode: ['css', 'legacy'],
-            avoid: ['table', '.patient-card', '.header-section', '.footer-grid', '.section-header'] 
         }
+        // Usunięto całą sekcję 'pagebreak', aby pozwolić na domyślne, naturalne łamanie stron
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
