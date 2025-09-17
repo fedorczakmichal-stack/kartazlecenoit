@@ -530,8 +530,7 @@ html.dark-mode .ai-label {
 tr.gfr-dose-adjusted td { 
     background-color: var(--warning-light) !important;
     position: relative;
-    /* KOREKTA: Użycie ciemniejszego koloru ramki dla lepszej widoczności */
-    border-bottom: 1px solid var(--warning); 
+    /* USUNIĘTA pomarańczowa ramka */
 }
 
 #periodicDrugsTable tr.gfr-dose-adjusted td:first-child::before {
@@ -545,7 +544,7 @@ tr.gfr-dose-adjusted td {
     pointer-events: none;
 }
 
-/* Apply padding to frequency column cell (now potentially 4th child) */
+/* Apply padding to frequency column cell */
 #periodicDrugsTbody td:nth-child(4) {
     vertical-align: middle;
     padding-top: 4px;
@@ -562,7 +561,7 @@ tr.gfr-dose-adjusted td {
 }
 
 tr.gfr-dose-adjusted .dose-reduction-notice {
-    display: inline-block; /* Pokazuj tylko jeśli wiersz ma klasę */
+    display: inline-block;
 }
 
 @keyframes blink {
