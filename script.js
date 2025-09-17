@@ -584,25 +584,25 @@ async function suggestAndFillTreatmentWithAI() {
     const currentPeriodicDrugs = Array.from(document.querySelectorAll('#periodicDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
 
     // 2. Przygotuj prompt dla AI
-    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia (leki ciągłe i okresowe) dla pacjenta na podstawie podanej diagnozy. 
-    Kluczowe wytyczne:
-    1.  **Kontekst:** Skup się na lekach standardowo stosowanych w polskich OIT.
-    2.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
-    3.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie: 
-        {
-          "continuousDrugs": [
-            {"name": "NazwaLekuCiaglego", "doseSuggestion": "Sugerowana dawka np. 0.1-0.5 mcg/kg/min"}
-          ],
-          "periodicDrugs": [
-            {"name": "NazwaLekuOkresowego", "doseSuggestion": "Sugerowana dawka np. 1g", "frequencySuggestion": "Sugerowana częstość np. co 8h"}
-          ],
-          "fluids": [
-            {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
-          ]
-        }
-    4.  **Weryfikacja:** Nazwy leków muszą być zgodne z lekami dostępnymi w Polsce (np. "Noradrenalina", "Meropenem", "Enoksaparyna").
-    5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '100 mg/h'). Kategorycznie unikaj opisowych zaleceń typu 'do uzyskania efektu', 'miareczkować do MAP > 65', 'wg kontroli glikemii'.`;
+    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia dla pacjenta na podstawie podanej diagnozy, opierając się na najnowszych wytycznych medycznych i standardach postępowania (np. Surviving Sepsis Campaign, wytyczne ERC, ESC, etc.).
 
+Kluczowe wytyczne:
+1.  **Podstawa merytoryczna:** Propozycje muszą być zgodne z aktualną wiedzą medyczną.
+2.  **Kontekst:** Proponuj leki dostępne i stosowane w warunkach polskiego OIT.
+3.  **Unikanie duplikatów:** Przeanalizuj listę leków już podawanych pacjentowi i zaproponuj tylko te, których brakuje. Nie powtarzaj leków z listy "Aktualne leki".
+4.  **Format odpowiedzi:** Zwróć odpowiedź WYŁĄCZNIE jako obiekt JSON w następującym formacie. Podaj wszystkie wymagane pola.
+    {
+      "continuousDrugs": [
+        {"name": "NazwaLekuCiaglego", "concentration": "Standardowe stężenie, np. 8mg/50ml", "doseSuggestion": "Sugerowana dawka, np. 0.1-0.5 mcg/kg/min"}
+      ],
+      "periodicDrugs": [
+        {"name": "NazwaLekuOkresowego", "doseSuggestion": "Sugerowana dawka, np. 1g", "route": "Droga podania, np. i.v.", "frequencySuggestion": "Sugerowana częstość, np. co 8h"}
+      ],
+      "fluids": [
+        {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
+      ]
+    }
+5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
     const userPrompt = `Diagnoza pacjenta: ${diagnosis}.
     Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
     Aktualne leki okresowe (nie dodawaj ich ponownie): ${currentPeriodicDrugs.join(', ') || 'Brak'}.
@@ -661,27 +661,34 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
     if (suggestions.continuousDrugs) {
         suggestions.continuousDrugs.forEach(drug => {
             const drugNameUpper = drug.name.toUpperCase();
-            if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper) && continuousDrugsData[drugNameUpper]) {
+            // ZMIANA: Usunięto warunek sprawdzający, czy lek istnieje w lokalnej bazie
+            if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper)) {
                 addContinuousDrug();
                 const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
                 lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
+                const concInput = lastRow.querySelector('input[id$="_conc"]');
                 const doseInput = lastRow.querySelector('.dose');
-                
+
                 nameInput.value = drug.name;
-                
-                // Dodaj znacznik AI bezpośrednio za inputem nazwy (inline)
+
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
-                nameInput.style.display = 'inline-block';
-                nameInput.style.width = 'calc(100% - 28px)'; // Zostaw miejsce na ikonę
                 nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
-                
-                fillContinuousDrugData(nameInput, nameInput.id.replace('_name', '')); 
 
-                if (drug.doseSuggestion) {
-                    doseInput.value = drug.doseSuggestion;
+                // Sprawdź, czy lek jest w naszej bazie, aby wypełnić dane automatycznie
+                const knownDrugData = continuousDrugsData[drugNameUpper];
+                if (knownDrugData) {
+                    fillContinuousDrugData(nameInput, nameInput.id.replace('_name', ''));
+                    // Nadpisz dawkę, jeśli AI sugeruje inną
+                    if (drug.doseSuggestion) {
+                        doseInput.value = drug.doseSuggestion;
+                    }
+                } else {
+                    // Jeśli lek jest nieznany, użyj danych od AI
+                    if (drug.concentration) concInput.value = drug.concentration;
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
                 }
                 
                 addedCount++;
@@ -693,41 +700,38 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
     if (suggestions.periodicDrugs) {
         suggestions.periodicDrugs.forEach(drug => {
             const drugNameUpper = drug.name.toUpperCase();
-            if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper) && periodicDrugsData[drugNameUpper]) {
+            // ZMIANA: Usunięto warunek sprawdzający, czy lek istnieje w lokalnej bazie
+            if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper)) {
                 addPeriodicDrug();
                 const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
                 lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
+                const routeInput = lastRow.querySelector('.route');
                 const freqInput = lastRow.querySelector('.frequency');
 
                 nameInput.value = drug.name;
-                
-                // Utwórz wrapper dla nazwy leku z ikoną AI
+
                 const wrapper = document.createElement('div');
                 wrapper.className = 'drug-name-wrapper';
-                wrapper.style.display = 'flex';
-                wrapper.style.alignItems = 'center';
-                wrapper.style.width = '100%';
-                
-                // Przenieś input do wrappera
                 nameInput.parentNode.insertBefore(wrapper, nameInput);
                 wrapper.appendChild(nameInput);
-                nameInput.style.width = 'calc(100% - 28px)';
-                
-                // Dodaj znacznik AI obok inputa
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
                 wrapper.appendChild(aiLabel);
-                
-                fillPeriodicDrugData(nameInput); 
 
-                if (drug.doseSuggestion) {
-                    doseInput.value = drug.doseSuggestion;
-                }
-                if (drug.frequencySuggestion) {
-                    freqInput.value = drug.frequencySuggestion;
+                const knownDrugData = periodicDrugsData[drugNameUpper];
+                if (knownDrugData) {
+                    fillPeriodicDrugData(nameInput);
+                    // Nadpisz dawkę i częstość, jeśli AI sugeruje inne
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
+                    if (drug.frequencySuggestion) freqInput.value = drug.frequencySuggestion;
+                } else {
+                    // Jeśli lek jest nieznany, użyj danych od AI
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
+                    if (drug.route) routeInput.value = drug.route;
+                    if (drug.frequencySuggestion) freqInput.value = drug.frequencySuggestion;
                 }
 
                 addedCount++;
@@ -735,7 +739,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
         });
     }
     
-    // 3. Dodaj płyny
+    // 3. Dodaj płyny (bez zmian, płyny nadal ograniczone do listy)
     if (suggestions.fluids) {
         suggestions.fluids.forEach(fluid => {
             if (fluidsData[fluid.name]) {
@@ -750,9 +754,6 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
 
                 nameInput.value = fluid.name;
                 
-                // Dodaj znacznik AI obok inputa
-                nameInput.style.display = 'inline-block';
-                nameInput.style.width = 'calc(100% - 28px)';
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
@@ -769,6 +770,11 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
             }
         });
     }
+
+    handleWeightHeightChange();
+    updateSummaries();
+    return addedCount;
+}
 
     handleWeightHeightChange();
     updateSummaries();
