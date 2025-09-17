@@ -661,27 +661,34 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
     if (suggestions.continuousDrugs) {
         suggestions.continuousDrugs.forEach(drug => {
             const drugNameUpper = drug.name.toUpperCase();
-            if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper) && continuousDrugsData[drugNameUpper]) {
+            // ZMIANA: Usunięto warunek sprawdzający, czy lek istnieje w lokalnej bazie
+            if (drugNameUpper && !existingContinuousUpper.includes(drugNameUpper)) {
                 addContinuousDrug();
                 const lastRow = document.querySelector('#continuousDrugsTbody tr:last-child');
                 lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
+                const concInput = lastRow.querySelector('input[id$="_conc"]');
                 const doseInput = lastRow.querySelector('.dose');
-                
+
                 nameInput.value = drug.name;
-                
-                // Dodaj znacznik AI bezpośrednio za inputem nazwy (inline)
+
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
-                nameInput.style.display = 'inline-block';
-                nameInput.style.width = 'calc(100% - 28px)'; // Zostaw miejsce na ikonę
                 nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
-                
-                fillContinuousDrugData(nameInput, nameInput.id.replace('_name', '')); 
 
-                if (drug.doseSuggestion) {
-                    doseInput.value = drug.doseSuggestion;
+                // Sprawdź, czy lek jest w naszej bazie, aby wypełnić dane automatycznie
+                const knownDrugData = continuousDrugsData[drugNameUpper];
+                if (knownDrugData) {
+                    fillContinuousDrugData(nameInput, nameInput.id.replace('_name', ''));
+                    // Nadpisz dawkę, jeśli AI sugeruje inną
+                    if (drug.doseSuggestion) {
+                        doseInput.value = drug.doseSuggestion;
+                    }
+                } else {
+                    // Jeśli lek jest nieznany, użyj danych od AI
+                    if (drug.concentration) concInput.value = drug.concentration;
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
                 }
                 
                 addedCount++;
@@ -693,41 +700,38 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
     if (suggestions.periodicDrugs) {
         suggestions.periodicDrugs.forEach(drug => {
             const drugNameUpper = drug.name.toUpperCase();
-            if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper) && periodicDrugsData[drugNameUpper]) {
+            // ZMIANA: Usunięto warunek sprawdzający, czy lek istnieje w lokalnej bazie
+            if (drugNameUpper && !existingPeriodicUpper.includes(drugNameUpper)) {
                 addPeriodicDrug();
                 const lastRow = document.querySelector('#periodicDrugsTbody tr:last-child');
                 lastRow.classList.add('ai-suggested');
                 const nameInput = lastRow.querySelector('.drug-name');
                 const doseInput = lastRow.querySelector('.dose');
+                const routeInput = lastRow.querySelector('.route');
                 const freqInput = lastRow.querySelector('.frequency');
 
                 nameInput.value = drug.name;
-                
-                // Utwórz wrapper dla nazwy leku z ikoną AI
+
                 const wrapper = document.createElement('div');
                 wrapper.className = 'drug-name-wrapper';
-                wrapper.style.display = 'flex';
-                wrapper.style.alignItems = 'center';
-                wrapper.style.width = '100%';
-                
-                // Przenieś input do wrappera
                 nameInput.parentNode.insertBefore(wrapper, nameInput);
                 wrapper.appendChild(nameInput);
-                nameInput.style.width = 'calc(100% - 28px)';
-                
-                // Dodaj znacznik AI obok inputa
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
                 wrapper.appendChild(aiLabel);
-                
-                fillPeriodicDrugData(nameInput); 
 
-                if (drug.doseSuggestion) {
-                    doseInput.value = drug.doseSuggestion;
-                }
-                if (drug.frequencySuggestion) {
-                    freqInput.value = drug.frequencySuggestion;
+                const knownDrugData = periodicDrugsData[drugNameUpper];
+                if (knownDrugData) {
+                    fillPeriodicDrugData(nameInput);
+                    // Nadpisz dawkę i częstość, jeśli AI sugeruje inne
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
+                    if (drug.frequencySuggestion) freqInput.value = drug.frequencySuggestion;
+                } else {
+                    // Jeśli lek jest nieznany, użyj danych od AI
+                    if (drug.doseSuggestion) doseInput.value = drug.doseSuggestion;
+                    if (drug.route) routeInput.value = drug.route;
+                    if (drug.frequencySuggestion) freqInput.value = drug.frequencySuggestion;
                 }
 
                 addedCount++;
@@ -735,7 +739,7 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
         });
     }
     
-    // 3. Dodaj płyny
+    // 3. Dodaj płyny (bez zmian, płyny nadal ograniczone do listy)
     if (suggestions.fluids) {
         suggestions.fluids.forEach(fluid => {
             if (fluidsData[fluid.name]) {
@@ -750,9 +754,6 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
 
                 nameInput.value = fluid.name;
                 
-                // Dodaj znacznik AI obok inputa
-                nameInput.style.display = 'inline-block';
-                nameInput.style.width = 'calc(100% - 28px)';
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
