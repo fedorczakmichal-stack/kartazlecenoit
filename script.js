@@ -670,10 +670,12 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
                 
                 nameInput.value = drug.name;
                 
-                // Dodaj znacznik AI bezpośrednio obok inputa
+                // Dodaj znacznik AI bezpośrednio za inputem nazwy (inline)
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
+                nameInput.style.display = 'inline-block';
+                nameInput.style.width = 'calc(100% - 28px)'; // Zostaw miejsce na ikonę
                 nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
                 
                 fillContinuousDrugData(nameInput, nameInput.id.replace('_name', '')); 
@@ -701,11 +703,23 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
 
                 nameInput.value = drug.name;
                 
-                // Dodaj znacznik AI bezpośrednio obok inputa
+                // Utwórz wrapper dla nazwy leku z ikoną AI
+                const wrapper = document.createElement('div');
+                wrapper.className = 'drug-name-wrapper';
+                wrapper.style.display = 'flex';
+                wrapper.style.alignItems = 'center';
+                wrapper.style.width = '100%';
+                
+                // Przenieś input do wrappera
+                nameInput.parentNode.insertBefore(wrapper, nameInput);
+                wrapper.appendChild(nameInput);
+                nameInput.style.width = 'calc(100% - 28px)';
+                
+                // Dodaj znacznik AI obok inputa
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
-                nameInput.parentNode.insertBefore(aiLabel, nameInput.nextSibling);
+                wrapper.appendChild(aiLabel);
                 
                 fillPeriodicDrugData(nameInput); 
 
@@ -736,7 +750,9 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
 
                 nameInput.value = fluid.name;
                 
-                // Dodaj znacznik AI bezpośrednio obok inputa
+                // Dodaj znacznik AI obok inputa
+                nameInput.style.display = 'inline-block';
+                nameInput.style.width = 'calc(100% - 28px)';
                 const aiLabel = document.createElement('span');
                 aiLabel.className = 'ai-label';
                 aiLabel.textContent = 'AI';
@@ -758,7 +774,6 @@ function populateCardFromAISuggestions(suggestions, existingContinuous, existing
     updateSummaries();
     return addedCount;
 }
-
 
 // --- ENHANCED TOAST NOTIFICATIONS SYSTEM ---
 function showToast(title, message, type = 'info', duration = 4000) {
