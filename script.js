@@ -2291,19 +2291,22 @@ function generatePDF() {
     document.body.classList.add('pdf-generation');
     
     const opt = {
-        margin: [3, 3, 3, 3], // 3mm marginesy jak w @page
+        margin: [5, 5, 5, 5], // 5mm marginesy jak w @page wydruku
         filename: `karta_${document.getElementById('patientNameInput').value.replace(/\s+/g, '_') || 'pacjent'}_${new Date().toISOString().split('T')[0]}.pdf`,
         image: { 
             type: 'jpeg', 
             quality: 0.98 
         },
         html2canvas: { 
-            scale: 2, 
+            scale: 3, // Zwiększona skala dla lepszej jakości
             useCORS: true,
             letterRendering: true,
             allowTaint: false,
             dpi: 300,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            logging: false,
+            windowWidth: 794, // Szerokość A4 w pikselach (210mm - 10mm marginesów) * 96dpi/25.4
+            windowHeight: 1123 // Wysokość A4 w pikselach (297mm - 10mm marginesów) * 96dpi/25.4
         },
         jsPDF: { 
             unit: 'mm', 
@@ -2322,7 +2325,7 @@ function generatePDF() {
     html2pdf().set(opt).from(element).save().then(() => {
         // Usuń klasę po wygenerowaniu PDF
         document.body.classList.remove('pdf-generation');
-        showToast('PDF gotowy', 'Dokument PDF został wygenerowany w formacie wydruku A4', 'success');
+        showToast('PDF gotowy', 'Dokument PDF został wygenerowany identycznie jak wydruk A4', 'success');
     }).catch((error) => {
         // Usuń klasę w przypadku błędu
         document.body.classList.remove('pdf-generation');
