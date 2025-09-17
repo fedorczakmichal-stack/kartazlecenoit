@@ -579,8 +579,12 @@ async function suggestAndFillTreatmentWithAI() {
 
     showGeminiModal("Analizowanie rozpoznania i proponowanie leczenia...");
 
-  // 2. Przygotuj prompt dla AI
-    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej, który wspiera lekarzy w tworzeniu planów leczenia, również na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie planu leczenia na podstawie podanej diagnozy, która może dotyczyć szerokiego spektrum chorób, włączając w to schorzenia spoza typowego zakresu OIT (np. gruźlica, zapalenie opon mózgowo-rdzeniowych).
+ // 1. Zbierz aktualnie podawane leki, aby uniknąć duplikatów
+    const currentContinuousDrugs = Array.from(document.querySelectorAll('#continuousDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
+    const currentPeriodicDrugs = Array.from(document.querySelectorAll('#periodicDrugsTbody .drug-name')).map(input => input.value).filter(Boolean);
+
+    // 2. Przygotuj prompt dla AI
+    const systemPrompt = `Jesteś ekspertem farmakologii klinicznej pracującym na Oddziale Intensywnej Terapii. Twoim zadaniem jest zasugerowanie standardowego planu leczenia dla pacjenta na podstawie podanej diagnozy, opierając się na najnowszych wytycznych medycznych i standardach postępowania (np. Surviving Sepsis Campaign, wytyczne ERC, ESC, etc.).
 
 Kluczowe wytyczne:
 1.  **Podstawa merytoryczna:** Twoje propozycje muszą opierać się na najnowszych światowych wytycznych medycznych (np. IDSA, ESC, ERS, WHO) i standardach postępowania.
@@ -598,8 +602,7 @@ Kluczowe wytyczne:
         {"name": "NazwaPłynu", "volumeSuggestion": "Objętość np. 500", "rateSuggestion": "Prędkość np. 50", "additives": ["Dodatek 1", "Dodatek 2"]}
       ]
     }
-5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategorycznie unikaj nieprecyzyjnych zaleceń typu 'do uzyskania efektu' lub 'wg kontroli glikemii'.`;
-    Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
+5.  **Format dawkowania:** Zawsze podawaj konkretne wartości liczbowe lub zakresy (np. '0.1-0.5 mcg/kg/min', '1g', '40mg'). Kategoryc    Aktualne leki ciągłe (nie dodawaj ich ponownie): ${currentContinuousDrugs.join(', ') || 'Brak'}.
     Aktualne leki okresowe (nie dodawaj ich ponownie): ${currentPeriodicDrugs.join(', ') || 'Brak'}.
 
     Zaproponuj brakujące leki (ciągłe, okresowe i płyny) zgodnie ze wszystkimi wytycznymi formatowania JSON i dawkowania.`;
