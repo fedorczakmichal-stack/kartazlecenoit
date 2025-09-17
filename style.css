@@ -496,10 +496,15 @@ tr.ai-suggested {
     background-color: rgba(220, 252, 231, 0.5); /* Lekki jasnozielony */
 }
 
-tr.ai-suggested td:last-child::before {
+/* Pozycjonowanie etykiety "AI" w komórce z nazwą leku */
+tr.ai-suggested td:nth-child(2) {
+    position: relative;
+}
+
+tr.ai-suggested td:nth-child(2)::after {
     content: 'AI';
     position: absolute;
-    right: 35px; /* Pozycja obok przycisku usuwania */
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     background: var(--gray-200);
@@ -508,23 +513,24 @@ tr.ai-suggested td:last-child::before {
     font-weight: 600;
     padding: 1px 4px;
     border-radius: 3px;
+    pointer-events: none; /* Zapobiega przechwytywaniu kliknięć */
 }
 
 html.dark-mode tr.ai-suggested {
     background-color: rgba(5, 46, 22, 0.7);
 }
 
-html.dark-mode tr.ai-suggested td:last-child::before {
+html.dark-mode tr.ai-suggested td:nth-child(2)::after {
     background: var(--gray-600);
     color: var(--gray-300);
 }
-
 
 /* GFR Dose Adjustment Styling */
 tr.gfr-dose-adjusted td { 
     background-color: var(--warning-light) !important;
     position: relative;
-    border-bottom: 1px solid var(--border-color); /* Maintain bottom border consistency */
+    /* KOREKTA: Użycie ciemniejszego koloru ramki dla lepszej widoczności */
+    border-bottom: 1px solid var(--warning); 
 }
 
 #periodicDrugsTable tr.gfr-dose-adjusted td:first-child::before {
@@ -1313,7 +1319,7 @@ html.dark-mode .offline-indicator {
     tr.ai-suggested {
         background-color: transparent !important;
     }
-    tr.ai-suggested td:last-child::before {
+    tr.ai-suggested td:nth-child(2)::after {
         display: none !important;
     }
 
