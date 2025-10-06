@@ -261,22 +261,20 @@ const cardTemplates = {
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
             { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-75 mcg/h" },
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
-            { name: "INSULINA", conc: "50j/50ml", dose: "według glikemii iv" },
-            { name: "HEPARYNA", conc: "1j/ml", dose: "wlew dotętniczy" }
+            { name: "INSULINA", conc: "50j/50ml", dose: "2-4 j/h" },
+            { name: "HEPARYNA (1ml/1j)", conc: "1ml/1j", dose: "wlew dotętniczy 1ml/godz" }
         ],
         periodicDrugs: [
             { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" },
-            { name: "OMEPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
-            { name: "IBUPROFEN", dose: "400mg", route: "i.v.", freq: "na zlecenie" },
-            { name: "PYRALGINA", dose: "1g", route: "i.v.", freq: "na zlecenie" },
-            { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "na zlecenie" }
+            { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
+            { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "na zlecenie" },
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "na zlecenie" }
         ],
         fluids: [
-            { name: "Optilyte", volume: "500", rate: "50" }
+            { name: "Optilyte", volume: "500", rate: "50", additives: ["+ KCl 15% 10ml"] }
         ],
         nutrition: [
-            { type: "Żywienie dojelitowe", prep: "Nutricomp Standard 500ml (1 kcal/ml)", rate: "50" },
-            { type: "Żywienie pozajelitowe", prep: "SmofKabiven 986ml (1.1 kcal/ml)", rate: "40" }
+            { type: "Żywienie dojelitowe", prep: "Nutricomp Standard 500ml (1 kcal/ml)", rate: "50" }
         ],
         procedures: [
             { time: "co 6h", name: "Glikemia" },
@@ -289,154 +287,325 @@ const cardTemplates = {
         ]
     },
     cardiac: {
-        name: "Pacjent kardiochirurgiczny",
-        diagnosis: "Stan po zabiegach kardiochirurgicznych",
+        name: "Kardiochirurgia",
+        diagnosis: "Stan po operacji kardiochirurgicznej",
         continuousDrugs: [
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
-            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "2-10 mcg/kg/min" },
-            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
-            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-50 mcg/h" }
+            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "2-8 mcg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-3 mg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-50 mcg/h" },
+            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "10-50 mcg/min" }
         ],
         periodicDrugs: [
             { name: "CEFUROKSYM", dose: "1.5g", route: "i.v.", freq: "co 8h" },
-            { name: "FUROSEMID", dose: "20mg", route: "i.v.", freq: "co 8h" },
+            { name: "FUROSEMID", dose: "20-40mg", route: "i.v.", freq: "co 8h" },
             { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
-            { name: "METOPROLOL", dose: "5mg", route: "i.v.", freq: "co 6h" }
+            { name: "KWAS TRANEXAMOWY", dose: "1g", route: "i.v.", freq: "co 8h" },
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" }
         ],
         fluids: [
             { name: "NaCl 0.9%", volume: "500", rate: "50" },
             { name: "Plasmalyte", volume: "500", rate: "40" }
+        ],
+        procedures: [
+            { time: "co 1h", name: "Kontrola drenów" },
+            { time: "co 4h", name: "Gazometria" },
+            { time: "codziennie", name: "RTG klatki piersiowej" },
+            { time: "co 6h", name: "Glikemia" },
+            { time: "codziennie", name: "EKG" }
         ]
     },
     trauma: {
         name: "Uraz wielonarządowy",
-        diagnosis: "Uraz wielonarządowy",
+        diagnosis: "Uraz wielonarządowy, wstrząs pourazowy",
         continuousDrugs: [
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2-1.0 mcg/kg/min" },
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-4 mg/kg/h" },
-            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" }
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" },
+            { name: "KETAMINA", conc: "250mg/50ml", dose: "0.5-1 mg/kg/h" }
         ],
         periodicDrugs: [
             { name: "AMOKSYCYLINA/KWAS KLAWULANOWY", dose: "1.2g", route: "i.v.", freq: "co 8h" },
             { name: "KWAS TRANEXAMOWY", dose: "1g", route: 'i.v.', freq: "co 8h" },
             { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" },
-            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" }
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" },
+            { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" }
         ],
         fluids: [
             { name: "NaCl 0.9%", volume: "500", rate: "100" },
             { name: "Gelofusine", volume: "500", rate: "100" },
             { name: "Albuminy 5%", volume: "250", rate: "50" }
+        ],
+        procedures: [
+            { time: "co 2h", name: "Zmiany ułożenia" },
+            { time: "co 6h", name: "Profilaktyka odleżyn" },
+            { time: "codziennie", name: "RTG klatki piersiowej" },
+            { time: "co 12h", name: "IAP" }
         ]
     },
     sepsis: {
-        name: "Sepsa",
-        diagnosis: "Wstrząs septyczny",
+        name: "Sepsa / Wstrząs septyczny",
+        diagnosis: "Wstrząs septyczny, MOF",
         continuousDrugs: [
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.3-1.5 mcg/kg/min" },
-            { name: "WAZOPRESYNA", conc: "20j/20ml", dose: "0.01-0.04 j/min" },
-            { name: "DEKSMEDETOMIDYNA", conc: "200mcg/50ml", dose: "0.2-0.7 mcg/kg/h" },
-            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-75 mcg/h" }
+            { name: "WAZOPRESYNA", conc: "20j/20ml", dose: "0.02-0.04 j/min" },
+            { name: "DEKSMEDETOMIDYNA", conc: "400mcg/100ml", dose: "0.4-0.7 mcg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" }
         ],
         periodicDrugs: [
             { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 8h" },
             { name: "WANKOMYCYNA", dose: "1g", route: "wlew i.v. 1h", freq: "co 12h" },
             { name: "FLUKONAZOL", dose: "400mg", route: "i.v.", freq: "co 24h" },
-            { name: "HYDROKORTYZON", dose: "50mg", route: "i.v.", freq: "co 6h" }
+            { name: "HYDROKORTYZON", dose: "50mg", route: "i.v.", freq: "co 6h" },
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" }
         ],
         fluids: [
-            { name: "Plasmalyte", volume: "500", rate: "80" },
+            { name: "Plasmalyte", volume: "500", rate: "80", additives: ["+ KCl 15% 10ml"] },
             { name: "Albuminy 20%", volume: "100", rate: "25" }
+        ],
+        procedures: [
+            { time: "co 6h", name: "Gazometria tętnicza" },
+            { time: "codziennie", name: "Posiew krwi" },
+            { time: "co 4h", name: "Kontrola zalegań" },
+            { time: "co 12h", name: "IAP" }
         ]
     },
     respiratory: {
-        name: "Niewydolność oddechowa",
-        diagnosis: "ARDS",
+        name: "ARDS / Niewydolność oddechowa",
+        diagnosis: "ARDS, niewydolność oddechowa",
         continuousDrugs: [
-            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
-            { name: "DEKSMEDETOMIDYNA", conc: "200mcg/50ml", dose: "0.4-1.0 mcg/kg/h" },
-            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" },
-            { name: "CISATRAKURIUM", conc: "20mg/10ml", dose: "0.06-0.18 mg/kg/h" }
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-4 mg/kg/h" },
+            { name: "DEKSMEDETOMIDYNA", conc: "400mcg/100ml", dose: "0.4-1.0 mcg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "75-150 mcg/h" },
+            { name: "CISATRAKURIUM", conc: "20mg/10ml", dose: "0.1-0.18 mg/kg/h" }
         ],
         periodicDrugs: [
             { name: "PIPERACYLINA/TAZOBAKTAM", dose: "4.5g", route: "wlew i.v. 30min", freq: "co 8h" },
             { name: "SALBUTAMOL (NEBULIZACJA)", dose: "2.5mg", route: "nebulizacja", freq: "co 6h" },
-            { name: "BERODUAL", dose: "1ml", route: "nebulizacja", freq: "co 6h" },
-            { name: "ACETYLOCYSTEINA", dose: "300mg", route: "nebulizacja", freq: "co 8h" }
+            { name: "BERODUAL", dose: "1-2ml", route: "nebulizacja", freq: "co 6h" },
+            { name: "ACETYLOCYSTEINA", dose: "300mg", route: "nebulizacja", freq: "co 8h" },
+            { name: "METYLOPREDNIZOLON", dose: "125mg", route: "i.v.", freq: "co 24h" }
+        ],
+        procedures: [
+            { time: "co 4h", name: "Toaleta drzewa oskrzelowego" },
+            { time: "codziennie", name: "RTG klatki piersiowej" },
+            { time: "co 8h", name: "Gazometria tętnicza" },
+            { time: "co 2h", name: "Zmiany ułożenia" }
         ]
     },
     neurological: {
-        name: "Pacjent neurologiczny",
-        diagnosis: "Udar mózgu",
+        name: "Neurologia / Udar",
+        diagnosis: "Udar niedokrwienny mózgu / Krwotok podpajęczynówkowy",
         continuousDrugs: [
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-2 mg/kg/h" },
-            { name: "REMIFENTANYL", conc: "2mg/40ml", dose: "0.05-0.1 mcg/kg/min" },
-            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "5-50 mcg/min" }
+            { name: "REMIFENTANYL", conc: "2mg/40ml", dose: "0.05-0.15 mcg/kg/min" },
+            { name: "NITROGLICERYNA", conc: "25mg/50ml", dose: "10-50 mcg/min" }
         ],
         periodicDrugs: [
             { name: "MANNITOL 15%", dose: "100ml", route: "wlew i.v. 30min", freq: "co 6h" },
             { name: "DEKSAMETAZON", dose: "8mg", route: "i.v.", freq: "co 6h" },
             { name: "PIRACETAM", dose: "4.8g", route: "i.v.", freq: "co 12h" },
-            { name: "CEREBROLIZYNA", dose: "30ml", route: "i.v. wlew", freq: "co 24h" }
+            { name: "CEREBROLIZYNA", dose: "30ml", route: "i.v. wlew", freq: "co 24h" },
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" }
+        ],
+        procedures: [
+            { time: "co 1h", name: "Ocena GCS i źrenic" },
+            { time: "co 12h", name: "IAP" },
+            { time: "codziennie", name: "CT głowy (wg wskazań)" }
+        ]
+    },
+    pancreatitis: {
+        name: "Ostre zapalenie trzustki",
+        diagnosis: "Ostre zapalenie trzustki, MOF",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.8 mcg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2-3 mg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-100 mcg/h" },
+            { name: "OKTREOTYD", conc: "500mcg/50ml", dose: "25-50 mcg/h" }
+        ],
+        periodicDrugs: [
+            { name: "IMIPENEM/CYLASTATYNA", dose: "0.5g", route: "wlew i.v. 30min", freq: "co 6h" },
+            { name: "METRONIDAZOL", dose: "500mg", route: "i.v.", freq: "co 8h" },
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" },
+            { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" }
+        ],
+        fluids: [
+            { name: "Plasmalyte", volume: "1000", rate: "100", additives: ["+ KCl 15% 20ml", "+ MgSO4 20% 10ml"] },
+            { name: "Albuminy 20%", volume: "100", rate: "25" }
+        ],
+        nutrition: [
+            { type: "Żywienie dojelitowe", prep: "Nutrison Advanced Peptisorb 500ml (1 kcal/ml)", rate: "30" }
+        ],
+        procedures: [
+            { time: "co 12h", name: "IAP" },
+            { time: "co 6h", name: "Gazometria + markery OZT" },
+            { time: "codziennie", name: "USG jamy brzusznej" }
+        ]
+    },
+    postop_abdominal: {
+        name: "Stan po operacji brzusznej",
+        diagnosis: "Stan po laparotomii, perforacja jelita",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.05-0.3 mcg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-3 mg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50-75 mcg/h" }
+        ],
+        periodicDrugs: [
+            { name: "PIPERACYLINA/TAZOBAKTAM", dose: "4.5g", route: "wlew i.v. 30min", freq: "co 8h" },
+            { name: "METRONIDAZOL", dose: "500mg", route: "i.v.", freq: "co 8h" },
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" },
+            { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
+            { name: "METOKLOPRAMID", dose: "10mg", route: "i.v.", freq: "co 8h" }
+        ],
+        fluids: [
+            { name: "Plasmalyte", volume: "1000", rate: "80", additives: ["+ KCl 15% 15ml"] }
+        ],
+        procedures: [
+            { time: "co 8h", name: "Zmiana opatrunku rany" },
+            { time: "co 12h", name: "IAP" },
+            { time: "co 4h", name: "Kontrola zalegań" },
+            { time: "codziennie", name: "RTG brzucha" }
+        ]
+    },
+    liver_failure: {
+        name: "Niewydolność wątroby",
+        diagnosis: "Niewydolność wątroby, encefalopatia wątrobowa",
+        continuousDrugs: [
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "1-2 mg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "25-50 mcg/h" }
+        ],
+        periodicDrugs: [
+            { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 8h" },
+            { name: "LACTULOSUM", dose: "30ml", route: "p.o. (sonda)", freq: "co 6h" },
+            { name: "ORNITYNA", dose: "20g", route: "i.v. wlew 24h", freq: "co 24h" },
+            { name: "WITAMINA K", dose: "10mg", route: "i.v. wolno", freq: "co 24h" },
+            { name: "TIAMINA", dose: "100mg", route: "i.v.", freq: "co 24h" }
+        ],
+        fluids: [
+            { name: "Glukoza 10%", volume: "500", rate: "40" },
+            { name: "Albuminy 20%", volume: "100", rate: "25" }
+        ],
+        nutrition: [
+            { type: "Żywienie pozajelitowe", prep: "Aminomix 1 Novum 1000ml (0.8 kcal/ml)", rate: "40" }
+        ],
+        procedures: [
+            { time: "co 4h", name: "Ocena encefalopatii" },
+            { time: "co 6h", name: "Gazometria + amoniak" },
+            { time: "codziennie", name: "Parametry wątrobowe" }
+        ]
+    },
+    covid_ards: {
+        name: "COVID-19 / ARDS",
+        diagnosis: "COVID-19, ARDS ciężki",
+        continuousDrugs: [
+            { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "3-4 mg/kg/h" },
+            { name: "DEKSMEDETOMIDYNA", conc: "400mcg/100ml", dose: "0.6-1.2 mcg/kg/h" },
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "100-150 mcg/h" },
+            { name: "CISATRAKURIUM", conc: "20mg/10ml", dose: "0.15-0.2 mg/kg/h" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2-0.8 mcg/kg/min" }
+        ],
+        periodicDrugs: [
+            { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 8h" },
+            { name: "AZITHROMYCIN", dose: "500mg", route: "i.v. wlew 1h", freq: "co 24h" },
+            { name: "DEKSAMETAZON", dose: "6mg", route: "i.v.", freq: "co 24h" },
+            { name: "ENOKSAPARYNA", dose: "60mg", route: "s.c.", freq: "co 12h" },
+            { name: "SALBUTAMOL (NEBULIZACJA)", dose: "2.5mg", route: "nebulizacja", freq: "co 4h" }
+        ],
+        procedures: [
+            { time: "co 4h", name: "Toaleta drzewa oskrzelowego" },
+            { time: "co 2h", name: "Pozycja pronacyjna (wg protokołu)" },
+            { time: "co 6h", name: "Gazometria tętnicza" },
+            { time: "codziennie", name: "RTG klatki piersiowej" },
+            { time: "codziennie", name: "D-dimery, ferrytyna, CRP" }
         ]
     },
     renal: {
-        name: "CRRT (Antykoagulacja cytrynianowa)",
-        diagnosis: "Niewydolność nerek - CRRT CVVHD (cytryniany)",
+        name: "CRRT (cytryniany)",
+        diagnosis: "Niewydolność nerek - CRRT CVVHD",
         continuousDrugs: [
             { name: "Prismocitrate 18/0", conc: "18/0 mmol/l", dose: "wg protokołu CRRT" },
             { name: "Phoxillum", conc: "Płyn dializacyjny", dose: "wg protokołu CRRT" },
             { name: "CHLOREK WAPNIA 10%", conc: "100mg/ml", dose: "wg protokołu CRRT" },
             { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.1-0.5 mcg/kg/min" },
-            { name: "HEPARYNA", conc: "1j/ml", dose: "wlew dotętniczy" }
+            { name: "HEPARYNA (1ml/1j)", conc: "1ml/1j", dose: "wlew dotętniczy 1ml/godz" }
         ],
         periodicDrugs: [
-            { name: "MEROPENEM", dose: "0.5g", route: "i.v.", freq: "co 24h" },
-            { name: "ENOKSAPARYNA", dose: "20mg", route: "s.c.", freq: "co 24h" }
+            { name: "MEROPENEM", dose: "0.5g", route: "i.v.", freq: "co 12h" },
+            { name: "FUROSEMID", dose: "40mg", route: "i.v.", freq: "co 12h" }
         ],
         procedures: [
             { time: "co 4h", name: "Kontrola Ca zjonizowanego (systemowe)" },
             { time: "co 8h", name: "Kontrola Ca zjonizowanego (zza filtra)" },
             { time: "co 6h", name: "Gazometria tętnicza i żylna" },
-            { time: "co 12h", name: "Kontrola parametrów CRRT" }
+            { time: "co 12h", name: "Kontrola parametrów CRRT" },
+            { time: "co 24h", name: "Bilans płynów CRRT" }
         ]
     },
     test: {
-        name: "Test Pełne Dane",
-        diagnosis: "Sepsa z niewydolnością wielonarządową",
+        name: "Test - Typowy pacjent OIT",
+        diagnosis: "Sepsa, niewydolność krążenia, oddechowa i nerek (bez CRRT)",
         headerData: {
             patientNameInput: "Jan Kowalski",
-            peselInput: "80010112345",
-            historyNumberInput: "H-12345/2025",
-            admissionDateInput: "01.09.2025",
-            patientWeight: "80",
-            heightInput: "175",
-            gfrInput: "45",
-            allergiesInput: "Penicylina"
+            peselInput: "65030154321",
+            historyNumberInput: "H-23456/2025",
+            admissionDateInput: "01.10.2025",
+            patientWeight: "85",
+            heightInput: "178",
+            gfrInput: "35",
+            roomInput: "Sala 3 / Łóżko 2",
+            allergiesInput: "Penicylina, kontrasty jodowe"
         },
         continuousDrugs: [
-            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.2 mcg/kg/min" },
+            { name: "NORADRENALINA", conc: "8mg/50ml", dose: "0.35 mcg/kg/min" },
+            { name: "DOBUTAMINA", conc: "250mg/50ml", dose: "5 mcg/kg/min" },
             { name: "PROPOFOL 2%", conc: "20mg/ml", dose: "2.5 mg/kg/h" },
-            { name: "FENTANYL", conc: "500mcg/50ml", dose: "50 mcg/h" },
-            { name: "INSULINA", conc: "50j/50ml", dose: "2 j/h" },
-            { name: "MIDAZOLAM", conc: "50mg/50ml", dose: "5 mg/h" }
+            { name: "FENTANYL", conc: "500mcg/50ml", dose: "75 mcg/h" },
+            { name: "MIDAZOLAM", conc: "50mg/50ml", dose: "4 mg/h" },
+            { name: "INSULINA", conc: "50j/50ml", dose: "3 j/h" },
+            { name: "HEPARYNA (1ml/1j)", conc: "1ml/1j", dose: "wlew dotętniczy 1ml/godz" }
         ],
         periodicDrugs: [
-            { name: "MEROPENEM", dose: "1g", route: "i.v.", freq: "co 8h" },
-            { name: "ENOKSAPARYNA", dose: "60mg", route: "s.c.", freq: "co 24h" },
+            { name: "MEROPENEM", dose: "1g", route: "wlew i.v. 30min", freq: "co 12h" },
+            { name: "WANKOMYCYNA", dose: "1g", route: "wlew i.v. 1h", freq: "co 12h" },
+            { name: "FLUKONAZOL", dose: "400mg", route: "i.v.", freq: "co 24h" },
+            { name: "HYDROKORTYZON", dose: "50mg", route: "i.v.", freq: "co 6h" },
+            { name: "FUROSEMID", dose: "40mg", route: "i.v.", freq: "co 8h" },
+            { name: "SPIRONOLAKTON", dose: "50mg", route: "i.v.", freq: "co 24h" },
             { name: "PANTOPRAZOL", dose: "40mg", route: "i.v.", freq: "co 24h" },
-            { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "co 6h" },
-            { name: "METOKLOPRAMID", dose: "10mg", route: "i.v.", freq: "doraźnie" }
+            { name: "ENOKSAPARYNA", dose: "40mg", route: "s.c.", freq: "co 24h" },
+            { name: "METAMIZOL", dose: "1g", route: "i.v.", freq: "co 6h" },
+            { name: "PARACETAMOL", dose: "1g", route: "i.v.", freq: "na zlecenie" },
+            { name: "METOKLOPRAMID", dose: "10mg", route: "i.v.", freq: "co 8h" },
+            { name: "SALBUTAMOL (NEBULIZACJA)", dose: "2.5mg", route: "nebulizacja", freq: "co 6h" },
+            { name: "BERODUAL", dose: "1ml", route: "nebulizacja", freq: "co 6h" },
+            { name: "ACETYLOCYSTEINA", dose: "300mg", route: "nebulizacja", freq: "co 8h" }
         ],
         fluids: [
-            { name: "Plasmalyte", volume: "1000", rate: "80", additives: ["+ KCl 15% 20ml", "+ MgSO4 20% 10ml"] }
+            { name: "Plasmalyte", volume: "1000", rate: "70", additives: ["+ KCl 15% 20ml", "+ MgSO4 20% 10ml"] },
+            { name: "Albuminy 20%", volume: "100", rate: "25" }
         ],
         nutrition: [
-            { type: "Żywienie dojelitowe", prep: "Nutrison Multi Fibre 1000ml (1 kcal/ml)", rate: "40" },
-            { type: "Żywienie pozajelitowe", prep: "OMEGAFLEX PLUS 1250ml (1.3 kcal/ml)", rate: "50" }
+            { type: "Żywienie dojelitowe", prep: "Nutrison Multi Fibre 1000ml (1 kcal/ml)", rate: "50" },
+            { type: "Żywienie pozajelitowe", prep: "SmofKabiven 1477ml (1.1 kcal/ml)", rate: "60" }
         ],
         procedures: [
+            { time: "co 1h", name: "Diureza" },
+            { time: "co 2h", name: "Zmiany ułożenia" },
+            { time: "co 4h", name: "Toaleta drzewa oskrzelowego" },
             { time: "co 4h", name: "Kontrola zalegań" },
-            { time: "codziennie", name: "RTG klatki piersiowej" }
+            { time: "co 6h", name: "Glikemia" },
+            { time: "co 6h", name: "Gazometria tętnicza" },
+            { time: "co 6h", name: "Profilaktyka odleżyn" },
+            { time: "co 12h", name: "IAP" },
+            { time: "co 12h", name: "OCŻ" },
+            { time: "codziennie", name: "RTG klatki piersiowej przyłóżkowe" },
+            { time: "codziennie", name: "Kinezyterapia" },
+            { time: "codziennie", name: "Zmiana opatrunku CVC" },
+            { time: "codziennie", name: "Bilans płynów 24h" },
+            { time: "codziennie", name: "Morfologia + elektrolity + kreatynina" },
+            { time: "2x tyg", name: "Posiew krwi" }
         ]
     }
 };
