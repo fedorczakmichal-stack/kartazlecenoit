@@ -107,6 +107,52 @@
     td { padding: 1px 6px; height: 26px; }
     tbody tr:hover { transform: none; }
 
+    /* Mniejsze, gestsze czcionki w tabelach: ciagle, okresowe, zywienie
+       -> wiecej tresci leku bez ucinania (plyny/procedury bez zmian). */
+    #continuousDrugsTable td, #periodicDrugsTable td, #nutritionTable td {
+        font-size: 13px;
+        line-height: 1.2;
+    }
+    #continuousDrugsTable .drug-input,
+    #periodicDrugsTable .drug-input,
+    #nutritionTable .drug-input {
+        font-size: 13px;
+        line-height: 1.2;
+        min-height: 22px;
+        padding: 3px 5px;
+    }
+    #continuousDrugsTable .secondary-line-input,
+    #periodicDrugsTable .secondary-line-input,
+    #nutritionTable .secondary-line-input {
+        font-size: 11px;
+    }
+    #continuousDrugsTable th, #periodicDrugsTable th, #nutritionTable th {
+        font-size: 10px;
+    }
+
+    /* Ukryj kolumny "Podpis pielegniarki" / "Wykonano (podpis)" - tak jak
+       w portrait. Indeksy zweryfikowane wzgledem index.html (th i td maja
+       zgodna pozycje w kazdej tabeli). Dotyczy WYLACZNIE iPhone landscape;
+       wydruk pokazuje kolumny 1:1. */
+    #continuousDrugsTable th:nth-child(5), #continuousDrugsTable td:nth-child(5),
+    #periodicDrugsTable th:nth-child(5),   #periodicDrugsTable td:nth-child(5),
+    #fluidsTable th:nth-child(7),          #fluidsTable td:nth-child(7),
+    #nutritionTable th:nth-child(5),       #nutritionTable td:nth-child(5),
+    #proceduresTable th:nth-child(4),      #proceduresTable td:nth-child(4),
+    #manualDrugsTable th:nth-child(4),     #manualDrugsTable td:nth-child(4) {
+        display: none;
+    }
+
+    /* Odzyskana szerokosc -> kolumnie nazwy leku/plynu/procedury.
+       Tabele w landscape maja table-layout: fixed, wiec width na th
+       steruje szerokoscia kolumny. */
+    #continuousDrugsTable th:nth-child(2) { width: 45%; }
+    #periodicDrugsTable th:nth-child(2)   { width: 45%; }
+    #fluidsTable th:nth-child(2)          { width: 28%; }
+    #nutritionTable th:nth-child(2)       { width: 38%; }
+    #proceduresTable th:nth-child(3)      { width: 65%; }
+    #manualDrugsTable th:nth-child(1)     { width: 50%; }
+
     /* Stopka: nizsze pole uwag i linia podpisu (bazowo 80px / 50px) */
     .notes-section textarea { min-height: 56px; }
     .signature-line { min-height: 38px; }
