@@ -83,6 +83,17 @@
         margin: 8px 0;
         padding: 7px 10px;
     }
+    /* Lista podpowiedzi nie moze wystawac poza niski viewport (bazowo 300px) */
+    .search-results { max-height: 45vh; }
+
+    /* Pola: lekko ciasniej, by odzyskac pion (wysokosc to waski zasob) */
+    .field-label { margin-bottom: 2px; }
+    .field-value { min-height: 26px; padding: 4px 8px; }
+
+    /* Podsumowanie plynow/kcal: mniejsze odstepy */
+    .controls-summary-container { margin-top: 6px; }
+    .fluid-balance-indicator,
+    .kcal-indicator { margin-bottom: 6px; }
 
     /* Naglowki sekcji: mniejsze marginesy, bez animacji hover-przesuniecia */
     .section-header {
@@ -95,6 +106,10 @@
     th { padding: 4px 6px; }
     td { padding: 1px 6px; height: 26px; }
     tbody tr:hover { transform: none; }
+
+    /* Stopka: nizsze pole uwag i linia podpisu (bazowo 80px / 50px) */
+    .notes-section textarea { min-height: 56px; }
+    .signature-line { min-height: 38px; }
 
     /* Modale: nie moga wystawac poza niski viewport landscape */
     .modal-content {
