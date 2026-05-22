@@ -1,0 +1,109 @@
+/*
+ * Optymalizacja widoku dla iPhone w orientacji PIONOWEJ (portrait).
+ * Filozofia odwrotna niz landscape: malo szerokosci (~390-430px),
+ * duzo wysokosci. Wiec rozkladamy w pionie i tniemy liczbe kolumn.
+ *
+ * Zakres reguł celowo zawężony, by NIE dotykac:
+ *  - landscape (telefon poziomo)  -> orientation: portrait,
+ *  - tabletow/desktopu            -> max-width: 500px,
+ *  - wydruku                      -> media type "screen" (wyklucza print).
+ *
+ * Plik podlaczony PO professional-ui.css i mobile-landscape.css,
+ * wiec nadpisuje wczesniejsze reguly tam gdzie trzeba. Z landscape jest
+ * rozlaczny przez orientation, wiec kolejnosc miedzy nimi nie ma znaczenia.
+ */
+@media screen and (orientation: portrait) and (max-width: 500px) {
+
+    /* PASEK NARZEDZI: zamiast wielu zawijanych rzedow (sticky zjadalby
+       gore ekranu) -> jeden kompaktowy, przewijalny poziomo rzad */
+    .top-controls {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        justify-content: flex-start;
+        gap: 8px;
+        padding: 8px 10px;
+    }
+    .top-controls > * { flex: 0 0 auto; }
+    .control-button { padding: 8px 12px; font-size: 13px; }
+
+    /* SIATKI DANYCH: waski ekran -> mniej kolumn.
+       Dane pacjenta 2 kolumny; plan kliniczny 1 kolumna (dlugie pola). */
+    .patient-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+    .clinical-plan-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* POLA: czcionka >=16px blokuje automatyczny zoom iOS przy focusie,
+       wieksze pola = wygodniejszy dotyk */
+    .field-label { font-size: 11px; margin-bottom: 3px; }
+    .field-value {
+        font-size: 16px;
+        min-height: 40px;
+        padding: 9px 10px;
+    }
+    #quickSearchInput { font-size: 16px; }
+
+    /* TABELE: poziomy scroll per-tabela zamiast sciskania kolumn do
+       nieczytelnosci. display:block sprawia ze <table> jest kontenerem
+       przewijania, a wiersze trafiaja do jednej anonimowej tabeli
+       (kolumny naglowka i tresci pozostaja wyrownane). */
+    table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    th { white-space: nowrap; }
+    th, td { min-width: 84px; }
+    .drag-column { min-width: 22px; width: 22px; }
+    .action-column { min-width: 30px; width: 30px; }
+    td input, td select, td textarea, .drug-input {
+        font-size: 16px;
+        min-width: 72px;
+    }
+
+    /* STOPKA / PODSUMOWANIA / TOOLBAR PACJENTOW: jedna kolumna */
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    .controls-summary-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .summary-container {
+        width: 100%;
+        text-align: left;
+    }
+    .patients-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* MODALE: praktycznie pelny ekran na waskim telefonie */
+    .modal { align-items: stretch; }
+    .modal-content,
+    .modal-content.modal-wide {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-body {
+        max-height: none;
+        flex: 1 1 auto;
+    }
+    .templates-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
