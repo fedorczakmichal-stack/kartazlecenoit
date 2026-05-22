@@ -216,9 +216,9 @@
             <tbody class="sortable-tbody"></tbody>
         </table>
         <div class="nutrition-break-note"><i class="fas fa-pause-circle"></i> Żywienie dojelitowe &mdash; przerwa w podaży:
-            <input type="time" id="enteralBreakStart" class="header-input no-clear break-time-input" value="06:00" onchange="updateSummaries(); markAsChanged();" />
+            <input type="text" inputmode="numeric" maxlength="5" size="5" pattern="[0-9]{2}:[0-9]{2}" placeholder="HH:MM" id="enteralBreakStart" class="header-input no-clear break-time-input" value="06:00" onchange="updateSummaries(); markAsChanged();" />
             &ndash;
-            <input type="time" id="enteralBreakEnd" class="header-input no-clear break-time-input" value="10:00" onchange="updateSummaries(); markAsChanged();" />
+            <input type="text" inputmode="numeric" maxlength="5" size="5" pattern="[0-9]{2}:[0-9]{2}" placeholder="HH:MM" id="enteralBreakEnd" class="header-input no-clear break-time-input" value="10:00" onchange="updateSummaries(); markAsChanged();" />
             <span class="break-summary">(podaż <strong id="enteralFeedingHoursLabel">20</strong>&nbsp;h/dobę)</span>. Uwzględnione w bilansie dobowym kalorii i płynów.</div>
         <div class="controls-summary-container no-print">
             <div class="button-container no-print">

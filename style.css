@@ -1985,6 +1985,34 @@ html.dark-mode .offline-indicator {
         break-inside: avoid !important;
         height: 55px !important;
     }
+
+    /* Przerwa w zywieniu dojelitowym - na wydruku jako czyste zdanie
+       (bez ramek pol, bez ikony, godziny 24h np. 06:00 - 10:00) */
+    .nutrition-break-note {
+        margin: 2px 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-left: none !important;
+        border-radius: 0 !important;
+        color: #000 !important;
+        font-size: 8px !important;
+        line-height: 1.2 !important;
+    }
+    .nutrition-break-note i { display: none !important; }
+    .nutrition-break-note .break-time-input {
+        width: 3.4em !important;
+        min-width: 0 !important;
+        padding: 0 1px !important;
+        margin: 0 1px !important;
+        border: none !important;
+        background: transparent !important;
+        color: #000 !important;
+        font-size: 8px !important;
+        font-weight: 700 !important;
+        text-align: left !important;
+    }
+    .nutrition-break-note .break-summary { margin-left: 3px !important; }
 }
 
 .manual-entry-table {
