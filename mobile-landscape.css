@@ -1,0 +1,118 @@
+/*
+ * Optymalizacja widoku dla iPhone w orientacji POZIOMEJ (landscape).
+ * Cel: w landscape mamy sporo szerokości (~810-960px) ale bardzo mało
+ * wysokości (~375-440px), wiec odzyskujemy pionowa przestrzen.
+ *
+ * Zakres reguł celowo zawężony tak, by NIE dotykac:
+ *  - wydruku  -> media type "screen" wyklucza @media print,
+ *  - widoku portrait (telefon pionowo) -> orientation: landscape,
+ *  - tabletów/desktopu  -> max-height: 500px (telefon w poziomie ma
+ *    bardzo niska wysokosc; tablet w poziomie ma >700px).
+ *
+ * Plik podlaczony PO professional-ui.css, wiec nadpisuje tamtejszy
+ * blok @media (max-width: 920px), ktory w landscape psul layout
+ * (kolumny zamiast wierszy, 2 kolumny siatek).
+ */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+
+    /* Kontener: usuwamy ogromny padding 20mm, pelna szerokosc ekranu */
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 8px 14px 16px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* Pasek narzedzi: przestaje byc "sticky", zeby nie zjadal na stale
+       i tak ograniczonej wysokosci; kompaktowe przyciski */
+    .top-controls {
+        position: static;
+        padding: 6px 8px;
+        gap: 6px;
+        justify-content: flex-start;
+    }
+    .control-button {
+        padding: 5px 9px;
+        font-size: 11px;
+        gap: 5px;
+    }
+    .control-button i { font-size: 12px; }
+
+    /* Naglowek: mniejszy padding/margines, logo i dane w jednym wierszu
+       (cofamy zmiane z professional-ui.css na flex-direction: column) */
+    .header-section {
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        animation: none;
+    }
+    .hospital-header {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+    .header-right-info {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 8px;
+    }
+    h1 {
+        font-size: 12px;
+        margin-top: 6px;
+        line-height: 1.25;
+    }
+
+    /* Karty danych: kompaktowe odstepy */
+    .patient-card,
+    .clinical-plan-card {
+        padding: 10px;
+        margin-bottom: 8px;
+        animation: none;
+    }
+
+    /* Siatki: w landscape mamy szerokosc, wiec wracamy do 4 kolumn
+       (professional-ui.css spychal je do 2 -> niepotrzebnie wysokie) */
+    .patient-grid,
+    .clinical-plan-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    /* Pasek szybkiego wyszukiwania: mniejsze marginesy */
+    .quick-search-bar {
+        margin: 8px 0;
+        padding: 7px 10px;
+    }
+
+    /* Naglowki sekcji: mniejsze marginesy, bez animacji hover-przesuniecia */
+    .section-header {
+        margin: 10px 0 5px 0;
+        padding: 5px 10px;
+    }
+    .section-header:hover { transform: none; }
+
+    /* Tabele: nieco mniejszy padding, zeby zmiescic wiecej wierszy */
+    th { padding: 4px 6px; }
+    td { padding: 1px 6px; height: 26px; }
+    tbody tr:hover { transform: none; }
+
+    /* Modale: nie moga wystawac poza niski viewport landscape */
+    .modal-content {
+        width: 96%;
+        max-height: 94vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-header { padding: 10px 16px; }
+    .modal-header h3 { font-size: 15px; }
+    .modal-body {
+        max-height: none;
+        flex: 1 1 auto;
+        padding: 14px 16px;
+    }
+    .templates-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+    }
+}
