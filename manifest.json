@@ -1,0 +1,20 @@
+{
+  "name": "Karta Zleceń OIT",
+  "short_name": "Karta OIT",
+  "description": "Elektroniczna karta zleceń lekarskich dla Oddziału Anestezjologii i Intensywnej Terapii",
+  "lang": "pl",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

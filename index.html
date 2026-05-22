@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karta Zleceń OIT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link id="professionalStyles" rel="stylesheet" href="professional-ui.css" media="screen">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+</head>
+<body>
+    <div id="toastContainer"></div>
+    <div id="validationTooltip" class="validation-tooltip"></div>
+
+    <div class="top-controls no-print">
+        <button onclick="printCard()" class="control-button print" title="Drukuj (Ctrl+P)"><i class="fas fa-print"></i> Drukuj</button>
+        <button onclick="runPrePrintCheck(true)" class="control-button check" title="Sprawdź kompletność karty"><i class="fas fa-check-double"></i> Sprawdź</button>
+        <button onclick="saveCard()" class="control-button save" title="Zapisz kartę pacjenta (Ctrl+S)"><i class="fas fa-save"></i> Zapisz</button>
+        <button onclick="openPatientsModal()" class="control-button patients" title="Wybierz pacjenta i przeglądaj jego karty"><i class="fas fa-user-injured"></i> Pacjenci</button>
+        <button onclick="openTemplatesModal()" class="control-button templates" title="Szablony kart"><i class="fas fa-clipboard-list"></i> Szablony</button>
+        <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
+        <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
+        <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
+        <button onclick="clearCard()" class="control-button clear" title="Wyczyść (Ctrl+N)"><i class="fas fa-trash"></i> Wyczyść</button>
+        <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
+        <div id="activePatientBadge" class="active-patient-badge" style="display:none;" title="Aktywny pacjent - kliknij aby zarządzać">
+            <i class="fas fa-user"></i>
+            <span id="activePatientLabel">Brak wybranego pacjenta</span>
+            <button type="button" class="active-patient-clear" onclick="clearActivePatient(event)" title="Wyczyść wybranego pacjenta">&times;</button>
+        </div>
+        <div id="autosaveIndicator" class="autosave-indicator saved">
+            <i class="fas fa-check-circle"></i>
+            <span></span>
+        </div>
+        <div id="offlineIndicator" class="offline-indicator" style="display: none;">
+            <i class="fas fa-wifi-slash"></i>
+            <span>Tryb offline</span>
+        </div>
+    </div>
+
+    <div class="container" id="card-container">
+        <div class="header-section">
+            <div class="hospital-header">
+                <div class="hospital-logo">
+                    <div class="logo-icon">🏥</div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 600;">Oddział Anestezjologii i Intensywnej Terapii</div>
+                        <div style="font-size: 10px; opacity: 0.9;">miejsce na nazwę szpitala / pieczątkę jednostki</div>
+                    </div>
+                </div>
+                <div class="header-right-info">
+                    <div class="field-group">
+                        <span class="field-label">Data</span>
+                        <input type="text" id="mainDateInput" class="field-value small header-input" autocomplete="off" onchange="calculateIcuDay()"/>
+                    </div>
+                    <div class="field-group">
+                        <span class="field-label">Doba w OIT</span>
+                        <input type="number" min="0" id="icuDayInput" class="field-value small header-input" autocomplete="off" readonly title="Liczone automatycznie z daty przyjęcia"/>
+                    </div>
+                    <div class="field-group print-only-room" style="display:none;">
+                        <span class="field-label">Sala/Łóżko</span>
+                        <input type="text" id="roomInputPrint" class="field-value small header-input" autocomplete="off" readonly/>
+                    </div>
+                </div>
+            </div>
+            <h1>Oddział Anestezjologii i Intensywnej Terapii - Karta Zleceń Lekarskich</h1>
+        </div>
+
+        <div class="patient-card">
+            <div class="patient-grid">
+                <div class="field-group" style="grid-column: span 2;">
+                    <span class="field-label">Imię i Nazwisko</span>
+                    <input type="text" id="patientNameInput" class="field-value header-input" autocomplete="off"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">PESEL</span>
+                    <input type="text" id="peselInput" class="field-value header-input" autocomplete="off" maxlength="11" oninput="validatePESEL(this)"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Nr Historii</span>
+                    <input type="text" id="historyNumberInput" class="field-value header-input" autocomplete="off"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Data przyjęcia</span>
+                    <input type="text" placeholder="DD.MM.RRRR" id="admissionDateInput" class="field-value header-input" autocomplete="off" onchange="calculateIcuDay(); validateDate(this);"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Waga (kg)</span>
+                    <input type="number" id="patientWeight" class="field-value header-input" autocomplete="off" onchange="handleWeightHeightChange()"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Wzrost (cm)</span>
+                    <input type="number" id="heightInput" class="field-value header-input" autocomplete="off" onchange="handleWeightHeightChange()"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">BMI</span>
+                    <input type="text" id="bmiOutput" class="field-value header-input" autocomplete="off" readonly/>
+                </div>
+                <div class="field-group" style="grid-column: span 2;">
+                    <span class="field-label">Rozpoznanie</span>
+                    <input type="text" id="diagnosisInput" class="field-value header-input" autocomplete="off" list="diagnosisList"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">GFR (ml/min)</span>
+                    <input type="number" id="gfrInput" class="field-value gfr-input header-input" autocomplete="off" onchange="adjustAllDosesForGfr()"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Sala/Łóżko</span>
+                    <input type="text" id="roomInput" class="field-value header-input" autocomplete="off"/>
+                </div>
+                <div class="field-group" style="grid-column: span 4;">
+                    <span class="field-label">⚠️ ALERGIE / NIETOLERANCJE</span>
+                    <input type="text" id="allergiesInput" class="field-value alert-field header-input" autocomplete="off"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="clinical-plan-card">
+            <div class="clinical-plan-grid">
+                <div class="field-group" style="grid-column: span 2;">
+                    <span class="field-label">Parametry docelowe / cele na dziś</span>
+                    <input type="text" id="targetsInput" class="field-value header-input" placeholder="np. MAP >65; SpO2 88-92%; RASS 0 do -1; glikemia 140-180" autocomplete="off"/>
+                </div>
+                <div class="field-group" style="grid-column: span 2;">
+                    <span class="field-label">Nie wykonywać / wstrzymać</span>
+                    <input type="text" id="holdOrdersInput" class="field-value hold-orders-field header-input" placeholder="np. bez LMWH; nie zwiększać sedacji; bez żywienia dojelitowego" autocomplete="off"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">AB od dnia</span>
+                    <input type="text" id="antibioticDayInput" class="field-value header-input" placeholder="np. 3 / 29.04" autocomplete="off"/>
+                </div>
+                <div class="field-group">
+                    <span class="field-label">Rewizja / posiewy</span>
+                    <input type="text" id="antibioticReviewInput" class="field-value header-input" placeholder="np. jutro po posiewach" autocomplete="off"/>
+                </div>
+                <div class="field-group" style="grid-column: span 2;">
+                    <span class="field-label">Plan antybiotykowy</span>
+                    <input type="text" id="antibioticPlanInput" class="field-value header-input" placeholder="np. deeskalacja / stop / kontynuacja" autocomplete="off"/>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-search-bar no-print">
+            <i class="fas fa-search"></i>
+            <input type="text" id="quickSearchInput" placeholder="Szybkie wyszukiwanie leku..." onkeyup="quickSearch(event)">
+            <div id="quickSearchResults" class="search-results"></div>
+        </div>
+
+        <div class="section-header"><i class="fas fa-syringe"></i> LEKI CIĄGŁE - POMPY INFUZYJNE</div>
+        <table id="continuousDrugsTable">
+            <thead>
+                <tr>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
+                    <th style="width: 30%;">Lek / Stężenie</th>
+                    <th style="width: 30%;">Dawka</th>
+                    <th style="width: 15%;">Prędkość [ml/h]</th>
+                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
+                </tr>
+            </thead>
+            <tbody id="continuousDrugsTbody" class="sortable-tbody"></tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addContinuousDrug()" class="add-button"><i class="fas fa-plus-circle"></i> Dodaj lek ciągły</button>
+        </div>
+
+        <div class="section-header green"><i class="fas fa-pills"></i> LEKI OKRESOWE</div>
+        <table id="periodicDrugsTable">
+            <thead>
+                <tr>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
+                    <th style="width: 30%;">Lek / Dawka</th>
+                    <th style="width: 10%;">Droga</th>
+                    <th style="width: 15%;">Częstość</th>
+                    <th style="width: 45%;">Podpis pielęgniarki</th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
+                </tr>
+            </thead>
+            <tbody id="periodicDrugsTbody" class="sortable-tbody"></tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addPeriodicDrug()" class="add-button green"><i class="fas fa-plus-circle"></i> Dodaj lek okresowy</button>
+        </div>
+
+        <div class="section-header cyan"><i class="fas fa-tint"></i> PŁYNOTERAPIA I ŻYWIENIE</div>
+        <table id="fluidsTable">
+            <thead>
+                <tr>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
+                    <th style="width: 20%;">Płyn</th>
+                    <th style="width: 15%;">Dodatek 1</th>
+                    <th style="width: 15%;">Dodatek 2</th>
+                    <th style="width: 10%;">Objętość [ml]</th>
+                    <th style="width: 10%;">Prędkość [ml/h]</th>
+                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
+                </tr>
+            </thead>
+            <tbody class="sortable-tbody"></tbody>
+        </table>
+        <table id="nutritionTable">
+            <thead>
+                <tr>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
+                    <th style="width: 25%;">Typ żywienia</th>
+                    <th style="width: 35%;">Preparat / Dodatki</th>
+                    <th style="width: 15%;">Prędkość [ml/h]</th>
+                    <th style="width: 25%;">Podpis pielęgniarki</th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
+                </tr>
+            </thead>
+            <tbody class="sortable-tbody"></tbody>
+        </table>
+        <div class="nutrition-break-note"><i class="fas fa-pause-circle"></i> Żywienie dojelitowe &mdash; przerwa w podaży:
+            <input type="time" id="enteralBreakStart" class="header-input no-clear break-time-input" value="06:00" onchange="updateSummaries(); markAsChanged();" />
+            &ndash;
+            <input type="time" id="enteralBreakEnd" class="header-input no-clear break-time-input" value="10:00" onchange="updateSummaries(); markAsChanged();" />
+            <span class="break-summary">(podaż <strong id="enteralFeedingHoursLabel">20</strong>&nbsp;h/dobę)</span>. Uwzględnione w bilansie dobowym kalorii i płynów.</div>
+        <div class="controls-summary-container no-print">
+            <div class="button-container no-print">
+                <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj płyn</button>
+                <button onclick="addNutrition()" class="add-button orange"><i class="fas fa-plus-circle"></i> Dodaj żywienie</button>
+            </div>
+            <div class="summary-container">
+                <div class="fluid-balance-indicator">
+                    <div id="fluidBalanceSummary">Suma płynów / 24h: <strong><span id="totalFluids">0</span> ml</strong></div>
+                    <div class="balance-bar">
+                        <div class="balance-fill" id="fluidBalanceFill"></div>
+                    </div>
+                </div>
+                <div class="kcal-indicator">
+                    <div id="kcalSummary">Suma kcal / 24h: <strong><span id="totalKcal">0</span> kcal</strong> (<span id="kcalPerKg">0</span> kcal/kg)</div>
+                    <div class="kcal-bar">
+                        <div class="kcal-fill" id="kcalFill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-header purple page-break-before"><i class="fas fa-stethoscope"></i> PROCEDURY / ZABIEGI</div>
+        <table id="proceduresTable">
+            <thead>
+                <tr>
+                    <th class="drag-column no-print" style="width: 25px;"></th>
+                    <th style="width: 15%;">Godzina</th>
+                    <th style="width: 50%;">Procedura</th>
+                    <th style="width: 35%;">Wykonano (podpis)</th>
+                    <th class="action-column no-print" style="width: 30px;"></th>
+                </tr>
+            </thead>
+            <tbody class="sortable-tbody"></tbody>
+        </table>
+        <div class="button-container no-print">
+            <button onclick="addProcedure()" class="add-button purple"><i class="fas fa-plus-circle"></i> Dodaj procedurę</button>
+        </div>
+
+        <div class="section-header green"><i class="fas fa-pen-to-square"></i> NOWE LEKI / UZUPEŁNIENIA RĘCZNE PO WYDRUKU</div>
+        <table id="manualDrugsTable" class="manual-entry-table">
+            <thead>
+                <tr>
+                    <th style="width: 35%;">Lek / zlecenie</th>
+                    <th style="width: 10%;">Droga</th>
+                    <th style="width: 15%;">Dawka / częstość</th>
+                    <th style="width: 40%;">Podpis pielęgniarki</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+                <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+                <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+                <tr><td>&nbsp;</td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <div class="section-header gray"><i class="fas fa-file-alt"></i> UWAGI DODATKOWE / ZALECENIA</div>
+        <div class="footer-grid">
+            <div class="notes-section">
+                <textarea placeholder="Miejsce na dodatkowe zalecenia, uwagi, konsultacje..." autocomplete="off"></textarea>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line"></div>
+                <div class="signature-label">LEKARZ DYŻURNY</div>
+                <div class="signature-sublabel">(pieczątka i podpis)</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="patientsModal" class="modal no-print no-clear" style="display: none;">
+        <div class="modal-content modal-wide">
+            <div class="modal-header">
+                <h3 id="patientsModalTitle"><i class="fas fa-user-injured"></i> Pacjenci</h3>
+                <span class="close" onclick="closeModal('patientsModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="patientsListView">
+                    <div class="patients-toolbar">
+                        <div class="patients-search">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="patientsSearchInput" placeholder="Szukaj po imieniu, numerze historii lub rozpoznaniu..." oninput="renderPatientsList()">
+                        </div>
+                        <button class="control-button save small" onclick="createPatientFromCurrent()" title="Dodaj aktualnie wpisanego pacjenta do kartoteki">
+                            <i class="fas fa-user-plus"></i> Dodaj z bieżącej karty
+                        </button>
+                    </div>
+                    <ul id="patientsList" class="patients-list"></ul>
+                    <div id="patientsEmpty" class="patients-empty" style="display:none;">
+                        <i class="fas fa-folder-open"></i>
+                        <div>Brak pacjentów w kartotece</div>
+                        <small>Zapisz kartę przyciskiem „Zapisz" - pacjent pojawi się tutaj automatycznie.</small>
+                    </div>
+                </div>
+                <div id="patientHistoryView" style="display:none;">
+                    <button class="control-button small back-button" onclick="showPatientsListView()">
+                        <i class="fas fa-arrow-left"></i> Wróć do listy pacjentów
+                    </button>
+                    <div id="patientHistoryHeader" class="patient-history-header"></div>
+                    <div class="patient-history-actions">
+                        <button class="control-button save small" onclick="createNewCardForActivePatient()" title="Wyczyść kartę i wpisz dane tego pacjenta">
+                            <i class="fas fa-file-medical"></i> Nowa karta dla tego pacjenta
+                        </button>
+                        <button class="control-button clear small" onclick="deleteActivePatient()" title="Usuń pacjenta wraz z całą historią">
+                            <i class="fas fa-trash"></i> Usuń pacjenta
+                        </button>
+                    </div>
+                    <h4 class="history-section-title"><i class="fas fa-clock-rotate-left"></i> Historia kart (dzień po dniu)</h4>
+                    <ul id="patientHistoryList" class="patient-history-list"></ul>
+                    <div id="patientHistoryEmpty" class="patients-empty" style="display:none;">
+                        <i class="fas fa-clock"></i>
+                        <div>Brak zapisanych kart dla tego pacjenta</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="templatesModal" class="modal no-print" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Wybierz szablon karty</h3>
+                <span class="close" onclick="closeModal('templatesModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Wybierz szablon dla typowego przypadku:</p>
+                <div class="templates-grid">
+                    <button class="template-button" onclick="loadTemplate('universal')"><i class="fas fa-hospital"></i><span>Uniwersalny OIT</span></button>
+                    <button class="template-button" onclick="loadTemplate('cardiac')"><i class="fas fa-heartbeat"></i><span>Kardiochirurgia</span></button>
+                    <button class="template-button" onclick="loadTemplate('trauma')"><i class="fas fa-user-injured"></i><span>Uraz wielonarządowy</span></button>
+                    <button class="template-button" onclick="loadTemplate('sepsis')"><i class="fas fa-virus"></i><span>Sepsa / Wstrząs septyczny</span></button>
+                    <button class="template-button" onclick="loadTemplate('respiratory')"><i class="fas fa-lungs"></i><span>ARDS / Niewydolność oddechowa</span></button>
+                    <button class="template-button" onclick="loadTemplate('neurological')"><i class="fas fa-brain"></i><span>Neurologia / Udar</span></button>
+                    <button class="template-button" onclick="loadTemplate('pancreatitis')"><i class="fas fa-capsules"></i><span>Ostre zapalenie trzustki</span></button>
+                    <button class="template-button" onclick="loadTemplate('postop_abdominal')"><i class="fas fa-procedures"></i><span>Stan po operacji brzusznej</span></button>
+                    <button class="template-button" onclick="loadTemplate('liver_failure')"><i class="fas fa-disease"></i><span>Niewydolność wątroby</span></button>
+                    <button class="template-button" onclick="loadTemplate('covid_ards')"><i class="fas fa-head-side-mask"></i><span>COVID-19 / ARDS</span></button>
+                    <button class="template-button" onclick="loadTemplate('renal')"><i class="fas fa-filter"></i><span>CRRT (cytryniany)</span></button>
+                    <button class="template-button" onclick="loadTemplate('vap_pneumonia')"><i class="fas fa-lungs"></i><span>Zapalenie płuc / VAP</span></button>
+                    <button class="template-button" onclick="loadTemplate('post_cardiac_arrest')"><i class="fas fa-heartbeat"></i><span>Po NZK / ROSC</span></button>
+                    <button class="template-button" onclick="loadTemplate('gi_bleeding')"><i class="fas fa-droplet"></i><span>Krwawienie z GOPP</span></button>
+                    <button class="template-button" onclick="loadTemplate('dka_hhs')"><i class="fas fa-syringe"></i><span>DKA / HHS</span></button>
+                    <button class="template-button" onclick="loadTemplate('copd_exacerbation')"><i class="fas fa-wind"></i><span>Zaostrzenie POChP</span></button>
+                    <button class="template-button" onclick="loadTemplate('weaning_extubation')"><i class="fas fa-walking"></i><span>Wybudzanie / ekstubacja</span></button>
+                    <button class="template-button test-template" onclick="loadTemplate('test')"><i class="fas fa-vial"></i><span>Test - Typowy pacjent OIT</span></button>
+                    <button class="template-button test-template" onclick="loadTemplate('test_small')"><i class="fas fa-feather"></i><span>Test - Mały load (stabilny)</span></button>
+                    <button class="template-button test-template" onclick="loadTemplate('test_medium')"><i class="fas fa-flask"></i><span>Test - Średni load (sepsa)</span></button>
+                    <button class="template-button test-template" onclick="loadTemplate('test_large')"><i class="fas fa-bolt"></i><span>Test - Duży load (MOF + CRRT)</span></button>
+                    <button class="template-button save-custom" onclick="saveCurrentAsTemplate()"><i class="fas fa-save"></i><span>Zapisz jako szablon</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <datalist id="continuousDrugsList"></datalist>
+    <datalist id="periodicDrugsList"></datalist>
+    <datalist id="fluidsList"></datalist>
+    <datalist id="enteralProductsList"></datalist>
+    <datalist id="parenteralProductsList"></datalist>
+    <datalist id="nutritionTypesList">
+        <option value="Żywienie dojelitowe"></option>
+        <option value="Żywienie pozajelitowe"></option>
+        <option value="Dieta doustna"></option>
+    </datalist>
+    <datalist id="proceduresList">
+        <option value="Toaleta drzewa oskrzelowego"></option>
+        <option value="RTG klatki piersiowej przyłóżkowe"></option>
+        <option value="Zmiana opatrunku CVC"></option>
+        <option value="Zmiana pozycji ciała"></option>
+        <option value="Profilaktyka odleżyn"></option>
+        <option value="USG płuc"></option>
+        <option value="USG jamy brzusznej"></option>
+        <option value="Bronchoskopia"></option>
+        <option value="Wymiana rurki intubacyjnej"></option>
+        <option value="Wymiana rurki tracheostomijnej"></option>
+        <option value="Założenie CVC"></option>
+        <option value="Założenie cewnika tętniczego"></option>
+        <option value="Założenie cewnika Foleya"></option>
+        <option value="Punkcja lędźwiowa"></option>
+        <option value="Nakłucie jamy opłucnej"></option>
+        <option value="Drenaż jamy opłucnej"></option>
+        <option value="CRRT - rozpoczęcie"></option>
+        <option value="CRRT - wymiana zestawu"></option>
+        <option value="Hemodializa"></option>
+        <option value="Plazmafereza"></option>
+        <option value="Fizjoterapia"></option>
+        <option value="Rehabilitacja oddechowa"></option>
+        <option value="Pionizacja"></option>
+        <option value="EKG"></option>
+        <option value="ECHO serca"></option>
+        <option value="Gastroskopia"></option>
+        <option value="Kolonoskopia"></option>
+        <option value="CT głowy"></option>
+        <option value="CT klatki piersiowej"></option>
+        <option value="CT jamy brzusznej"></option>
+        <option value="Glikemia 4xd"></option>
+        <option value="Glikemia co 1h"></option>
+        <option value="Gazometria + Na/K"></option>
+        <option value="Kontrola temperatury - unikać gorączki"></option>
+        <option value="Próba oddechu spontanicznego"></option>
+        <option value="Ocena gotowości do ekstubacji"></option>
+        <option value="Ocena bólu i majaczenia"></option>
+        <option value="Monitorowanie krwawienia"></option>
+        <option value="Gastroskopia pilna"></option>
+        <option value="Zmiany ułożenia"></option>
+        <option value="Monitorowanie hemodynamiczne"></option>
+        <option value="Kontrola zalegań"></option>
+        <option value="Kinezyterapia"></option>
+        <option value="IAP 2xd"></option>
+        <option value="OCŻ 2xdz"></option>
+    </datalist>
+    <datalist id="diagnosisList">
+        <option value="Zapalenie płuc"></option>
+        <option value="Sepsa"></option>
+        <option value="Wstrząs septyczny"></option>
+        <option value="ARDS"></option>
+        <option value="Niewydolność oddechowa"></option>
+        <option value="Zapalenie płuc / VAP"></option>
+        <option value="Zaostrzenie POChP"></option>
+        <option value="Niewydolność serca"></option>
+        <option value="Ostry zespół wieńcowy"></option>
+        <option value="Uraz wielonarządowy"></option>
+        <option value="Udar mózgu"></option>
+        <option value="Krwotok podpajęczynówkowy"></option>
+        <option value="Stan po zatrzymaniu krążenia"></option>
+        <option value="Krwawienie z GOPP"></option>
+        <option value="DKA / HHS"></option>
+        <option value="Niewydolność wielonarządowa"></option>
+        <option value="Ostre zapalenie trzustki"></option>
+        <option value="Niewydolność nerek"></option>
+        <option value="Niewydolność wątroby"></option>
+    </datalist>
+    <datalist id="timesList">
+        <option value="06:00"></option>
+        <option value="07:00"></option>
+        <option value="08:00"></option>
+        <option value="09:00"></option>
+        <option value="10:00"></option>
+        <option value="11:00"></option>
+        <option value="12:00"></option>
+        <option value="13:00"></option>
+        <option value="14:00"></option>
+        <option value="15:00"></option>
+        <option value="16:00"></option>
+        <option value="17:00"></option>
+        <option value="18:00"></option>
+        <option value="19:00"></option>
+        <option value="20:00"></option>
+        <option value="21:00"></option>
+        <option value="22:00"></option>
+        <option value="23:00"></option>
+        <option value="00:00"></option>
+        <option value="01:00"></option>
+        <option value="02:00"></option>
+        <option value="03:00"></option>
+        <option value="04:00"></option>
+        <option value="05:00"></option>
+        <option value="co 1h"></option>
+        <option value="co 2h"></option>
+        <option value="co 4h"></option>
+        <option value="co 6h"></option>
+        <option value="co 8h"></option>
+        <option value="co 12h"></option>
+        <option value="co 24h"></option>
+        <option value="doraźnie"></option>
+    </datalist>
+    <datalist id="additivesList"></datalist>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        (function () {
+            const professionalStyles = document.getElementById('professionalStyles');
+            if (!professionalStyles) return;
+            window.addEventListener('beforeprint', function () { professionalStyles.disabled = true; });
+            window.addEventListener('afterprint', function () { professionalStyles.disabled = false; });
+        })();
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
