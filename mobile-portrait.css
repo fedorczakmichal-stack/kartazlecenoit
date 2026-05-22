@@ -27,15 +27,27 @@
     .top-controls > * { flex: 0 0 auto; }
     .control-button { padding: 8px 12px; font-size: 13px; }
 
-    /* SIATKI DANYCH: waski ekran -> mniej kolumn.
-       Dane pacjenta 2 kolumny; plan kliniczny 1 kolumna (dlugie pola). */
-    .patient-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-    }
+    /* SIATKI DANYCH: na waskim telefonie 1 kolumna. Kazde pole to
+       samodzielny blok (label nad swoim inputem) - przy 2 kolumnach
+       inline grid-column: span 2/4 powodowal nakladanie sie labelek
+       i pol na sasiednie komorki. grid-column 1/-1 !important nadpisuje
+       inline span, wiec kazde pole zajmuje pelna szerokosc wiersza. */
+    .patient-grid,
     .clinical-plan-grid {
         grid-template-columns: 1fr;
-        gap: 10px;
+        gap: 12px;
+    }
+    .patient-grid > .field-group,
+    .clinical-plan-grid > .field-group {
+        grid-column: 1 / -1 !important;
+        min-width: 0;
+    }
+    /* Label zawsze nad wlasnym polem, nigdy nie wystaje poza komorke */
+    .patient-grid .field-label,
+    .clinical-plan-grid .field-label {
+        position: static;
+        white-space: normal;
+        overflow-wrap: anywhere;
     }
 
     /* POLA: czcionka >=16px blokuje automatyczny zoom iOS przy focusie,
@@ -66,6 +78,24 @@
         font-size: 16px;
         min-width: 72px;
     }
+
+    /* Ukryj kolumny "Podpis pielegniarki" / "Wykonano (podpis)" - na
+       telefonie sa zbedne (wypelniane recznie przy wydruku) i zjadaja
+       miejsce na nazwe leku. Indeksy zweryfikowane wzgledem index.html;
+       naglowek (th) i komorki (td) maja zgodna pozycje w kazdej tabeli.
+       Dotyczy WYLACZNIE portrait - print/landscape/desktop bez zmian. */
+    #continuousDrugsTable th:nth-child(5), #continuousDrugsTable td:nth-child(5),
+    #periodicDrugsTable th:nth-child(5),   #periodicDrugsTable td:nth-child(5),
+    #fluidsTable th:nth-child(7),          #fluidsTable td:nth-child(7),
+    #nutritionTable th:nth-child(5),       #nutritionTable td:nth-child(5),
+    #proceduresTable th:nth-child(4),      #proceduresTable td:nth-child(4),
+    #manualDrugsTable th:nth-child(4),     #manualDrugsTable td:nth-child(4) {
+        display: none;
+    }
+
+    /* Po odzyskaniu miejsca: kolumna nazwy leku/plynu szersza, by nazwa
+       byla widoczna w jak najwiekszym stopniu */
+    .drug-name, .fluid-name, .nutrition-type { min-width: 150px; }
 
     /* STOPKA / PODSUMOWANIA / TOOLBAR PACJENTOW: jedna kolumna */
     .footer-grid {
