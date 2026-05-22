@@ -97,29 +97,36 @@
        byla widoczna w jak najwiekszym stopniu */
     .drug-name, .fluid-name, .nutrition-type { min-width: 150px; }
 
-    /* Mniejsze, gestsze czcionki w tabelach: ciagle, okresowe, zywienie
-       -> wiecej tresci leku bez ucinania (plyny/procedury bez zmian).
-       Nadpisuje globalne 16px z reguly anty-zoom powyzej. */
-    #continuousDrugsTable td, #periodicDrugsTable td, #nutritionTable td {
+    /* Mniejsze, gestsze czcionki w tabelach: ciagle, okresowe, zywienie,
+       plyny -> wiecej tresci bez ucinania (procedury bez zmian).
+       Nadpisuje globalne 16px z reguly anty-zoom powyzej.
+       UWAGA: plyny zmniejszane TYLKO w portrait (w landscape bez zmian). */
+    #continuousDrugsTable td, #periodicDrugsTable td,
+    #nutritionTable td, #fluidsTable td {
         font-size: 13px;
         line-height: 1.2;
     }
     #continuousDrugsTable .drug-input,
     #periodicDrugsTable .drug-input,
-    #nutritionTable .drug-input {
+    #nutritionTable .drug-input,
+    #fluidsTable .drug-input {
         font-size: 13px;
         line-height: 1.2;
         min-height: 22px;
         padding: 3px 5px;
     }
-    #continuousDrugsTable .secondary-line-input,
-    #periodicDrugsTable .secondary-line-input,
-    #nutritionTable .secondary-line-input {
-        font-size: 11px;
-    }
-    #continuousDrugsTable th, #periodicDrugsTable th, #nutritionTable th {
+    #continuousDrugsTable th, #periodicDrugsTable th,
+    #nutritionTable th, #fluidsTable th {
         font-size: 10px;
     }
+
+    /* W pionie ukrywamy sekundarne linie pod nazwa leku:
+       - "Cel / titracja" (.titration-goal), np. "Titracja wedlug MAP",
+       - "Godziny podania" (.schedule-line), np. "08:00 / 16:00".
+       Obie maja klase .secondary-line-input. Wartosci zostaja w DOM
+       (zapis i wydruk ich nie traca) - tylko nie sa pokazywane na
+       waskim ekranie. Zostaje: nazwa, dawka, predkosc/czestosc. */
+    .secondary-line-input { display: none; }
 
     /* STOPKA / PODSUMOWANIA / TOOLBAR PACJENTOW: jedna kolumna */
     .footer-grid {

@@ -24,20 +24,36 @@
         box-shadow: none;
     }
 
-    /* Pasek narzedzi: przestaje byc "sticky", zeby nie zjadal na stale
-       i tak ograniczonej wysokosci; kompaktowe przyciski */
+    /* Pasek narzedzi: przestaje byc "sticky" (nie zjada ograniczonej
+       wysokosci) i mieci sie w JEDNEJ linii. flex-wrap: nowrap + kompaktowe
+       przyciski; overflow-x: auto jako bezpiecznik, gdyby na najwezszych
+       modelach komplet nie wszedl - wtedy bar przewija sie poziomo zamiast
+       zawijac w kolejne rzedy. */
     .top-controls {
         position: static;
-        padding: 6px 8px;
-        gap: 6px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 5px 8px;
+        gap: 5px;
         justify-content: flex-start;
     }
+    .top-controls > * { flex: 0 0 auto; }
     .control-button {
-        padding: 5px 9px;
+        padding: 5px 8px;
         font-size: 11px;
         gap: 5px;
+        white-space: nowrap;
     }
     .control-button i { font-size: 12px; }
+    /* Wskaznik autozapisu nie spycha przyciskow w dol ani nie rozpycha
+       paska - kompaktowy, bez margin-left:auto z professional-ui */
+    .autosave-indicator,
+    .offline-indicator {
+        margin-left: 0;
+        padding: 5px 8px;
+        font-size: 10px;
+    }
 
     /* Naglowek: mniejszy padding/margines, logo i dane w jednym wierszu
        (cofamy zmiane z professional-ui.css na flex-direction: column) */
