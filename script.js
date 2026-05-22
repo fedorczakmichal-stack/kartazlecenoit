@@ -2954,6 +2954,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('darkModeToggle').addEventListener('click', toggleDarkMode);
     window.addEventListener('online', updateOnlineStatus);
     window.addEventListener('offline', updateOnlineStatus);
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('sw.js').catch(function(err) {
+                console.warn('Service worker registration failed:', err);
+            });
+        });
+    }
     
     // Używamy delegacji zdarzeń dla dynamicznie dodawanych inputów
     document.addEventListener('input', function(e) {
