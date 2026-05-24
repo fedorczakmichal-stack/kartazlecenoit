@@ -203,6 +203,7 @@
             </thead>
             <tbody class="sortable-tbody"></tbody>
         </table>
+        <div class="nutrition-print-block">
         <table id="nutritionTable">
             <thead>
                 <tr>
@@ -221,6 +222,7 @@
             &ndash;
             <input type="text" inputmode="numeric" maxlength="5" size="5" pattern="[0-9]{2}:[0-9]{2}" placeholder="HH:MM" id="enteralBreakEnd" class="header-input no-clear break-time-input" value="10:00" oninput="formatBreakTimeInput(this)" onchange="normalizeBreakTime(this); updateSummaries(); markAsChanged();" />
             <span class="break-summary">(podaż <strong id="enteralFeedingHoursLabel">20</strong>&nbsp;h/dobę)</span><span class="break-note-extra">. Uwzględnione w bilansie dobowym kalorii i płynów.</span></div>
+        </div>
         <div class="controls-summary-container no-print">
             <div class="button-container no-print">
                 <button onclick="addFluid()" class="add-button cyan"><i class="fas fa-plus-circle"></i> Dodaj płyn</button>

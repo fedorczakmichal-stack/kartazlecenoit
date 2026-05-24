@@ -1980,6 +1980,23 @@ html.dark-mode .offline-indicator {
         break-before: page !important;
     }
 
+    /* Cale zywienie (tabela + notka o przerwie) trzymamy razem: jesli nie
+       miesci sie w pozostalym miejscu na stronie, przenosi sie w CALOSCI
+       na nastepna strone zamiast rozjezdzac sie przez granice. */
+    .nutrition-print-block {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+    }
+
+    /* Pasek Netlify "Deploy Preview / Drawer" - pojawia sie tylko w
+       podgladzie deploya (PR na GitHub/Netlify), nie na docelowym serwerze.
+       Ukrywamy na wydruku, by nie smiecil. */
+    netlify-drawer,
+    [id*="netlify"],
+    [class*="netlify"] {
+        display: none !important;
+    }
+
     .manual-entry-table tbody td {
         height: 55px !important;
         border: 1px solid #555 !important;
