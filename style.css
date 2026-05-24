@@ -1981,12 +1981,13 @@ html.dark-mode .offline-indicator {
         break-inside: avoid !important;
     }
 
-    /* PROCEDURY NIE wymusza juz nowej strony - ma plynac razem z
-       PLYNOTERAPIA I ZYWIENIE (jesli te zjechaly na strone 2, procedury
-       ida za nimi na tej samej stronie). */
+    /* PROCEDURY / ZABIEGI zawsze zaczynaja STRONE 2 (wraz z NOWE LEKI,
+       uwagami i podpisem lekarza). Strona 1 = leki + plynoterapia/zywienie.
+       Auto-skalowanie (setPrintScale) dba, by oba bloki zmiescily sie
+       kazdy na swojej stronie - razem max 2 strony. */
     .page-break-before {
-        page-break-before: auto !important;
-        break-before: auto !important;
+        page-break-before: always !important;
+        break-before: page !important;
     }
 
     /* Cala sekcja PLYNOTERAPIA I ZYWIENIE (naglowek + plyny + zywienie +
