@@ -110,7 +110,11 @@
     #periodicDrugsTable .drug-input,
     #nutritionTable .drug-input,
     #fluidsTable .drug-input {
-        font-size: 13px;
+        /* 16px: iOS przybliza ekran przy focusie tylko gdy input < 16px.
+           Wiersze pozostaja zwarte dzieki kompaktowemu padding/min-height,
+           a pelna nazwa leku jest dostepna (ukryta kolumna podpisu + szeroka
+           kolumna nazwy + poziomy scroll tabeli w portrait). */
+        font-size: 16px;
         line-height: 1.2;
         min-height: 22px;
         padding: 3px 5px;

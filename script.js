@@ -1651,6 +1651,26 @@ function removeRow(button) {
 const PARENTERAL_FEEDING_HOURS = 24;
 const DEFAULT_ENTERAL_FEEDING_HOURS = 20;
 
+// Pola przerwy to zwykły tekst (24h, bez AM/PM). Podczas pisania wstawiamy
+// dwukropek po 2 cyfrach; po opuszczeniu pola normalizujemy do poprawnego
+// HH:MM (zegar 24h), żeby literówka nie psuła liczenia godzin podaży.
+function formatBreakTimeInput(input) {
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
+    input.value = digits.length <= 2 ? digits : digits.slice(0, 2) + ':' + digits.slice(2);
+}
+
+function normalizeBreakTime(input) {
+    const digits = input.value.replace(/\D/g, '');
+    if (!digits) { input.value = ''; return; }
+    let h = parseInt(digits.slice(0, 2), 10);
+    let m = digits.length > 2 ? parseInt(digits.slice(2, 4), 10) : 0;
+    if (isNaN(h)) h = 0;
+    if (isNaN(m)) m = 0;
+    h = Math.min(23, Math.max(0, h));
+    m = Math.min(59, Math.max(0, m));
+    input.value = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+}
+
 // Oblicza dobową liczbę godzin podaży żywienia dojelitowego na podstawie pól przerwy.
 function getEnteralFeedingHours() {
     const startEl = document.getElementById('enteralBreakStart');
