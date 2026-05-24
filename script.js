@@ -1339,6 +1339,9 @@ function syncOfflineData() {
 
 // --- DRAG & DROP ---
 function initializeSortable() {
+    // Offline / brak biblioteki SortableJS (np. CDN niedostepny) - nie wywalaj
+    // aplikacji; przeciaganie wierszy po prostu nie bedzie dostepne.
+    if (typeof Sortable === 'undefined') return;
     sortableInstances.forEach(instance => instance.destroy());
     sortableInstances = [];
     document.querySelectorAll('.sortable-tbody').forEach(tbody => {
