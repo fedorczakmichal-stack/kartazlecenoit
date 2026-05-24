@@ -27,6 +27,13 @@
     .top-controls > * { flex: 0 0 auto; }
     .control-button { padding: 8px 12px; font-size: 13px; }
 
+    /* Naglowek w pionie: zostaw logo + "Oddzial Intensywnej Terapii",
+       ukryj nazwe szpitala i adres (sa juz w logo, oszczedzamy szerokosc) */
+    .hospital-logo div div:nth-child(2),
+    .hospital-logo div div:last-child {
+        display: none;
+    }
+
     /* SIATKI DANYCH: na waskim telefonie 1 kolumna. Kazde pole to
        samodzielny blok (label nad swoim inputem) - przy 2 kolumnach
        inline grid-column: span 2/4 powodowal nakladanie sie labelek
