@@ -1702,7 +1702,7 @@ html.dark-mode .offline-indicator {
         border: 0.5px solid #000 !important;
         padding: 1px 3px !important;
         border-radius: 0 !important;
-        margin: 0.8mm 0 0.3mm 0 !important;
+        margin: 0.5mm 0 0.2mm 0 !important;
         font-size: 8px !important;
         font-weight: 700 !important;
         page-break-after: avoid !important;
@@ -1736,36 +1736,35 @@ html.dark-mode .offline-indicator {
     
     tbody td {
         border: 0.5px solid #000 !important;
-        padding: 0.3mm 1mm !important;
+        padding: 0.2mm 1mm !important;
         vertical-align: middle !important;
         height: auto !important;
-        min-height: 12px !important;
+        min-height: 11px !important;
         overflow: visible !important;
         word-wrap: break-word !important;
     }
 
-    /* Specjalne style dla różnych tabel - zageszczone, by tresc powyzej
-       sekcji PROCEDURY zmiescila sie na jednej stronie */
+    /* Specjalne style dla różnych tabel - zageszczone (plan A: max 3 strony) */
     #continuousDrugsTable tbody td {
-        min-height: 13px !important;
+        min-height: 12px !important;
     }
 
     #periodicDrugsTable tbody td {
-        min-height: 13px !important;
+        min-height: 12px !important;
     }
 
     #fluidsTable tbody td {
-        min-height: 12px !important;
+        min-height: 11px !important;
     }
 
     #nutritionTable tbody td {
         height: auto !important;
-        min-height: 13px !important;
-        padding-bottom: 0.3mm !important;
+        min-height: 12px !important;
+        padding-bottom: 0.2mm !important;
     }
 
     #proceduresTable tbody td {
-        min-height: 14px !important;
+        min-height: 12px !important;
     }
 
 /* Optymalizacja szerokości kolumn dla wydruku */
@@ -1926,22 +1925,22 @@ html.dark-mode .offline-indicator {
     .notes,
     textarea {
         border: 0.5px solid #000 !important;
-        min-height: 25px !important;
-        max-height: 35px !important;
-        padding: 1mm !important;
+        min-height: 18px !important;
+        max-height: 26px !important;
+        padding: 0.7mm !important;
         resize: none !important;
         background: #fff !important;
         color: #000 !important;
         font-size: 7px !important;
         line-height: 1.1 !important;
     }
-    
+
     .signature-box {
-        padding-top: 0.5mm !important;
+        padding-top: 0.3mm !important;
     }
-    
+
     .signature-line {
-        min-height: 20px !important;
+        min-height: 14px !important;
         margin-bottom: 0.5mm !important;
     }
     
@@ -2002,7 +2001,7 @@ html.dark-mode .offline-indicator {
     }
 
     .manual-entry-table tbody td {
-        height: 55px !important;
+        height: 30px !important;
         border: 1px solid #555 !important;
         background: white !important;
         vertical-align: top !important;
@@ -2011,7 +2010,7 @@ html.dark-mode .offline-indicator {
     .manual-entry-table tbody td::before {
         content: "" !important;
         display: inline-block !important;
-        height: 50px !important;
+        height: 26px !important;
         width: 0 !important;
         vertical-align: top !important;
     }
@@ -2024,7 +2023,7 @@ html.dark-mode .offline-indicator {
     .manual-entry-table tbody tr {
         page-break-inside: avoid !important;
         break-inside: avoid !important;
-        height: 55px !important;
+        height: 30px !important;
     }
 
     /* Przerwa w zywieniu dojelitowym - na wydruku jako czyste zdanie
