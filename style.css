@@ -1975,15 +1975,19 @@ html.dark-mode .offline-indicator {
         break-inside: avoid !important;
     }
 
+    /* PROCEDURY NIE wymusza juz nowej strony - ma plynac razem z
+       PLYNOTERAPIA I ZYWIENIE (jesli te zjechaly na strone 2, procedury
+       ida za nimi na tej samej stronie). */
     .page-break-before {
-        page-break-before: always !important;
-        break-before: page !important;
+        page-break-before: auto !important;
+        break-before: auto !important;
     }
 
-    /* Cale zywienie (tabela + notka o przerwie) trzymamy razem: jesli nie
-       miesci sie w pozostalym miejscu na stronie, przenosi sie w CALOSCI
-       na nastepna strone zamiast rozjezdzac sie przez granice. */
-    .nutrition-print-block {
+    /* Cala sekcja PLYNOTERAPIA I ZYWIENIE (naglowek + plyny + zywienie +
+       notka) jako jeden nierozrywalny blok: jesli nie miesci sie w
+       pozostalym miejscu strony 1, przenosi sie w CALOSCI na strone 2.
+       Leki (ciagle/okresowe) sa wyzej, wiec zostaja na stronie 1. */
+    .fluids-nutrition-block {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
     }
