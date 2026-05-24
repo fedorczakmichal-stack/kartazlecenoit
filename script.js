@@ -2868,8 +2868,46 @@ function runPrePrintCheck(showDialog = false, options = {}) {
     return warnings;
 }
 
+// --- Auto-skalowanie wydruku: cel max 2 strony A4 ---
+// Wysokosci wierszy w druku sa male i w miare stale, wiec szacujemy wysokosc
+// z liczby wierszy i skalujemy #card-container zoomem tak, by zmiescic sie na
+// 2 stronach. Mala karta -> zoom 1 (bez zmian); duza -> zoom < 1.
+function countRows(selector) {
+    const el = document.querySelector(selector);
+    return el ? el.querySelectorAll('tr').length : 0;
+}
+
+function setPrintScale() {
+    const card = document.getElementById('card-container');
+    if (!card) return;
+    const contPer = countRows('#continuousDrugsTbody') + countRows('#periodicDrugsTbody');
+    const other = countRows('#fluidsTable tbody') + countRows('#nutritionTable tbody') + countRows('#proceduresTable tbody');
+
+    // Stale kalibracyjne (px @96dpi) - latwe do dostrojenia:
+    const OVERHEAD = 430;   // naglowek + dane pacjenta + plan kliniczny + stopka
+    const SECTIONS = 180;   // naglowki sekcji + naglowki tabel + notka o przerwie
+    const ROW_DRUG = 30;    // wiersz leku ciaglego/okresowego (czesto 2 linie)
+    const ROW_OTHER = 16;   // plyny / zywienie / procedury
+    const MANUAL = 4 * 31;  // reczna tabela "NOWE LEKI"
+    const TWO_PAGES = 2040; // ~2 strony A4 uzytecznej wysokosci
+
+    const estimated = OVERHEAD + SECTIONS + MANUAL + contPer * ROW_DRUG + other * ROW_OTHER;
+    let scale = Math.min(1, TWO_PAGES / estimated);
+    scale = Math.max(scale, 0.5); // nie schodzimy ponizej 50% (czytelnosc)
+    card.style.setProperty('--print-scale', scale.toFixed(3));
+}
+
+function resetPrintScale() {
+    const card = document.getElementById('card-container');
+    if (card) card.style.setProperty('--print-scale', '1');
+}
+
+window.addEventListener('beforeprint', setPrintScale);
+window.addEventListener('afterprint', resetPrintScale);
+
 function printCard() {
     preparePrintHeaderFields();
+    setPrintScale();
 
     const warnings = runPrePrintCheck(false);
     if (warnings.length) {

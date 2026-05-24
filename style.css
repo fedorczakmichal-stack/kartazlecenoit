@@ -1525,6 +1525,13 @@ html.dark-mode .offline-indicator {
         border-radius: 0 !important;
     }
 
+    /* Auto-skalowanie wydruku do max 2 stron - wartosc --print-scale
+       ustawia JS (setPrintScale) przed drukiem na podstawie ilosci tresci.
+       Mala karta: 1 (bez zmian). Duza: <1, by zmiescic sie na 2 stronach. */
+    #card-container {
+        zoom: var(--print-scale, 1);
+    }
+
     .top-controls,
     .no-print,
     .action-column,
