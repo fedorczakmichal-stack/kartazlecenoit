@@ -1559,8 +1559,8 @@ html.dark-mode .offline-indicator {
         background: none !important;
         color: #000 !important;
         border-bottom: 0.5px solid #000 !important;
-        padding: 1mm 0 !important;
-        margin-bottom: 1mm !important;
+        padding: 0.6mm 0 !important;
+        margin-bottom: 0.6mm !important;
         border-radius: 0 !important;
         page-break-inside: avoid !important;
     }
@@ -1584,7 +1584,7 @@ html.dark-mode .offline-indicator {
         padding: 0 !important;
         border-radius: 0 !important;
     }
-    .hospital-logo-img img { height: 24px !important; width: auto !important; }
+    .hospital-logo-img img { height: 19px !important; width: auto !important; }
 
     .hospital-logo div div:first-child {
         font-size: 10px !important;
@@ -1605,8 +1605,8 @@ html.dark-mode .offline-indicator {
         color: #000 !important;
         min-width: 45px !important;
         font-size: 8px !important;
-        padding: 0.5mm 1mm !important;
-        min-height: 14px !important;
+        padding: 0.3mm 1mm !important;
+        min-height: 12px !important;
     }
     
     .header-right-info .field-group .field-label {
@@ -1628,8 +1628,8 @@ html.dark-mode .offline-indicator {
     .patient-card {
         border: 0.5px solid #000 !important;
         background: #fff !important;
-        padding: 1.5mm !important;
-        margin-bottom: 1mm !important;
+        padding: 1mm !important;
+        margin-bottom: 0.6mm !important;
         border-radius: 0 !important;
         page-break-inside: avoid !important;
     }
@@ -1637,8 +1637,8 @@ html.dark-mode .offline-indicator {
     .clinical-plan-card {
         border: 0.5px solid #000 !important;
         background: #fff !important;
-        padding: 1.2mm !important;
-        margin-bottom: 1mm !important;
+        padding: 0.8mm !important;
+        margin-bottom: 0.6mm !important;
         border-radius: 0 !important;
         page-break-inside: avoid !important;
     }
@@ -1669,8 +1669,8 @@ html.dark-mode .offline-indicator {
         background: #fff !important;
         color: #000 !important;
         font-size: 8px !important;
-        padding: 0.5mm 1mm !important;
-        min-height: 14px !important;
+        padding: 0.3mm 1mm !important;
+        min-height: 12px !important;
         height: auto !important;
         border-radius: 0 !important;
         box-shadow: none !important;
@@ -1702,7 +1702,7 @@ html.dark-mode .offline-indicator {
         border: 0.5px solid #000 !important;
         padding: 1px 3px !important;
         border-radius: 0 !important;
-        margin: 1.5mm 0 0.5mm 0 !important;
+        margin: 0.8mm 0 0.3mm 0 !important;
         font-size: 8px !important;
         font-weight: 700 !important;
         page-break-after: avoid !important;
@@ -1736,35 +1736,36 @@ html.dark-mode .offline-indicator {
     
     tbody td {
         border: 0.5px solid #000 !important;
-        padding: 0.5mm 1mm !important;
+        padding: 0.3mm 1mm !important;
         vertical-align: middle !important;
         height: auto !important;
-        min-height: 15px !important;
+        min-height: 12px !important;
         overflow: visible !important;
         word-wrap: break-word !important;
     }
 
-    /* Specjalne style dla różnych tabel */
+    /* Specjalne style dla różnych tabel - zageszczone, by tresc powyzej
+       sekcji PROCEDURY zmiescila sie na jednej stronie */
     #continuousDrugsTable tbody td {
-        min-height: 18px !important;
+        min-height: 13px !important;
     }
-    
+
     #periodicDrugsTable tbody td {
-        min-height: 18px !important;
+        min-height: 13px !important;
     }
-    
+
     #fluidsTable tbody td {
-        min-height: 16px !important;
+        min-height: 12px !important;
     }
 
     #nutritionTable tbody td {
         height: auto !important;
-        min-height: 20px !important;
-        padding-bottom: 1mm !important;
+        min-height: 13px !important;
+        padding-bottom: 0.3mm !important;
     }
-    
+
     #proceduresTable tbody td {
-        min-height: 15px !important;
+        min-height: 14px !important;
     }
 
 /* Optymalizacja szerokości kolumn dla wydruku */
@@ -1847,19 +1848,14 @@ html.dark-mode .offline-indicator {
         font-weight: 500 !important;
     }
 
+    /* "NOWY" nie pojawia sie na wydruku (oraz cala pusta linia pomocnicza,
+       co dodatkowo skraca wiersze leku) */
     .new-drug-badge {
-        color: #000 !important;
-        background: #fff !important;
-        border: 0.5px solid #000 !important;
-        padding: 0 2px !important;
-        font-size: 6px !important;
-        border-radius: 0 !important;
-        margin: 0 0 1px 0 !important;
+        display: none !important;
     }
 
     .row-helper-line {
-        min-height: 8px !important;
-        margin: 0 0 1px 0 !important;
+        display: none !important;
     }
 
     .secondary-line-input {
@@ -1884,7 +1880,7 @@ html.dark-mode .offline-indicator {
         border: 0.5px solid #000 !important;
         border-radius: 0 !important;
         background: #fff !important;
-        min-height: 15px !important;
+        min-height: 11px !important;
     }
 
 /* ===== UKRYCIE OZNACZEŃ GFR NA WYDRUKU ===== */
