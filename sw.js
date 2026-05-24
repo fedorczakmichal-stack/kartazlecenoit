@@ -1,8 +1,10 @@
 // Service worker — Karta Zleceń OIT
 // Bump CACHE_VERSION przy każdej zmianie plików shella, aby wymusić odświeżenie cache.
-const CACHE_VERSION = 'karta-oit-v3.8.0';
+const CACHE_VERSION = 'karta-oit-v3.9.0';
 
 // App shell — pliki same-origin niezbędne do pracy offline.
+// Zasoby vendor (Font Awesome, SortableJS, Inter) są lokalne, więc karta
+// działa bez internetu na serwerze szpitala.
 const SHELL_ASSETS = [
   './',
   './index.html',
@@ -12,7 +14,13 @@ const SHELL_ASSETS = [
   './mobile-portrait.css',
   './script.js',
   './manifest.json',
-  './icon.svg'
+  './icon.svg',
+  './vendor/sortable/Sortable.min.js',
+  './vendor/fontawesome/css/all.min.css',
+  './vendor/fontawesome/webfonts/fa-solid-900.woff2',
+  './vendor/inter/inter.css',
+  './vendor/inter/files/inter-latin-wght-normal.woff2',
+  './vendor/inter/files/inter-latin-ext-wght-normal.woff2'
 ];
 
 self.addEventListener('install', (event) => {
