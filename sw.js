@@ -1,6 +1,6 @@
 // Service worker — Karta Zleceń OIT
 // Bump CACHE_VERSION przy każdej zmianie plików shella, aby wymusić odświeżenie cache.
-const CACHE_VERSION = 'karta-oit-v3.7.0';
+const CACHE_VERSION = 'karta-oit-v3.8.0';
 
 // App shell — pliki same-origin niezbędne do pracy offline.
 const SHELL_ASSETS = [
@@ -8,6 +8,8 @@ const SHELL_ASSETS = [
   './index.html',
   './style.css',
   './professional-ui.css',
+  './mobile-landscape.css',
+  './mobile-portrait.css',
   './script.js',
   './manifest.json',
   './icon.svg'
