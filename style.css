@@ -242,6 +242,17 @@ body {
 
 .hospital-header { display: flex; justify-content: space-between; align-items: center; }
 .hospital-logo { display: flex; align-items: center; gap: 10px; }
+/* Logo szpitala (240x60, kolory na jasnym tle) - bialy kafelek, by bylo
+   widoczne na ciemnym naglowku ekranu i czytelne na wydruku */
+.hospital-logo-img {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 6px;
+    padding: 5px 8px;
+}
+.hospital-logo-img img { height: 30px; width: auto; display: block; }
 .logo-icon { 
     width: 32px; 
     height: 32px; 
@@ -1566,11 +1577,24 @@ html.dark-mode .offline-indicator {
         border: 0.5px solid #000 !important;
         font-size: 10px !important;
     }
-    
+
+    /* Logo szpitala na wydruku - w kolorze, bez kafelka/ramki */
+    .hospital-logo-img {
+        background: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+    }
+    .hospital-logo-img img { height: 24px !important; width: auto !important; }
+
     .hospital-logo div div:first-child {
         font-size: 10px !important;
     }
-    
+
+    .hospital-logo div div:nth-child(2) {
+        font-size: 9px !important;
+        font-weight: 600 !important;
+    }
+
     .hospital-logo div div:last-child {
         font-size: 8px !important;
     }
