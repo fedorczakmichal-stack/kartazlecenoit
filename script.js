@@ -2851,11 +2851,9 @@ function runPrePrintCheck(showDialog = false, options = {}) {
         warnings.push('Alergia sugeruje ryzyko po beta-laktamach, a w zleceniach jest beta-laktam.');
     }
 
-    if (hasAntibioticOrders(state)) {
-        if (!valueOf('antibioticDayInput')) warnings.push('W zleceniach jest antybiotyk / lek przeciwinfekcyjny, ale brak pola "AB od dnia".');
-        if (!valueOf('antibioticReviewInput')) warnings.push('W zleceniach jest antybiotyk / lek przeciwinfekcyjny, ale brak planu rewizji / posiewów.');
-        if (!valueOf('antibioticPlanInput')) warnings.push('W zleceniach jest antybiotyk / lek przeciwinfekcyjny, ale brak planu stop / deeskalacji / kontynuacji.');
-    }
+    // Pola planu antybiotykowego (AB od dnia / rewizja-posiewy / plan) oraz
+    // "Parametry docelowe / cele na dzis" sa OPCJONALNE - puste nie sa
+    // zglaszane jako brak w kontroli przed wydrukiem.
 
     if (showDialog) {
         if (warnings.length) {
