@@ -2037,6 +2037,8 @@ html.dark-mode .offline-indicator {
         text-align: left !important;
     }
     .nutrition-break-note .break-summary { margin-left: 3px !important; }
+    /* Na wydruku pomijamy dopisek "Uwzglednione w bilansie..." */
+    .nutrition-break-note .break-note-extra { display: none !important; }
 }
 
 .manual-entry-table {
