@@ -2779,7 +2779,17 @@ function clearCard(force = false) {
         if (!force) {
             showToast('Wyczyszczono', 'Karta została wyczyszczona', 'info');
         }
-    } 
+    }
+}
+
+// Rozpoczyna pusta karte dla NOWEGO pacjenta: czysci karte i odznacza
+// aktualnie wybranego pacjenta (zaczynamy od zera).
+function startNewPatient() {
+    if (!confirm('Rozpocząć kartę dla NOWEGO pacjenta?\nBieżące, niezapisane dane zostaną wyczyszczone.')) return;
+    clearCard(true);
+    try { localStorage.removeItem(ACTIVE_PATIENT_KEY); } catch (e) {}
+    if (typeof updateActivePatientBadge === 'function') updateActivePatientBadge();
+    showToast('Nowy pacjent', 'Pusta karta gotowa dla nowego pacjenta', 'success', 2500);
 }
 
 function runPrePrintCheck(showDialog = false, options = {}) {
@@ -2884,9 +2894,9 @@ function setPrintScale() {
     const proc = countRows('#proceduresTable tbody');
 
     // Stale kalibracyjne (px @96dpi) - latwe do dostrojenia:
-    const ROW_DRUG = 28;    // wiersz leku ciaglego/okresowego (czesto 2 linie)
-    const ROW_OTHER = 16;   // plyny / zywienie / procedury
-    const ONE_PAGE = 1010;  // uzyteczna wysokosc 1 strony A4
+    const ROW_DRUG = 22;    // wiersz leku ciaglego/okresowego (czesto 2 linie)
+    const ROW_OTHER = 14;   // plyny / zywienie / procedury
+    const ONE_PAGE = 1030;  // uzyteczna wysokosc 1 strony A4
 
     // STRONA 1: naglowek + dane pacjenta + plan + leki + plynoterapia/zywienie
     const block1 = 180   // naglowek + karta pacjenta + plan kliniczny
