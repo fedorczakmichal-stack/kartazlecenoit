@@ -2921,12 +2921,41 @@ function resetPrintScale() {
     if (card) card.style.setProperty('--print-scale', '1');
 }
 
-window.addEventListener('beforeprint', setPrintScale);
-window.addEventListener('afterprint', resetPrintScale);
+// Na wydruku godziny podania leku okresowego (np. "06:00 / 14:00 / 22:00")
+// przenosimy do kolumny "Podpis pielegniarki", rozlozone z odstepem, by
+// pielegniarka mogla parafowac obok kazdej godziny.
+function preparePrintAdminTimes() {
+    const tbody = document.getElementById('periodicDrugsTbody');
+    if (!tbody) return;
+    tbody.querySelectorAll('tr').forEach(tr => {
+        const scheduleEl = tr.querySelector('.schedule-line');
+        const sigCell = tr.querySelector('.signature-box-cell');
+        if (!sigCell) return;
+        const val = scheduleEl ? (scheduleEl.value || '').trim() : '';
+        const times = val ? val.split(/[\/,;]+/).map(s => s.trim()).filter(Boolean) : [];
+        if (times.length) {
+            sigCell.innerHTML = '<span class="admin-times">' +
+                times.map(t => '<span class="admin-time">' + t.replace(/[<>&]/g, '') + '</span>').join('') +
+                '</span>';
+            sigCell.setAttribute('data-print-times', '1');
+        }
+    });
+}
+
+function clearPrintAdminTimes() {
+    document.querySelectorAll('#periodicDrugsTbody .signature-box-cell[data-print-times]').forEach(c => {
+        c.innerHTML = '';
+        c.removeAttribute('data-print-times');
+    });
+}
+
+window.addEventListener('beforeprint', function () { setPrintScale(); preparePrintAdminTimes(); });
+window.addEventListener('afterprint', function () { resetPrintScale(); clearPrintAdminTimes(); });
 
 function printCard() {
     preparePrintHeaderFields();
     setPrintScale();
+    preparePrintAdminTimes();
 
     const warnings = runPrePrintCheck(false);
     if (warnings.length) {

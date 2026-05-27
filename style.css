@@ -1512,7 +1512,7 @@ html.dark-mode .offline-indicator {
     html, body {
         background: #fff !important;
         color: #000 !important;
-        font-size: 8.5px !important;
+        font-size: 9px !important;
         line-height: 1.15 !important;
     }
 
@@ -1676,7 +1676,7 @@ html.dark-mode .offline-indicator {
         border: 0.5px solid #000 !important;
         background: #fff !important;
         color: #000 !important;
-        font-size: 9.5px !important;
+        font-size: 10px !important;
         padding: 0.2mm 1mm !important;
         min-height: 12px !important;
         height: auto !important;
@@ -1720,7 +1720,7 @@ html.dark-mode .offline-indicator {
     table {
         width: 100% !important;
         border-collapse: collapse !important;
-        font-size: 8px !important;
+        font-size: 8.5px !important;
         border: 0.5px solid #000 !important;
         margin: 0.5mm 0 !important;
         table-layout: fixed !important;
@@ -1738,7 +1738,7 @@ html.dark-mode .offline-indicator {
         font-weight: 600 !important;
         border: 0.5px solid #000 !important;
         padding: 0.6mm 1mm !important;
-        font-size: 8px !important;
+        font-size: 8.5px !important;
         height: auto !important;
     }
     
@@ -1817,8 +1817,8 @@ html.dark-mode .offline-indicator {
         background: transparent !important;
         color: #000 !important;
         padding: 0 !important;
-        font-size: 8.5px !important;
-        line-height: 1.1 !important;
+        font-size: 9px !important;
+        line-height: 1.15 !important;
         -webkit-appearance: none !important;
         appearance: none !important;
     }
@@ -1829,7 +1829,7 @@ html.dark-mode .offline-indicator {
         color: #000 !important;
         padding: 0 !important;
         margin: 0 !important;
-        font-size: 8px !important;
+        font-size: 8.5px !important;
         line-height: 1.1 !important;
         min-height: auto !important;
         max-height: none !important;
@@ -1871,7 +1871,7 @@ html.dark-mode .offline-indicator {
         color: #000 !important;
         padding: 0 !important;
         margin-top: 1px !important;
-        font-size: 7.5px !important;
+        font-size: 8px !important;
         line-height: 1.05 !important;
         font-style: normal !important;
     }
@@ -1881,6 +1881,12 @@ html.dark-mode .offline-indicator {
         font-weight: 500 !important;
     }
 
+    /* Godziny podania leku okresowego sa przeniesione do kolumny podpisu
+       (patrz .admin-times), wiec w kolumnie "Czestosc" ich nie pokazujemy. */
+    #periodicDrugsTable .schedule-line {
+        display: none !important;
+    }
+
     .signature-box-cell,
     .sig,
     .signature-line {
@@ -1888,6 +1894,18 @@ html.dark-mode .offline-indicator {
         border-radius: 0 !important;
         background: #fff !important;
         min-height: 11px !important;
+    }
+
+    /* Godziny podania w kolumnie "Podpis pielegniarki" - rozlozone z
+       odstepem, by pielegniarka parafowala obok kazdej godziny. */
+    #periodicDrugsTable .signature-box-cell { text-align: left !important; }
+    .admin-times { display: block !important; line-height: 1.6 !important; }
+    .admin-time {
+        display: inline-block !important;
+        white-space: nowrap !important;
+        font-size: 8.5px !important;
+        font-weight: 600 !important;
+        margin: 0 7mm 0.5mm 0 !important; /* prawy odstep = miejsce na parafke */
     }
 
 /* ===== UKRYCIE OZNACZEŃ GFR NA WYDRUKU ===== */
