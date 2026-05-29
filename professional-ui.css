@@ -68,7 +68,9 @@
     .control-button.templates,
     .control-button.save-file,
     .control-button.load-file,
-    .control-button.new-patient {
+    .control-button.new-patient,
+    .control-button.backup,
+    .control-button.restore {
         background: #334155;
     }
 

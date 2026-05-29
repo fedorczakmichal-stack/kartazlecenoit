@@ -1,0 +1,17 @@
+#!/bin/sh
+# Auto-bump CACHE_VERSION w sw.js, gdy zmieniaja sie pliki app-shell.
+# Dzieki temu service worker nigdy nie serwuje starego CSS/JS uzytkownikom.
+# Aktywacja (raz, lokalnie):  git config core.hooksPath .githooks
+
+changed=$(git diff --cached --name-only)
+echo "$changed" | grep -Eq '(^|/)(index\.html|style\.css|professional-ui\.css|mobile-portrait\.css|mobile-landscape\.css|script\.js)$' || exit 0
+
+sw="sw.js"
+[ -f "$sw" ] || exit 0
+
+# sw.js sam w sobie nie jest "app-shell" do bumpa - ale i tak go dorzucamy
+perl -i -pe 's/(karta-oit-v\d+\.\d+\.)(\d+)/$1 . ($2 + 1)/e' "$sw"
+git add "$sw"
+newver=$(grep -oE "karta-oit-v[0-9.]+" "$sw" | head -1)
+echo "pre-commit: CACHE_VERSION -> $newver"
+exit 0

@@ -1306,6 +1306,35 @@ function restoreFromAutosave() {
     }
 }
 
+// Proponuje przywrocenie auto-zapisu, gdy uzytkownik wpisze nazwe pacjenta,
+// dla ktorego istnieje swiezy autosave, a biezaca karta jest pusta (nie
+// nadpisujemy aktywnej pracy). Pyta raz na sesje dla danego klucza.
+let _autosaveOfferedKeys = new Set();
+function maybeOfferAutosaveRestore() {
+    const nameEl = document.getElementById('patientNameInput');
+    const patientName = nameEl ? nameEl.value.trim() : '';
+    if (!patientName) return;
+    const key = `autosave_${toStorageSlug(patientName)}`;
+    if (_autosaveOfferedKeys.has(key)) return;
+    if (!localStorage.getItem(key)) return;
+    const st = getCardState();
+    const hasContent = (st.tables.continuous || []).some(d => d.name) ||
+                       (st.tables.periodic || []).some(d => d.name) ||
+                       (st.tables.fluids || []).some(f => f.name);
+    if (hasContent) return; // jest juz tresc - nie przeszkadzamy
+    _autosaveOfferedKeys.add(key);
+    restoreFromAutosave();
+}
+
+// Ostrzezenie przed utrata niezapisanych zmian (zamkniecie / odswiezenie).
+window.addEventListener('beforeunload', function (e) {
+    if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+    }
+});
+
 // --- OFFLINE MODE ---
 function updateOnlineStatus() {
     const offlineIndicator = document.getElementById('offlineIndicator');
@@ -3021,6 +3050,69 @@ function loadCardFromFile(event) {
     };
     reader.readAsText(file);
     event.target.value = ''; // Reset inputu, aby można było wczytać ten sam plik ponownie
+}
+
+// --- BACKUP CALEJ KARTOTEKI (wszyscy pacjenci + szablony) ---
+// Wszystkie dane zyja w localStorage jednej przegladarki. Eksport/import
+// calej bazy do pliku JSON chroni przed utrata danych przy czyszczeniu
+// przegladarki, awarii profilu czy przenosinach na inny komputer.
+function exportAllData() {
+    const data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        data[k] = localStorage.getItem(k);
+    }
+    const payload = {
+        type: 'karta-oit-backup',
+        version: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        count: Object.keys(data).length,
+        data
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kartoteka_OIT_backup_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Backup', `Wyeksportowano kartotekę (${payload.count} pozycji).`, 'success');
+}
+
+function importAllData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        let payload;
+        try {
+            payload = JSON.parse(e.target.result);
+        } catch (err) {
+            showToast('Błąd importu', 'Nieprawidłowy plik backupu.', 'error');
+            return;
+        }
+        const data = payload && payload.data ? payload.data : null;
+        if (!data || typeof data !== 'object' || payload.type !== 'karta-oit-backup') {
+            showToast('Błąd importu', 'To nie jest plik backupu kartoteki.', 'error');
+            return;
+        }
+        const n = Object.keys(data).length;
+        if (!confirm(`Przywrócić kartotekę z pliku?\n\nPozycji: ${n}\nUtworzono: ${payload.exportedAt || '—'}\n\nUWAGA: dane o tych samych kluczach zostaną nadpisane danymi z pliku.`)) {
+            return;
+        }
+        try {
+            Object.keys(data).forEach(k => localStorage.setItem(k, data[k]));
+        } catch (err) {
+            showToast('Błąd importu', 'Brak miejsca w pamięci przeglądarki - import niepełny.', 'error');
+            console.error('Import quota error:', err);
+            return;
+        }
+        hasUnsavedChanges = false; // unikamy ostrzezenia beforeunload przy reload
+        showToast('Backup', 'Kartoteka przywrócona. Odświeżam aplikację...', 'success');
+        setTimeout(function () { location.reload(); }, 900);
+    };
+    reader.readAsText(file);
+    event.target.value = '';
 }
 
 // --- DARK MODE ---

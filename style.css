@@ -161,6 +161,8 @@ body {
 .control-button.load-file { background-color: var(--teal); }
 .control-button.clear { background-color: var(--danger); }
 .control-button.new-patient { background-color: var(--success); }
+.control-button.backup { background-color: var(--teal); }
+.control-button.restore { background-color: var(--info); }
 .control-button.dark-mode { background-color: var(--gray-700); }
 .control-button:hover { 
     opacity: 0.85;

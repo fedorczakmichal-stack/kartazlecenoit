@@ -26,6 +26,9 @@
         <button onclick="saveCardToFile()" class="control-button save-file"><i class="fas fa-file-download"></i> Zapisz do pliku</button>
         <button onclick="document.getElementById('fileInput').click()" class="control-button load-file"><i class="fas fa-file-upload"></i> Wczytaj z pliku</button>
         <input type="file" id="fileInput" style="display: none;" onchange="loadCardFromFile(event)" accept=".json">
+        <button onclick="exportAllData()" class="control-button backup" title="Zapisz kopię zapasową wszystkich pacjentów do pliku"><i class="fas fa-database"></i> Backup kartoteki</button>
+        <button onclick="document.getElementById('backupInput').click()" class="control-button restore" title="Przywróć kartotekę z pliku kopii zapasowej"><i class="fas fa-clock-rotate-left"></i> Przywróć kartotekę</button>
+        <input type="file" id="backupInput" style="display: none;" onchange="importAllData(event)" accept=".json">
         <button onclick="clearCard()" class="control-button clear" title="Wyczyść (Ctrl+N)"><i class="fas fa-trash"></i> Wyczyść</button>
         <button id="darkModeToggle" class="control-button dark-mode"><i class="fas fa-moon"></i></button>
         <div id="activePatientBadge" class="active-patient-badge" style="display:none;" title="Aktywny pacjent - kliknij aby zarządzać">
@@ -76,7 +79,7 @@
             <div class="patient-grid">
                 <div class="field-group" style="grid-column: span 2;">
                     <span class="field-label">Imię i Nazwisko</span>
-                    <input type="text" id="patientNameInput" class="field-value header-input" autocomplete="off"/>
+                    <input type="text" id="patientNameInput" class="field-value header-input" autocomplete="off" onchange="maybeOfferAutosaveRestore()"/>
                 </div>
                 <div class="field-group">
                     <span class="field-label">PESEL</span>
