@@ -1560,6 +1560,18 @@ html.dark-mode .offline-indicator {
 }
 
 @media print {
+    /* KLUCZOWE: wylacz wszystkie animacje/przejscia na wydruku.
+       Bazowe .header-section (slideDown), .patient-card i table (fadeIn)
+       startuja od opacity:0. Na ekranie wylacza je professional-ui.css, ale
+       ma media="screen", wiec w druku nie dziala - silnik druku renderowal
+       te elementy w stanie poczatkowym (opacity 0) = NIEWIDOCZNE (naglowek,
+       dane pacjenta i tabele znikaly). Reset gwarantuje pelna widocznosc. */
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+    }
+
     html, body {
         background: #fff !important;
         color: #000 !important;
