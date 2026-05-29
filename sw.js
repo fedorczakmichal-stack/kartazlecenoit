@@ -1,6 +1,6 @@
 // Service worker — Karta Zleceń OIT
 // Bump CACHE_VERSION przy każdej zmianie plików shella, aby wymusić odświeżenie cache.
-const CACHE_VERSION = 'karta-oit-v3.10.1';
+const CACHE_VERSION = 'karta-oit-v3.10.2';
 
 // App shell — pliki same-origin niezbędne do pracy offline.
 // Zasoby vendor (Font Awesome, SortableJS, Inter) są lokalne, więc karta

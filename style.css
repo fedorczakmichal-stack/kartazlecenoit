@@ -163,6 +163,55 @@ body {
 .control-button.new-patient { background-color: var(--success); }
 .control-button.backup { background-color: var(--teal); }
 .control-button.restore { background-color: var(--info); }
+
+/* Pasek "Ostatni pacjenci" - szybki wybor, 1 klik wczytuje karte */
+.recent-patients-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    max-width: min(1480px, calc(100vw - 48px));
+    margin: 12px auto 0;
+    padding: 8px 14px;
+    background: var(--container-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px var(--shadow-color);
+}
+.recent-patients-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+}
+.recent-patients-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.recent-patient-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--gray-50);
+    color: var(--text-color);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.recent-patient-chip:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    transform: translateY(-1px);
+}
+.recent-patient-chip.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+.recent-patient-chip i { font-size: 10px; opacity: 0.7; }
 .control-button.dark-mode { background-color: var(--gray-700); }
 .control-button:hover { 
     opacity: 0.85;

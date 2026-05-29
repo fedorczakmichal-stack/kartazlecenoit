@@ -2818,6 +2818,7 @@ function startNewPatient() {
     clearCard(true);
     try { localStorage.removeItem(ACTIVE_PATIENT_KEY); } catch (e) {}
     if (typeof updateActivePatientBadge === 'function') updateActivePatientBadge();
+    if (typeof renderRecentPatients === 'function') renderRecentPatients();
     showToast('Nowy pacjent', 'Pusta karta gotowa dla nowego pacjenta', 'success', 2500);
 }
 
@@ -3141,6 +3142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
         migratePatientsFromLegacyCards();
         updateActivePatientBadge();
+        renderRecentPatients();
     } catch (err) {
         console.warn('Patients init failed:', err);
     }
@@ -3402,12 +3404,33 @@ function updateActivePatientBadge() {
         if (e.target.closest('.active-patient-clear')) return;
         openPatientsModal(id);
     };
+    renderRecentPatients();
+}
+
+// Pasek "Ostatni pacjenci" w gornej czesci - szybki dostep, 1 klik wczytuje
+// najnowsza karte pacjenta. Pokazuje do 6 ostatnio zapisanych.
+function renderRecentPatients() {
+    const bar = document.getElementById('recentPatientsBar');
+    const chips = document.getElementById('recentPatientsChips');
+    if (!bar || !chips) return;
+    const patients = getPatientsIndex().slice()
+        .sort((a, b) => new Date(b.lastSavedAt || 0) - new Date(a.lastSavedAt || 0))
+        .slice(0, 6);
+    if (patients.length === 0) { bar.style.display = 'none'; return; }
+    const activeId = localStorage.getItem(ACTIVE_PATIENT_KEY);
+    chips.innerHTML = patients.map(p => {
+        const active = p.id === activeId ? ' active' : '';
+        const label = escapeHtml(p.name) + (p.historyNumber ? ` · ${escapeHtml(p.historyNumber)}` : '');
+        return `<button type="button" class="recent-patient-chip${active}" onclick="selectAndUseLatestCard('${escapeAttr(p.id)}')" title="Wczytaj najnowszą kartę: ${escapeAttr(p.name)}"><i class="fas fa-user"></i> ${label}</button>`;
+    }).join('');
+    bar.style.display = '';
 }
 
 function clearActivePatient(e) {
     if (e) { e.preventDefault(); e.stopPropagation(); }
     localStorage.removeItem(ACTIVE_PATIENT_KEY);
     updateActivePatientBadge();
+    renderRecentPatients();
     showToast('Pacjent', 'Odznaczono aktywnego pacjenta', 'info', 2000);
 }
 
@@ -3469,7 +3492,7 @@ function renderPatientsList() {
         const isActive = p.id === activeId;
         const lastSaved = p.lastSavedAt ? getTimeAgo(new Date(p.lastSavedAt)) : '—';
         li.innerHTML = `
-            <div class="patient-row-main" onclick="showPatientHistoryView('${escapeAttr(p.id)}')">
+            <div class="patient-row-main" onclick="selectAndUseLatestCard('${escapeAttr(p.id)}')" title="Kliknij, aby wczytać najnowszą kartę tego pacjenta" style="cursor:pointer;">
                 <div class="patient-name">
                     ${isActive ? '<i class="fas fa-circle" style="color:#10b981;font-size:8px;" title="Aktywny pacjent"></i>' : ''}
                     ${escapeHtml(p.name)}
@@ -3482,11 +3505,11 @@ function renderPatientsList() {
                 </div>
             </div>
             <div class="patient-row-actions">
-                <button class="control-button load small" onclick="showPatientHistoryView('${escapeAttr(p.id)}')" title="Pokaż historię kart">
-                    <i class="fas fa-clock-rotate-left"></i> Historia
-                </button>
-                <button class="control-button save small" onclick="selectAndUseLatestCard('${escapeAttr(p.id)}')" title="Wczytaj najnowszą kartę tego pacjenta">
+                <button class="control-button save small" onclick="event.stopPropagation(); selectAndUseLatestCard('${escapeAttr(p.id)}')" title="Wczytaj najnowszą kartę tego pacjenta">
                     <i class="fas fa-folder-open"></i> Wczytaj
+                </button>
+                <button class="control-button load small" onclick="event.stopPropagation(); showPatientHistoryView('${escapeAttr(p.id)}')" title="Pokaż historię kart (dzień po dniu)">
+                    <i class="fas fa-clock-rotate-left"></i> Historia
                 </button>
             </div>`;
         listEl.appendChild(li);
