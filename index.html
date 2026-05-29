@@ -500,14 +500,10 @@
     <datalist id="additivesList"></datalist>
     
     <script src="vendor/sortable/Sortable.min.js"></script>
-    <script>
-        (function () {
-            const professionalStyles = document.getElementById('professionalStyles');
-            if (!professionalStyles) return;
-            window.addEventListener('beforeprint', function () { professionalStyles.disabled = true; });
-            window.addEventListener('afterprint', function () { professionalStyles.disabled = false; });
-        })();
-    </script>
+    <!-- professional-ui.css ma media="screen" (i cała treść w @media screen),
+         więc do wydruku nie wchodzi - nie trzeba go wyłączać przy druku.
+         Wcześniejszy toggler powodował mignięcie jaskrawych kolorów na ekranie
+         w momencie otwierania okna druku, dlatego został usunięty. -->
     <script src="script.js"></script>
 </body>
 </html>
